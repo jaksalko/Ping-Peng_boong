@@ -14,10 +14,10 @@ public class CubeMove_manager : MonoBehaviour
 	public GameObject player;
 	public GameObject playerCamera;
 
-	public int mapsizeH = 15;
-	public int mapsizeW = 10;
+	public int mapsizeH = 17;
+	public int mapsizeW = 12;
 	public int[][] map = new int[][] {
-		new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },//아래
 		new int[] { 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1 },
 		new int[] { 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1 },
 		new int[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
@@ -41,6 +41,7 @@ public class CubeMove_manager : MonoBehaviour
 	int count = 0;
 	[SerializeField]
 	bool isMoving = false;
+    
 	Vector3 targetPos;
 	
 
@@ -188,7 +189,7 @@ public class CubeMove_manager : MonoBehaviour
 		if(!isMoving)
 		{
 			player = GameObject.Find(playerName);
-			playerCamera.GetComponent<FollowCamera>().target = player.transform;
+			//playerCamera.GetComponent<CameraController>().target = player.transform;
 			FindPlayer();
 		}
 		else
