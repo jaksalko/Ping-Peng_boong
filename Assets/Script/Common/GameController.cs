@@ -38,10 +38,7 @@ public class GameController : MonoBehaviour
 
     }
 
-    private void FixedUpdate()
-    {
-        
-    }
+    
 
     public void GameStart()
     {
@@ -56,8 +53,10 @@ public class GameController : MonoBehaviour
 
     public void GameEnd(bool isSuccess)
     {
+        Debug.Log("Game End... result is " + isSuccess);
         isRunning = false;
         endTime = Time.time;
+        
         ui.inGame.SetActive(false);
         ui.resultPopup.SetActive(true);
         if(isSuccess)

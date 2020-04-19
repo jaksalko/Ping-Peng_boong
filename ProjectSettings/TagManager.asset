@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Boundary
   - Parfait
+  - Ground
+  - Leg
   layers:
   - Default
   - TransparentFX

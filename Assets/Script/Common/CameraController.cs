@@ -54,7 +54,7 @@ public class CameraController : MonoBehaviour
     void PlayerMove()
     {
         camera_target = GameController.instance.nowPlayer.transform;
-        Debug.Log(camera_target.position);
+        //Debug.Log(camera_target.position);
         //float currentAngle = Mathf.LerpAngle(transform.eulerAngles.y, 0, rotateValue * Time.deltaTime);
         //Debug.Log("current angle : " + currentAngle);//current angle is always 0
         //Quaternion rotateAngle = Quaternion.Euler(0, currentAngle, 0);
@@ -178,10 +178,10 @@ public class CameraController : MonoBehaviour
             camera_transform.LookAt(end);
             
             yield return new WaitForSeconds(1f);
-            for(int i = 0; i<4; i++)
-            {
-                map.parfaitList[i].SetActive(true);
-            }
+            //for(int i = 0; i<4; i++)
+            //{
+            //    map.parfaitList[i].SetActive(true);
+            //}
             yield return new WaitForSeconds(1.5f);
 
             //Look Player

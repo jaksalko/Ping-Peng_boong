@@ -18,14 +18,18 @@ public class TouchMove : MonoBehaviour
     
     private void FixedUpdate()
     {
-        if(Application.platform == RuntimePlatform.OSXEditor)
+        if(GameController.Running)
         {
-            GetKeyBoard();
+            if (Application.platform == RuntimePlatform.OSXEditor)
+            {
+                GetKeyBoard();
+            }
+            else
+            {
+                SlideScreen();
+            }
         }
-        else
-        {
-            SlideScreen();
-        }
+       
         
         
     }
@@ -95,21 +99,25 @@ public class TouchMove : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.W))
         {
+            Debug.Log("move up");
             if (Move != null)
                 Move(1);
         }
         if (Input.GetKeyDown(KeyCode.D))
         {
+            Debug.Log("move right");
             if (Move != null)
                 Move(2);
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
+            Debug.Log("move down");
             if (Move != null)
                 Move(3);
         }
         if (Input.GetKeyDown(KeyCode.A))
         {
+            Debug.Log("move left");
             if (Move != null)
                 Move(4);
         }

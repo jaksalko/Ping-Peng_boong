@@ -6,7 +6,7 @@ public class GroundBlock : MonoBehaviour
 {
 	public Material red;
 	public Renderer _renderer;
-
+    
 	// Start is called before the first frame update
 	void Start()
     {
@@ -18,12 +18,17 @@ public class GroundBlock : MonoBehaviour
     {
         
     }
-
+    public void ChangeColor()
+    {
+        _renderer.material = red;
+    }
 	private void OnCollisionStay(Collision collision)
 	{
-		if(collision.gameObject.CompareTag("Player"))
+		if(collision.gameObject.CompareTag("Leg"))
 		{
 			_renderer.material = red;
 		}
 	}
+
+   
 }
