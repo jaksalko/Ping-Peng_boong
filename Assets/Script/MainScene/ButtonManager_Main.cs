@@ -20,7 +20,7 @@ public class ButtonManager_Main : MonoBehaviour
 
 	public void PressIslandBtn()
 	{
-		SceneManager.LoadScene("SampleScene");
+		SceneManager.LoadScene("LevelScene");
 	}
 
 	public void PressPlayBtn()
