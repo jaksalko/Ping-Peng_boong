@@ -22,7 +22,7 @@ public class ParfaitObject : MonoBehaviour
         Debug.Log("parfait initialize...");
         state = State.inactive;
         //renderer = this.gameObject.GetComponent<Renderer>();
-        renderer.material.color = Color.black;
+        //renderer.material.color = Color.black;
 
     }
 
@@ -39,7 +39,7 @@ public class ParfaitObject : MonoBehaviour
         state = State.clear;
         if (sequence < 3)
         {
-            GameController.instance.map.parfaitList[sequence + 1].Activate();
+            GameController.instance.map.parfaitBlock[sequence + 1].Activate();
             Destroy(this.gameObject);
             return false;
         }

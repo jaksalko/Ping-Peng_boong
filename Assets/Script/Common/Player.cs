@@ -114,7 +114,7 @@ public class Player : MonoBehaviour
             if (distance < 0.25f)
             {
                 SetPlayerMarker();
-                Debug.Log("Arrive... target position : " + targetPos + "  distance : " + distance);
+                //Debug.Log("Arrive... target position : " + targetPos + "  distance : " + distance);
                 isMoving = false;
                 transform.position = new Vector3(targetPos.x, targetPos.y, targetPos.z);
 
@@ -243,7 +243,7 @@ public class Player : MonoBehaviour
 
     void SetPlayerMarker()
     {
-        Debug.Log("Set Player Marker : " + gameObject.name + "  (" + posZ + "," + posX + ")");
+        //Debug.Log("Set Player Marker : " + gameObject.name + "  (" + posZ + "," + posX + ")");
         map[posZ, posX] = 5;
         if(state != State.Idle)
         {
@@ -337,7 +337,7 @@ public class Player : MonoBehaviour
 
             if(map[posZ,posX] == 2 && state == State.Master)
             {
-                Debug.Log("state change   " + posZ + "," + posX);
+                //Debug.Log("state change   " + posZ + "," + posX);
                 stateChange = true;
             }
 
@@ -399,7 +399,7 @@ public class Player : MonoBehaviour
 
                 }
 
-                Debug.Log("posz :" + posZ + "  posx : " + posX + " value : " + map[posZ, posX]);
+                //Debug.Log("posz :" + posZ + "  posx : " + posX + " value : " + map[posZ, posX]);
                 next = map[posZ + step[direction, 0], posX + step[direction, 1]];
 
 
@@ -420,7 +420,7 @@ public class Player : MonoBehaviour
                     
                     isMoving = true;
 
-                    Debug.Log("target position in drop : " + targetPos);
+                    //Debug.Log("target position in drop : " + targetPos);
 
                     return;
 
@@ -434,7 +434,7 @@ public class Player : MonoBehaviour
                     targetPos = new Vector3(posX, y2, posZ);
                     
                     isMoving = true;
-                    Debug.Log("target position in other player : " + targetPos);
+                    //Debug.Log("target position in other player : " + targetPos);
                     return;//end method...
                 }
 
@@ -479,50 +479,50 @@ public class Player : MonoBehaviour
 
     void Up_2()
     {
-        Debug.Log(" up move!");
+        //Debug.Log(" up move!");
         transform.rotation = Quaternion.Euler(new Vector3(-90f, 0f, 0f));
         dir = Vector3.forward;
 
         CheckMove(0);
         stone = false;
         
-        Debug.Log("target position in Up Method : " + targetPos);
+        //Debug.Log("target position in Up Method : " + targetPos);
     }
 
     void Right_2()
     {
-        Debug.Log(" right move!");
+        //Debug.Log(" right move!");
         transform.rotation = Quaternion.Euler(new Vector3(-90f, 90f, 0f));
         dir = Vector3.right;
 
         CheckMove(1);
         stone = false;
-        Debug.Log("target position in Right Method : " + targetPos);
+        //Debug.Log("target position in Right Method : " + targetPos);
     }
 
 
     void Down_2()
     {
-        Debug.Log(" down move!");
+        //Debug.Log(" down move!");
         transform.rotation = Quaternion.Euler(new Vector3(-90f, 180f, 0f));
         dir = Vector3.back;
 
         CheckMove(2);
         stone = false;
-        Debug.Log("target position in Down Method : " + targetPos);
+        //Debug.Log("target position in Down Method : " + targetPos);
     }
 
 
     void Left_2()
     {
-        Debug.Log(" left move!");
+        //Debug.Log(" left move!");
         transform.rotation = Quaternion.Euler(new Vector3(-90f, 270f, 0f));
         dir = Vector3.left;
 
 
         CheckMove(3);
         stone = false;
-        Debug.Log("target position in Left Method : " + targetPos);
+        //Debug.Log("target position in Left Method : " + targetPos);
     }
 
 
@@ -549,6 +549,7 @@ public class Player : MonoBehaviour
             {
                 if (parfait.GetParfait())//if true end game
                 {
+                    Debug.Log("end parfait mode.");
                     targetPos = stage.parfaitEndPoint;
                     stage.checkparfait = true;
                 }

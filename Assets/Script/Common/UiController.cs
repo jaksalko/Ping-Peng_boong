@@ -8,6 +8,13 @@ public class UiController : MonoBehaviour
     public GameObject resultPopup;
     public GameObject popup;
 
+    bool mini = false;
+
+    public void MiniMapButton()
+    {
+        mini = GameController.instance.cameraController.MiniMapView(mini);
+    }
+
     public void ChangeCharacter()
     {
         Player now = GameController.instance.nowPlayer;

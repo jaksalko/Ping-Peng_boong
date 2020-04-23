@@ -19,12 +19,15 @@ public class CameraController : MonoBehaviour
 
     public int cameraView = 0;
     Coroutine coroutine;
+
+    Vector3 centerOfMap;
+
     // Start is called before the first frame update
     void Start()
     {
         //target = GameController.instance.nowPlayer;
         camera_transform = main_camera.transform;
-        
+        centerOfMap = GameController.instance.map.centerOfMap;
         
     }
 
@@ -40,6 +43,9 @@ public class CameraController : MonoBehaviour
                 break;
             case 1://is Character Move
                 PlayerMove();
+                break;
+            case 2:
+                MiniMapCamera();
                 break;
             default:
                 break;
@@ -169,7 +175,7 @@ public class CameraController : MonoBehaviour
         {
             t = 0;
             Vector3 start = transform.position;
-            Vector3 end = map.parfaitList[0].transform.position;
+            Vector3 end = map.parfaitBlock[0].transform.position;
 
             //Look Parfait
             transform.position = end - (Vector3.forward * 2)
@@ -209,10 +215,38 @@ public class CameraController : MonoBehaviour
            
             yield return new WaitForSeconds(1f);
         }
-
+        GameController.instance.GameStart();
         cameraView = 1;
         coroutine = null;
-        GameController.instance.GameStart();
+        //GameController.instance.GameStart();
     }
 
+    void MiniMapCamera()
+    {
+        camera_target = GameController.instance.map.minimapTarget;
+        transform.position = camera_target.position
+           + (Vector3.up * 10);
+
+        camera_transform.position = transform.position;
+        camera_transform.LookAt(camera_target.position);
+    }
+
+    //Ui button 
+    public bool MiniMapView(bool mini)
+    {
+        if(mini)
+        {
+            mini = false;
+            main_camera.fieldOfView = fovMinMax.x;
+            cameraView = 1;
+        }
+        else
+        {
+            mini = true;
+            main_camera.fieldOfView = fovMinMax.y;
+            cameraView = 2;
+        }
+
+        return mini;
+    }
 }

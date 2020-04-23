@@ -7,15 +7,15 @@ public class Map : MonoBehaviour
     public int mapsizeH;
     public int mapsizeW;
     public bool parfait;
-    public ParfaitObject[] parfaitList;
+    //public ParfaitObject[] parfaitList;
     public int[,] map;
     public bool[,] check;
     public bool checkparfait;
     public GameObject groundBlock;
     public GameObject obstacleBlock;
-    public ParfaitObject parfaitBlock;
+    public ParfaitObject[] parfaitBlock;
     public GameObject slope;
-
+    
 
     public Transform groundParent;
     public Transform obstacleParent;
@@ -23,6 +23,9 @@ public class Map : MonoBehaviour
     public GameObject[] sample;
 
     public Vector3 parfaitEndPoint;
+    public Vector3 centerOfMap;
+    public Transform minimapTarget;
+
     public void GenerateMap(int index)
     {
         SampleMap1 sampleMap = sample[index].GetComponent<SampleMap1>();
@@ -32,6 +35,9 @@ public class Map : MonoBehaviour
         
         map = new int[mapsizeH, mapsizeW];
         check = new bool[mapsizeH, mapsizeW];
+
+        centerOfMap = new Vector3(mapsizeW / 2,-10, mapsizeH / 2);
+        minimapTarget.position = centerOfMap;
         checkparfait = false;
         for(int i = 0; i < mapsizeH; i++)
         {
@@ -77,6 +83,15 @@ public class Map : MonoBehaviour
                     GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
                     second_ground.transform.parent = groundParent;
                 }
+                else if(map[i,j] == 3)//second floor obstacle
+                {
+                    GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
+                    second_ground.transform.parent = groundParent;
+
+                    check[i, j] = true;
+                    GameObject obstacle = Instantiate(obstacleBlock, new Vector3(j, -8, i), Quaternion.identity) as GameObject;
+                    obstacle.transform.parent = obstacleParent;
+                }
                 else if(map[i,j] == 21)
                 {
                     check[i, j] = true;
@@ -112,52 +127,93 @@ public class Map : MonoBehaviour
         {
             for (int j = 0; j < mapsizeW; j++)
             {
+                
                 if (map[i, j] == -1)
                 {
-                    
-                    ParfaitObject parfait = Instantiate(parfaitBlock, new Vector3(j, -9, i), Quaternion.identity) as ParfaitObject;
-                    parfait.sequence = 0;
-                    parfait.Activate();
-                    parfaitList[0] = parfait;
-
-                    
-                    parfait.transform.parent = obstacleParent;
+                    parfaitBlock[0].gameObject.SetActive(true);
+                    parfaitBlock[0].gameObject.transform.position = new Vector3(j, -9, i);
+                    parfaitBlock[0].sequence = 0;
+                    parfaitBlock[0].Activate();
+                 
                 }
                     
                 else if (map[i, j] == -2)
                 {
-
-                    ParfaitObject parfait = Instantiate(parfaitBlock, new Vector3(j, -9, i), Quaternion.identity) as ParfaitObject;
-                    parfait.sequence = 1;
-                    parfaitList[1] = parfait;
-                    
-                    
-                    parfait.transform.parent = obstacleParent;
+                    parfaitBlock[1].gameObject.SetActive(true);
+                    parfaitBlock[1].gameObject.transform.position = new Vector3(j, -9, i);
+                    parfaitBlock[1].sequence = 1;
+                  
                 }
 
                     
                 else if (map[i, j] == -3)
                 {
-
-                    ParfaitObject parfait = Instantiate(parfaitBlock, new Vector3(j, -9, i), Quaternion.identity) as ParfaitObject;
-                    parfait.sequence = 2;
-                    parfaitList[2] = parfait;
+                    parfaitBlock[2].gameObject.SetActive(true);
+                    parfaitBlock[2].gameObject.transform.position = new Vector3(j, -9, i);
+                    parfaitBlock[2].sequence = 2;
                     
-                    parfait.transform.parent = obstacleParent;
+                   
                 }
                     
                 else if (map[i, j] == -4)
                 {
-
-                    ParfaitObject parfait = Instantiate(parfaitBlock, new Vector3(j, -9, i), Quaternion.identity) as ParfaitObject;
-                    parfait.sequence = 3;
-                    parfaitList[3] = parfait;
-                    parfaitEndPoint = parfait.transform.position;
-                    parfait.transform.parent = obstacleParent;
-                }
+                    parfaitBlock[3].gameObject.SetActive(true);
+                    parfaitBlock[3].gameObject.transform.position = new Vector3(j, -9, i);
+                    parfaitBlock[3].sequence = 3;
+                    parfaitEndPoint = parfaitBlock[3].transform.position;
                     
+                    
+                }
+                else if (map[i, j] == -5)
+                {
+                    GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
+                    second_ground.transform.parent = groundParent;
 
-                
+
+                    parfaitBlock[0].gameObject.SetActive(true);
+                    parfaitBlock[0].gameObject.transform.position = new Vector3(j, -8, i);
+                    parfaitBlock[0].sequence = 0;
+                    parfaitBlock[0].Activate();
+
+
+                    
+                }
+
+                else if (map[i, j] == -6)
+                {
+                    GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
+                    second_ground.transform.parent = groundParent;
+
+                    parfaitBlock[1].gameObject.SetActive(true);
+                    parfaitBlock[1].gameObject.transform.position = new Vector3(j, -8, i);
+                    parfaitBlock[1].sequence = 1;
+                }
+
+
+                else if (map[i, j] == -7)
+                {
+                    GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
+                    second_ground.transform.parent = groundParent;
+
+                    parfaitBlock[2].gameObject.SetActive(true);
+                    parfaitBlock[2].gameObject.transform.position = new Vector3(j, -8, i);
+                    parfaitBlock[2].sequence = 2;
+
+                }
+
+                else if (map[i, j] == -8)
+                {
+                    GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
+                    second_ground.transform.parent = groundParent;
+
+                    parfaitBlock[3].gameObject.SetActive(true);
+                    parfaitBlock[3].gameObject.transform.position = new Vector3(j, -8, i);
+                    parfaitBlock[3].sequence = 3;
+                    parfaitEndPoint = parfaitBlock[3].transform.position;
+                }
+
+
+
 
             }
         }
