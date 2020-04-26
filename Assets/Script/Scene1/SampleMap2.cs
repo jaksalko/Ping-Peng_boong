@@ -26,11 +26,11 @@ public class SampleMap2 : SampleMap1
 		map = new int[][]
 		{
 			new int[] { 1, 1, 1, 1, 1},
-            new int[] { 1, -2, 22, 2, 1},
-            new int[] { 1, -1, 1, -7, 1},//1 23
-			new int[] { 1, 0, 1, 0, 1},
-            new int[] { 1, 0, 1, 0, 1},
-            new int[] { 1, 2, 1, -4, 1},
+            new int[] { 1, -6, -7, 2, 1},
+            new int[] { 1, 2, 1, 21, 1},//1 23
+			new int[] { 1, -1, 1, 0, 1},
+            new int[] { 1, 0, 1, 23, 1},
+            new int[] { 1, 2, 1, -8, 1},
             new int[] { 1, 1, 1, 1, 1}
 			//new int[] { 1, 1, 1, 1, 1},
 			//new int[] { 1, 0, 0, 0, 1},

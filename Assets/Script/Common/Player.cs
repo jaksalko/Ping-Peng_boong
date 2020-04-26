@@ -27,6 +27,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     bool upstair = false;//if player located in second floor --> true
 
+    public GameObject moveParticle;
 
 
 
@@ -47,7 +48,8 @@ public class Player : MonoBehaviour
     State state;
     [SerializeField]
     bool stateChange;
-    
+    [SerializeField]
+    bool third_drop;
     public bool Moving()
     {
         return isMoving;
@@ -63,6 +65,8 @@ public class Player : MonoBehaviour
     {
         state = State.Idle;
         stateChange = false;
+        third_drop = false;
+
         isMoving = false;
         
         //isActive = false;
@@ -99,6 +103,7 @@ public class Player : MonoBehaviour
 
         if (isMoving)
         {
+            moveParticle.SetActive(true);
             if (cc.isGrounded)
             {
                 //Debug.Log("is grounded");
@@ -116,6 +121,7 @@ public class Player : MonoBehaviour
                 SetPlayerMarker();
                 //Debug.Log("Arrive... target position : " + targetPos + "  distance : " + distance);
                 isMoving = false;
+                moveParticle.SetActive(false);
                 transform.position = new Vector3(targetPos.x, targetPos.y, targetPos.z);
 
                 if(stateChange)
@@ -131,15 +137,15 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    if(posX == other.posX && posZ == other.posZ)
+                    if(posX == other.posX && posZ == other.posZ)//위치가 같고 갈라질 상황이 아니다? 무조건 같이 붙어 있는 상태
                     {
-                        if(upstair)
+                        if(transform.position.y > other.transform.position.y)//움직인 놈이 더 위에 있다
                         {
                             state = State.Slave;
                             other.state = State.Master;
                             transform.SetParent(other.transform);
                         }
-                        else
+                        else//움직인 놈이 더 아래에 있다.
                         {
                             state = State.Master;
                             other.state = State.Slave;
@@ -156,6 +162,7 @@ public class Player : MonoBehaviour
                 }
             }
         }
+        
 
     }
 
@@ -199,6 +206,11 @@ public class Player : MonoBehaviour
                 state = State.Idle;
                 other.state = State.Idle;
                 transform.SetParent(null);
+
+                if(other.upstair)
+                {
+                    third_drop = true;
+                }
             }
 
             Debug.Log("move direction : " + direction);
@@ -293,7 +305,7 @@ public class Player : MonoBehaviour
 
 
 
-            while (next == 0 || next == checkSlopeNumber || next < 0)
+            while ((next <= 0 && next > -5) || next == checkSlopeNumber )
             {
                 //Debug.Log("while...");
                 if (direction == 0)
@@ -316,14 +328,31 @@ public class Player : MonoBehaviour
                     posX--;
 
                 }
+
                 next = map[posZ + step[direction, 0], posX + step[direction, 1]];
 
                 if (map[posZ, posX] == checkSlopeNumber)
                 {
+                    if(next == 5)
+                    {
+                        posX -= step[direction, 1];
+                        posZ -= step[direction, 0];
+
+
+                        targetPos = new Vector3(posX, y1, posZ);
+
+                        isMoving = true;
+
+
+
+                        return;
+                    }
+
                     upstair = true;
                     break;
                 }
 
+               
                 check[posZ, posX] = true;
 
 
@@ -335,9 +364,9 @@ public class Player : MonoBehaviour
 
             }
 
-            if(map[posZ,posX] == 2 && state == State.Master)
+            if((next == 2 || next <-4) && state == State.Master)
             {
-                //Debug.Log("state change   " + posZ + "," + posX);
+                Debug.Log("state change   " + posZ + "," + posX);
                 stateChange = true;
             }
 
@@ -362,6 +391,7 @@ public class Player : MonoBehaviour
             }
             else
             {
+                Debug.Log("set pos");
                 targetPos = new Vector3(posX, y1, posZ);
                 //SetPlayerMarker();
                 isMoving = true;
@@ -400,21 +430,37 @@ public class Player : MonoBehaviour
                 }
 
                 //Debug.Log("posz :" + posZ + "  posx : " + posX + " value : " + map[posZ, posX]);
+
+
                 next = map[posZ + step[direction, 0], posX + step[direction, 1]];
-
-
 
                 if (map[posZ, posX] == downSlopeNumer)
                 {
-                    
+                    if(next == 5)
+                    {
+                        posX -= step[direction, 1];
+                        posZ -= step[direction, 0];
+
+
+                        targetPos = new Vector3(posX, y2, posZ);
+
+                        isMoving = true;
+
+                        
+
+                        return;
+                    }
                     upstair = false;
                     break;//While break
                 }
 
+                
                 check[posZ, posX] = true;
 
-                if (map[posZ, posX] == 0)//다음이 1층/
+
+                if (map[posZ, posX] <= 0 && map[posZ,posX] > -5)//다음이 1층 또는 1층 파
                 {
+                    Debug.Log("drop");
                     upstair = false;
                     targetPos = new Vector3(posX, y1, posZ);
                     
@@ -424,6 +470,20 @@ public class Player : MonoBehaviour
 
                     return;
 
+                }
+
+
+                if (third_drop)
+                {
+                    upstair = true;
+                    Debug.Log("third floor drop... mean slave drop in second floor");
+                    targetPos = new Vector3(posX, y2, posZ);
+
+                    isMoving = true;
+
+                    third_drop = false;
+
+                    return;
                 }
 
 
@@ -466,7 +526,13 @@ public class Player : MonoBehaviour
             }
             else
             {
-                targetPos = new Vector3(posX, y2, posZ);
+                if(!third_drop)
+                    targetPos = new Vector3(posX, y2, posZ);
+                else
+                {
+                    third_drop = false;
+                    targetPos = new Vector3(posX, y2+1, posZ);
+                }
                 
                 isMoving = true;
                
@@ -509,7 +575,7 @@ public class Player : MonoBehaviour
 
         CheckMove(2);
         stone = false;
-        //Debug.Log("target position in Down Method : " + targetPos);
+        Debug.Log("target position in Down Method : " + targetPos);
     }
 
 
@@ -522,7 +588,7 @@ public class Player : MonoBehaviour
 
         CheckMove(3);
         stone = false;
-        //Debug.Log("target position in Left Method : " + targetPos);
+        Debug.Log("target position in Left Method : " + targetPos);
     }
 
 
