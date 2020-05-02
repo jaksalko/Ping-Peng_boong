@@ -27,7 +27,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     bool upstair = false;//if player located in second floor --> true
 
-    public GameObject moveParticle;
+    public ParticleSystem moveParticle;
+	public GameObject crashParticle;
 
 
 
@@ -103,26 +104,37 @@ public class Player : MonoBehaviour
 
         if (isMoving)
         {
-            moveParticle.SetActive(true);
-            if (cc.isGrounded)
+			//이동 시 발생하는 particle control
+			if(!moveParticle.isPlaying)
+			{
+				moveParticle.Play();
+				moveParticle.loop = true;
+				var main = moveParticle.main;
+				// main.startColor = new Color(1, 0.4f, 0.7f);	// skin마다 color 바꿔주도록 할 것!!
+			}
+
+			if (cc.isGrounded)	// 바닥에 붙어있으면 움직임
             {
                 //Debug.Log("is grounded");
                 cc.Move(speed * Time.deltaTime * dir);
             }
-            else
+            else				// 바닥이 없으면 떨어짐 (여기다 쿵! 넣으면되는데 지금 잘 작동이 안 되서 넣으면 안 됨)
             {
                 //Debug.Log("is not grounded!!!!");
                 cc.Move(speed * Time.deltaTime * Vector3.down);
             }
             float distance = Vector3.Distance(transform.position, targetPos);
             //transform.position = Vector3.MoveTowards(transform.position, targetPos, speed);
-            if (distance < 0.25f)
+            if (distance < 0.205f)
             {
                 SetPlayerMarker();
                 //Debug.Log("Arrive... target position : " + targetPos + "  distance : " + distance);
                 isMoving = false;
-                moveParticle.SetActive(false);
-                transform.position = new Vector3(targetPos.x, targetPos.y, targetPos.z);
+
+				//이동 시 발생하는 particle control
+				moveParticle.loop = false;
+
+				transform.position = new Vector3(targetPos.x, targetPos.y, targetPos.z);
 
                 if(stateChange)
                 {
@@ -271,7 +283,8 @@ public class Player : MonoBehaviour
         int[,] step = new int[4, 2] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
 
         int next = map[posZ + step[direction, 0], posX + step[direction, 1]];
-        float y1 = -9f;
+
+		float y1 = -9f;
         float y2 = -8f;
 
         int checkSlopeNumber = 0;
@@ -489,7 +502,6 @@ public class Player : MonoBehaviour
 
                 if (map[posZ, posX] == 5 && !other.upstair && state == State.Idle)//next block is other player and stay first floor..
                 {
-                    
 
                     targetPos = new Vector3(posX, y2, posZ);
                     
@@ -497,7 +509,6 @@ public class Player : MonoBehaviour
                     //Debug.Log("target position in other player : " + targetPos);
                     return;//end method...
                 }
-
 
 
                 if (SetEndPoint_Paint())
@@ -628,6 +639,14 @@ public class Player : MonoBehaviour
         }
     }
 
+
+	private IEnumerator CrashEffect()
+	{
+		Debug.Log("Crash");
+		crashParticle.SetActive(true);
+		yield return new WaitForSeconds(1f);
+		crashParticle.SetActive(false);
+	}
    
 
 

@@ -25,7 +25,7 @@ public class ButtonManager_Main : MonoBehaviour
 
 	public void PressPlayBtn()
 	{
-		SceneManager.LoadScene("SampleScene");
+		SceneManager.LoadScene("GameScene");
 	}
 
 	public void PressEglooBtn()

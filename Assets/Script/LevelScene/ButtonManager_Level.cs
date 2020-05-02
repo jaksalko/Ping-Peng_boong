@@ -53,7 +53,7 @@ public class ButtonManager_Level : MonoBehaviour
 		switch (levelNum)
 		{
 			case 11:
-				SceneManager.LoadScene("SampleScene");
+				SceneManager.LoadScene("GameScene");
 				break;
 			default:
 				break;

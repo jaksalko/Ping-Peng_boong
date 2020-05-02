@@ -20,7 +20,7 @@ public class TouchMove : MonoBehaviour
     {
         if(GameController.Running)
         {
-            if (Application.platform == RuntimePlatform.OSXEditor)
+            if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.WindowsEditor)
             {
                 GetKeyBoard();
             }
