@@ -144,7 +144,14 @@ public class Player : MonoBehaviour
 
 				transform.position = new Vector3(targetPos.x, targetPos.y, targetPos.z);
 
-                if(stateChange)
+
+                
+                if (CheckStageClear(stage.parfait))
+                {
+                    GameController.instance.GameEnd(true);
+                }
+
+                if (stateChange)
                 {
                     state = State.Idle;
                     other.state = State.Idle;
@@ -152,7 +159,7 @@ public class Player : MonoBehaviour
                     other.transform.SetParent(null);
                     GameController.instance.ui.ChangeCharacter();
                     other.PlayerControl(getDirection);
-                    
+
                     
                 }
                 else
@@ -176,10 +183,8 @@ public class Player : MonoBehaviour
 
                 map[posZ, posX] = 5;
                 map[other.posZ, other.posX] = 5;
-                if (CheckStageClear(stage.parfait))
-                {
-                    GameController.instance.GameEnd(true);
-                }
+
+
             }
         }
         
@@ -377,7 +382,7 @@ public class Player : MonoBehaviour
                 check[posZ, posX] = true;
 
 
-                if (SetEndPoint_Paint())
+                if (SetEndPoint_Paint() && !stage.parfait)
                     break;
 
 
@@ -385,11 +390,7 @@ public class Player : MonoBehaviour
 
             }
 
-            if((next == 2 || next <-4) && state == State.Master)
-            {
-                Debug.Log("state change   " + posZ + "," + posX);
-                stateChange = true;
-            }
+           
 
             if (upstair)//1층에서 가다가 경사로를 만남
             {
@@ -412,6 +413,14 @@ public class Player : MonoBehaviour
             }
             else
             {
+
+                if ((next == 2 || next < -4) && state == State.Master)
+                {
+                    Debug.Log("state change   " + posZ + "," + posX);
+                    stateChange = true;
+                }
+
+
                 Debug.Log("set pos");
                 targetPos = new Vector3(posX, y1, posZ);
                 //SetPlayerMarker();
@@ -519,7 +528,7 @@ public class Player : MonoBehaviour
                 }
 
 
-                if (SetEndPoint_Paint())
+                if (SetEndPoint_Paint() && !stage.parfait)
                     break;
             }
 
