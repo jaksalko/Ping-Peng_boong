@@ -64,7 +64,94 @@ public class GameController : MonoBehaviour
         ui.resultPopup.SetActive(true);
         if(isSuccess)
         {
-            PlayerPrefs.SetInt("level", PlayerPrefs.GetInt("level", 0) + 1);
+            int level = PlayerPrefs.GetInt("level", 0);
+            int nextlevel;
+            //Showcase scope Level admin
+            if (level < 5)
+                PlayerPrefs.SetInt("level", level + 1);
+            else if (level == 5)//drawing easy
+            {
+                nextlevel = Random.Range(6, 11);
+                PlayerPrefs.SetInt("except", 11 - nextlevel);
+                PlayerPrefs.SetInt("level", nextlevel);
+            }
+            else if(level >5 && level < 11)//parfait easy
+            {
+                nextlevel = Random.Range(11, 16);
+                while(PlayerPrefs.GetInt("except",0) == 16-nextlevel)
+                {
+                    nextlevel = Random.Range(11, 16);
+                }
+                PlayerPrefs.SetInt("except", 16 - nextlevel);
+                PlayerPrefs.SetInt("level", nextlevel);
+
+            }
+            else if (level > 10 && level < 16)//drawing normal
+            {
+                nextlevel = Random.Range(16, 19);
+                while (PlayerPrefs.GetInt("except", 0) == 19 - nextlevel)
+                {
+                    nextlevel = Random.Range(16, 19);
+                }
+                PlayerPrefs.SetInt("except", 19 - nextlevel);
+                PlayerPrefs.SetInt("level", nextlevel);
+
+            }
+            else if (level > 15 && level < 19)//parfait normal
+            {
+                nextlevel = Random.Range(19, 22);
+                while (PlayerPrefs.GetInt("except", 0) == 22 - nextlevel)
+                {
+                    nextlevel = Random.Range(19, 22);
+                }
+                PlayerPrefs.SetInt("except", 22 - nextlevel);
+                PlayerPrefs.SetInt("level", nextlevel);
+
+            }
+            else if (level > 18 && level < 22)//drawing hard
+            {
+                nextlevel = Random.Range(22, 25);
+                while (PlayerPrefs.GetInt("except", 0) == 25 - nextlevel)
+                {
+                    nextlevel = Random.Range(22, 25);
+                }
+                PlayerPrefs.SetInt("except", 25 - nextlevel);
+                PlayerPrefs.SetInt("level", nextlevel);
+
+            }
+            else if (level > 21 && level < 25)//parfait hard
+            {
+                nextlevel = Random.Range(25, 28);
+                while (PlayerPrefs.GetInt("except", 0) == 28 - nextlevel)
+                {
+                    nextlevel = Random.Range(25, 28);
+                }
+                PlayerPrefs.SetInt("except", 28 - nextlevel);
+                PlayerPrefs.SetInt("level", nextlevel);
+
+            }
+            else if (level > 24 && level < 28)//drawing super hard
+            {
+              
+                
+                PlayerPrefs.SetInt("level", 28);
+
+            }
+            else if(level == 28)
+            {
+                PlayerPrefs.SetInt("level", 29);
+            }
+            else if(level >= 29)
+            {
+                PlayerPrefs.SetInt("level", 0);
+
+            }
+
+
+
+
+            //Default level admin
+            //PlayerPrefs.SetInt("level", PlayerPrefs.GetInt("level", 0) + 1);
         }
         else
         {
