@@ -16,7 +16,7 @@ public class Parfait12 : SampleMap
 		new int[] { 1, 0, 0, -6, 2, 2, 1},
 		new int[] { 1, 0, 0, 22, 2, 2, 1},
 		new int[] { 1, 0, 0, -7, -8, 2, 1},
-		new int[] { 1, 1, 0, -4, 2, 2, 1},
+		new int[] { 1, 1, 0, -1, 2, 2, 1},
 		new int[] { 1, 1, 1, 1, 1, 1, 1}
 
 		};
