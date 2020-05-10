@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class TouchMove : MonoBehaviour
 {
@@ -36,11 +37,9 @@ public class TouchMove : MonoBehaviour
             }
         }
 
-        swipe.text = "(" + v.x + "," + v.y + ")";
-       
-        
-        
-    }
+		swipe.text = "(" + v.x + "," + v.y + ")";
+
+	}
 
     void SwipeMouse()
     {
@@ -48,7 +47,7 @@ public class TouchMove : MonoBehaviour
         {
             startpos = Input.mousePosition;
         }
-        if(Input.GetMouseButtonUp(0))
+        if(Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
         {
             v = (Vector2)Input.mousePosition - startpos;
             v = v.normalized;

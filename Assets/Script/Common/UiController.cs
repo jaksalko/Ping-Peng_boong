@@ -28,24 +28,28 @@ public class UiController : MonoBehaviour
     {
         Player now = GameController.instance.nowPlayer;
 
-        if(!now.Moving())
-        {
-            Debug.Log("change Character");
-            GameController.instance.nowPlayer.isActive = false;
-            
-            if (now == GameController.instance.player1)
-            {
-                GameController.instance.nowPlayer = GameController.instance.player2;
-            }
-            else
-            {
-                GameController.instance.nowPlayer = GameController.instance.player1;
-            }
-            GameController.instance.nowPlayer.isActive = true;
+		if (!now.Moving())
+		{
+			Debug.Log("change Character");
+			GameController.instance.nowPlayer.isActive = false;
 
-            Debug.Log("player 1 : " + GameController.instance.player1.isActive);
-            Debug.Log("player 2 : " + GameController.instance.player2.isActive);
-        }
+			if (now == GameController.instance.player1)
+			{
+				GameController.instance.nowPlayer = GameController.instance.player2;
+			}
+			else
+			{
+				GameController.instance.nowPlayer = GameController.instance.player1;
+			}
+			GameController.instance.nowPlayer.isActive = true;
+
+			Debug.Log("player 1 : " + GameController.instance.player1.isActive);
+			Debug.Log("player 2 : " + GameController.instance.player2.isActive);
+		}
+		else
+		{
+			Debug.Log("Can't change!");
+		}
         
     }
 
