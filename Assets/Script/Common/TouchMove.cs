@@ -86,19 +86,44 @@ public class TouchMove : MonoBehaviour
         for (int i = 0; i < touchCount; i++)
         {
             Touch touch = Input.GetTouch(0);
-            
+            if (touch.Equals(null)) continue;
 
             switch (touch.phase)
             {
                 case TouchPhase.Began:
-                    
+                    startpos = touch.position;
                     break;
-                case TouchPhase.Moved:
-                    
-                    break;
+                
                 case TouchPhase.Ended:
                 case TouchPhase.Canceled:
-                    
+                    Debug.Log("Touch End : " + i);
+                    v = touch.position - startpos;
+                    v = v.normalized;
+
+                    if ((v.x > -0.5 && v.x < 0.5) && (v.y > 0.5))
+                    {
+                        Debug.Log("move up");
+                        if (Move != null)
+                            Move(1);
+                    }
+                    else if ((v.y > -0.5 && v.y < 0.5) && (v.x > 0.5))
+                    {
+                        Debug.Log("move right");
+                        if (Move != null)
+                            Move(2);
+                    }
+                    else if ((v.x > -0.5 && v.x < 0.5) && (v.y < -0.5))
+                    {
+                        Debug.Log("move down");
+                        if (Move != null)
+                            Move(3);
+                    }
+                    else if ((v.y > -0.5 && v.y < 0.5) && (v.x < -0.5))
+                    {
+                        Debug.Log("move left");
+                        if (Move != null)
+                            Move(4);
+                    }
                     break;
             }
         }
