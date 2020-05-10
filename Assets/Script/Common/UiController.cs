@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class UiController : MonoBehaviour
 {
     public GameObject inGame;
@@ -42,7 +42,7 @@ public class UiController : MonoBehaviour
 
     public void NextLevel()
     {
-
+        SceneManager.LoadScene("GameScene");
     }
 
     public void Pause()
@@ -57,7 +57,7 @@ public class UiController : MonoBehaviour
 
     public void GoLobby()
     {
-
+        SceneManager.LoadScene("MainScene");
     }
 
 

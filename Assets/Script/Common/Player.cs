@@ -85,14 +85,22 @@ public class Player : MonoBehaviour
         FindPlayer();
     }
 
+    
+    public void SetPosition(Vector3 startpos , bool upstair)
+    {
+        transform.position = startpos;
+        this.upstair = upstair;
+    }
 
     public void FindPlayer()
     {
+        
+
         posX = (int)transform.position.x;
         posZ = (int)transform.position.z;
         map[posZ, posX] = 5;
         check[posZ, posX] = true;
-        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX);
+        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);
     }
 
 
@@ -125,7 +133,7 @@ public class Player : MonoBehaviour
             }
             float distance = Vector3.Distance(transform.position, targetPos);
             //transform.position = Vector3.MoveTowards(transform.position, targetPos, speed);
-            if (distance < 0.205f)
+            if (distance < 0.25f)
             {
                 SetPlayerMarker();
                 //Debug.Log("Arrive... target position : " + targetPos + "  distance : " + distance);

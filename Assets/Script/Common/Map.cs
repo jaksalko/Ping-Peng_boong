@@ -20,30 +20,42 @@ public class Map : MonoBehaviour
     public Transform groundParent;
     public Transform obstacleParent;
 
-    public GameObject[] sample;
+    public SampleMap[] sample;
 
     public Vector3 parfaitEndPoint;
     public Vector3 centerOfMap;
     public Transform minimapTarget;
 
+    public Transform[] design;
+
+    public SampleMap sampleMap;
+
     public void GenerateMap(int index)
     {
-        SampleMap1 sampleMap = sample[index].GetComponent<SampleMap1>();
+        sample[index].init();
+        sampleMap = sample[index];
         mapsizeH = sampleMap.mapsizeH;
         mapsizeW = sampleMap.mapsizeW;
         parfait = sampleMap.parfait;
-        
+
+        //Debug.Log("map index : " + PlayerPrefs.GetInt("level", 0) + " , " + index);
+
         map = new int[mapsizeH, mapsizeW];
+        //Debug.Log("map : " + mapsizeH + " , " + mapsizeW + "parfait? ");
         check = new bool[mapsizeH, mapsizeW];
 
-        centerOfMap = new Vector3(mapsizeW / 2,-10, mapsizeH / 2);
+        centerOfMap = new Vector3((float)(mapsizeW-1)/2, -10 , (float)(mapsizeH-1)/2);
         minimapTarget.position = centerOfMap;
+
+        design[0].position = centerOfMap + new Vector3(0, -0.5f, 0);
+        design[1].localPosition = design[1].localPosition + new Vector3(0, 0, centerOfMap.z + 8);
+        design[2].localPosition = design[2].localPosition + new Vector3(0, 0, -(centerOfMap.z + 8));
         checkparfait = false;
         for(int i = 0; i < mapsizeH; i++)
         {
             for(int j = 0; j < mapsizeW; j++)
             {
-                
+                Debug.Log(mapsizeH - 1 - i);
                 map[mapsizeH-1-i,j] = sampleMap.map[i][j];
                 
             }

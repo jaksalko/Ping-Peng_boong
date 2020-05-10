@@ -162,7 +162,7 @@ public class CameraController : MonoBehaviour
 
             now_height = Mathf.Lerp(height, 0, t / height);
 
-            transform.position = new Vector3(width / 2, 10, now_height);
+            transform.position = new Vector3((width-1) / 2, 10, now_height);
             camera_transform.position = transform.position;
             yield return new WaitForSeconds(Time.deltaTime);
         }

@@ -21,6 +21,7 @@ public class GameController : MonoBehaviour
     public static bool Running
     {
         get => instance.isRunning;
+
     }
 
     public float startTime, endTime;
@@ -35,12 +36,14 @@ public class GameController : MonoBehaviour
 
         //DontDestroyOnLoad(gameObject);
         map.GenerateMap(PlayerPrefs.GetInt("level", 0));
+        player1.SetPosition(map.sampleMap.startPositionA, map.sampleMap.startUpstairA);
+        player2.SetPosition(map.sampleMap.startPositionB, map.sampleMap.startUpstairB);
 
     }
 
     
 
-    public void GameStart()
+    public void GameStart()//called by cameracontroller.cs after mapscanning...
     {
         
         nowPlayer = player1;
@@ -61,7 +64,7 @@ public class GameController : MonoBehaviour
         ui.resultPopup.SetActive(true);
         if(isSuccess)
         {
-            PlayerPrefs.SetInt("level", PlayerPrefs.GetInt("level", 0));
+            PlayerPrefs.SetInt("level", PlayerPrefs.GetInt("level", 0) + 1);
         }
         else
         {
