@@ -632,7 +632,27 @@ public class Player : MonoBehaviour
 
 
 
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Parfait"))
+        {
+            ParfaitObject parfait = other.GetComponent<ParfaitObject>();
+            if (parfait.state == ParfaitObject.State.active)
+            {
+                if (parfait.GetParfait())//if true end game
+                {
+                    Debug.Log("end parfait mode.");
+                    targetPos = stage.parfaitEndPoint;
+                    stage.checkparfait = true;
+                }
 
+            }
+            else
+            {
+                Debug.Log("pass inactive parfait...");
+            }
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
