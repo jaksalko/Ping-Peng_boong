@@ -2,13 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
 public class UiController : MonoBehaviour
 {
     public GameObject inGame;
     public GameObject resultPopup;
     public GameObject popup;
 
+    public Text devtext;
+
     bool mini = false;
+
+    private void Awake()
+    {
+        devtext.text = "platform : " + Application.platform + "\n" + "level : " + PlayerPrefs.GetInt("level", 0);
+    }
 
     public void MiniMapButton()
     {
