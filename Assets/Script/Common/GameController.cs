@@ -24,6 +24,12 @@ public class GameController : MonoBehaviour
 
     }
 
+    private bool isPlaying;
+    public static bool Playing
+    {
+        get => instance.isPlaying;
+    }
+
     public float startTime, endTime;
 
 
@@ -41,7 +47,10 @@ public class GameController : MonoBehaviour
 
     }
 
-    
+    public void SetPlaying(bool play)
+    {
+        isPlaying = play;
+    }
 
     public void GameStart()//called by cameracontroller.cs after mapscanning...
     {
@@ -49,6 +58,7 @@ public class GameController : MonoBehaviour
         nowPlayer = player1;
         nowPlayer.isActive = true;
         isRunning = true;
+        isPlaying = true;
         startTime = Time.time;
         ui.inGame.SetActive(true);
         
@@ -58,6 +68,7 @@ public class GameController : MonoBehaviour
     {
         Debug.Log("Game End... result is " + isSuccess);
         isRunning = false;
+        isPlaying = false;
         endTime = Time.time;
         
         ui.inGame.SetActive(false);

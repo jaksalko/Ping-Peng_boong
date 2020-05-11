@@ -7,6 +7,7 @@ public class ParfaitObject : MonoBehaviour
     [SerializeField]
     Renderer renderer;
 
+    float y_rot = 0;
     public enum State
     {
         inactive,
@@ -25,12 +26,28 @@ public class ParfaitObject : MonoBehaviour
         //renderer.material.color = Color.black;
 
     }
+    private void FixedUpdate()
+    {
+        if(state == State.active)
+        {
+            y_rot = 1f;
+            
+            transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + y_rot, transform.rotation.eulerAngles.z));
+        }
+    }
 
     public void Activate()
     {
         Debug.Log("activate");
         state = State.active;
-        renderer.material.color = Color.white;// reveal real color
+        for(int i = 0; i < renderer.materials.Length; i++)
+        {
+            Color color = renderer.materials[i].color;
+            color.a = 1f;
+            renderer.materials[i].color = color;
+           
+        }
+        //renderer.material.color = Color.white;// reveal real color
 
     }
 

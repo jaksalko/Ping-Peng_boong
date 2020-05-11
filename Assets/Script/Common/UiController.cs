@@ -22,6 +22,7 @@ public class UiController : MonoBehaviour
     public void MiniMapButton()
     {
         mini = GameController.instance.cameraController.MiniMapView(mini);
+        GameController.instance.SetPlaying(!mini);
     }
 
     public void ChangeCharacter()

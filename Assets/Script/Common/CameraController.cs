@@ -234,8 +234,10 @@ public class CameraController : MonoBehaviour
     //Ui button 
     public bool MiniMapView(bool mini)
     {
-        if(mini)
+        
+        if (mini)//true 면 원래상태로 복
         {
+           
             mini = false;
             main_camera.fieldOfView = fovMinMax.x;
             cameraView = 1;

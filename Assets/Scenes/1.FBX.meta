@@ -1,31 +1,20 @@
 fileFormatVersion: 2
-guid: 44c3b9af64f3649b089a84e6d156ecaf
+guid: 972e75b00ab664d85919aebb3ffc125f
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: Bone004
-    100002: Bone005
-    100004: Bone008
-    100006: Bone009
-    100008: Bone010
-    100010: Bone011
-    100012: Bone012
-    100014: Bone013
-    100016: Character
-    100018: //RootNode
-    400000: Bone004
-    400002: Bone005
-    400004: Bone008
-    400006: Bone009
-    400008: Bone010
-    400010: Bone011
-    400012: Bone012
-    400014: Bone013
-    400016: Character
-    400018: //RootNode
+    100000: //RootNode
+    100002: Bone001
+    100004: Bone002
+    100006: Bone003
+    100008: Character
+    400000: //RootNode
+    400002: Bone001
+    400004: Bone002
+    400006: Bone003
+    400008: Character
     2100000: 04 - Default
     4300000: Character
-    7400000: Take 001
     9500000: //RootNode
     13700000: Character
   externalObjects: {}
@@ -55,35 +44,7 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations:
-    - serializedVersion: 16
-      name: Take 001
-      takeName: Take 001
-      firstFrame: 0
-      lastFrame: 100
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+    clipAnimations: []
     isReadable: 1
   meshes:
     lODScreenPercentages: []

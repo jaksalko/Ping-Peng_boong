@@ -24,7 +24,7 @@ public class TouchMove : MonoBehaviour
     
     private void FixedUpdate()
     {
-        if(GameController.Running)
+        if(GameController.Playing)
         {
             if (Application.platform == RuntimePlatform.OSXEditor || Application.platform == RuntimePlatform.WindowsEditor)
             {
