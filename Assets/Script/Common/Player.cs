@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
 
     //int count = 0;
     [SerializeField]
-    bool isMoving = false;
+    public bool isMoving = false;
 
     [SerializeField]
     bool upstair = false;//if player located in second floor --> true
@@ -31,8 +31,8 @@ public class Player : MonoBehaviour
 	public GameObject crashParticle;
 
 
-
-
+    public Animator animator;
+    public GameObject nose;
     CharacterController cc;
     Vector3 dir;
 
@@ -62,6 +62,9 @@ public class Player : MonoBehaviour
     int getDirection = -1;
 
     // Start is called before the first frame update
+    //public Animator animator;
+
+
     void Start()
     {
         state = State.Idle;
@@ -190,6 +193,20 @@ public class Player : MonoBehaviour
         
 
     }
+    private void LateUpdate()
+    {
+        if (isMoving)
+        {
+            animator.SetBool("move", true);
+            nose.SetActive(true);
+        }
+        else
+        {
+            animator.SetBool("move", false);
+            nose.SetActive(false);
+            animator.SetInteger("action", 0);
+        }
+    }
 
     bool CheckStageClear(bool parfait)
     {
@@ -297,8 +314,8 @@ public class Player : MonoBehaviour
 
         int next = map[posZ + step[direction, 0], posX + step[direction, 1]];
 
-		float y1 = -9f;
-        float y2 = -8f;
+		float y1 = -9.5f;//animation character modification.. 5/13
+        float y2 = -8.5f;//
 
         int checkSlopeNumber = 0;
         int downSlopeNumer = 0;
@@ -574,7 +591,7 @@ public class Player : MonoBehaviour
     void Up_2()
     {
         //Debug.Log(" up move!");
-        transform.rotation = Quaternion.Euler(new Vector3(-90f, 0f, 0f));
+        transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 0f));
         dir = Vector3.forward;
 
         CheckMove(0);
@@ -586,7 +603,7 @@ public class Player : MonoBehaviour
     void Right_2()
     {
         //Debug.Log(" right move!");
-        transform.rotation = Quaternion.Euler(new Vector3(-90f, 90f, 0f));
+        transform.rotation = Quaternion.Euler(new Vector3(0f, 90f, 0f));
         dir = Vector3.right;
 
         CheckMove(1);
@@ -598,7 +615,7 @@ public class Player : MonoBehaviour
     void Down_2()
     {
         //Debug.Log(" down move!");
-        transform.rotation = Quaternion.Euler(new Vector3(-90f, 180f, 0f));
+        transform.rotation = Quaternion.Euler(new Vector3(0f, 180f, 0f));
         dir = Vector3.back;
 
         CheckMove(2);
@@ -610,7 +627,7 @@ public class Player : MonoBehaviour
     void Left_2()
     {
         //Debug.Log(" left move!");
-        transform.rotation = Quaternion.Euler(new Vector3(-90f, 270f, 0f));
+        transform.rotation = Quaternion.Euler(new Vector3(0f, 270f, 0f));
         dir = Vector3.left;
 
 

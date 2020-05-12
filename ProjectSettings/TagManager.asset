@@ -8,6 +8,8 @@ TagManager:
   - Parfait
   - Ground
   - Leg
+  - Floor
+  - Obstacle
   layers:
   - Default
   - TransparentFX

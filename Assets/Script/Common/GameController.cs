@@ -42,8 +42,8 @@ public class GameController : MonoBehaviour
 
         //DontDestroyOnLoad(gameObject);
         map.GenerateMap(PlayerPrefs.GetInt("level", 0));
-        player1.SetPosition(map.sampleMap.startPositionA, map.sampleMap.startUpstairA);
-        player2.SetPosition(map.sampleMap.startPositionB, map.sampleMap.startUpstairB);
+        player1.SetPosition(map.sampleMap.startPositionA + new Vector3(0,-0.5f,0), map.sampleMap.startUpstairA); //position correction fix .. 5/13
+        player2.SetPosition(map.sampleMap.startPositionB + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairB);
 
     }
 
