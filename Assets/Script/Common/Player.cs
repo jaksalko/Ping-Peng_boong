@@ -28,8 +28,9 @@ public class Player : MonoBehaviour
     bool upstair = false;//if player located in second floor --> true
 
     public ParticleSystem moveParticle;
-	public GameObject crashParticle;
-
+	public ParticleSystem crashParticle;
+	public GameObject bumpParticle;
+	bool isPlayingParticle = false;
 
     public Animator animator;
     public GameObject nose;
@@ -199,13 +200,37 @@ public class Player : MonoBehaviour
         if (isMoving)
         {
             animator.SetBool("move", true);
-            // nose.SetActive(true);
-        }
+			isPlayingParticle = false;
+			// nose.SetActive(true);
+		}
         else
         {
-			
 			animator.SetBool("move", false);
 			animator.SetInteger("action", actionnum);
+			//이동 시 발생하는 particle control
+			switch(actionnum)
+			{
+				case 3:
+					if (!isPlayingParticle)
+					{
+						Debug.Log("play crash particle");
+						crashParticle.Play();
+						isPlayingParticle = true;
+					}
+					break;
+				case 4:
+					if (!isPlayingParticle)
+					{
+						Debug.Log("play bump particle");
+						bumpParticle.SetActive(true);
+						Invoke("BumpParticleControl", 4.5f);
+						//bumpParticle.Play();
+						isPlayingParticle = true;
+					}
+					break;
+				default:
+					break;
+			}
 			// nose.SetActive(false);
 		}
     }
@@ -714,16 +739,8 @@ public class Player : MonoBehaviour
         }
     }
 
-
-	private IEnumerator CrashEffect()
+	private void BumpParticleControl()
 	{
-		Debug.Log("Crash");
-		crashParticle.SetActive(true);
-		yield return new WaitForSeconds(1f);
-		crashParticle.SetActive(false);
+		bumpParticle.SetActive(false);
 	}
-   
-
-
-
 }
