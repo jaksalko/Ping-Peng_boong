@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
 
     public Animator animator;
     public GameObject nose;
+	int actionnum;
     CharacterController cc;
     Vector3 dir;
 
@@ -198,14 +199,15 @@ public class Player : MonoBehaviour
         if (isMoving)
         {
             animator.SetBool("move", true);
-            nose.SetActive(true);
+            // nose.SetActive(true);
         }
         else
         {
-            animator.SetBool("move", false);
-            nose.SetActive(false);
-            animator.SetInteger("action", 0);
-        }
+			
+			animator.SetBool("move", false);
+			animator.SetInteger("action", actionnum);
+			// nose.SetActive(false);
+		}
     }
 
     bool CheckStageClear(bool parfait)
@@ -384,7 +386,8 @@ public class Player : MonoBehaviour
 
                         targetPos = new Vector3(posX, y1, posZ);
 
-                        isMoving = true;
+						actionnum = 1;  // slop 올라가려는데 다른 캐릭터 있으면 stop
+						isMoving = true;
 
 
 
@@ -439,9 +442,14 @@ public class Player : MonoBehaviour
 
 
                 Debug.Log("set pos");
+
                 targetPos = new Vector3(posX, y1, posZ);
-                //SetPlayerMarker();
-                isMoving = true;
+				//SetPlayerMarker();
+				if (next == 5)
+					actionnum = 4;  // 다른 플레이어랑 부딪혀 bump (1층에서)
+				else
+					actionnum = 3;  // 벽이랑 부딪혀 crash (1층에서)
+				isMoving = true;
             }
 
 
@@ -491,6 +499,7 @@ public class Player : MonoBehaviour
 
                         targetPos = new Vector3(posX, y2, posZ);
 
+						actionnum = 1;	// slop 내려가는데 다른 캐릭터 있으면 stop
                         isMoving = true;
 
                         
@@ -510,8 +519,10 @@ public class Player : MonoBehaviour
                     Debug.Log("drop");
                     upstair = false;
                     targetPos = new Vector3(posX, y1, posZ);
-                    
-                    isMoving = true;
+
+					Debug.Log("drop animation 없음");
+					actionnum = 0;	// 2층에서 1층으로 떨어지면 drop animation 추가 필요
+					isMoving = true;
 
                     //Debug.Log("target position in drop : " + targetPos);
 
@@ -526,7 +537,8 @@ public class Player : MonoBehaviour
                     Debug.Log("third floor drop... mean slave drop in second floor");
                     targetPos = new Vector3(posX, y2, posZ);
 
-                    isMoving = true;
+					actionnum = 0;
+					isMoving = true;
 
                     third_drop = false;
 
@@ -538,9 +550,10 @@ public class Player : MonoBehaviour
                 {
 
                     targetPos = new Vector3(posX, y2, posZ);
-                    
-                    isMoving = true;
-                    //Debug.Log("target position in other player : " + targetPos);
+
+					actionnum = 2;	// 다른 캐릭터에게 업힐 때 ride
+					isMoving = true;
+					//Debug.Log("target position in other player : " + targetPos);
                     return;//end method...
                 }
 
@@ -572,12 +585,20 @@ public class Player : MonoBehaviour
             else
             {
                 if(!third_drop)
-                    targetPos = new Vector3(posX, y2, posZ);
+				{
+					targetPos = new Vector3(posX, y2, posZ);
+					if (next == 5)
+						actionnum = 4;  // 다른 플레이어랑 부딪혀 bump (2층에서)
+					else
+						actionnum = 3;  // 벽이랑 부딪혀 crash (2층에서)
+				}
+                    
                 else
                 {
                     third_drop = false;
                     targetPos = new Vector3(posX, y2+1, posZ);
-                }
+					actionnum = 0;
+				}
                 
                 isMoving = true;
                
