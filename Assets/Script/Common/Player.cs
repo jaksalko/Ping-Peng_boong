@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
 
     public Animator animator;
     public GameObject nose;
-	int actionnum;
+	public int actionnum;
     CharacterController cc;
     Vector3 dir;
 
@@ -66,6 +66,14 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     //public Animator animator;
 
+    private CheckAnimationState stateMachine;
+    void AnimationEnd()
+    {
+        Debug.Log("Animation End...");
+        animator.SetInteger("action", 0);
+        actionnum = 0;
+        
+    }
 
     void Start()
     {
@@ -86,7 +94,9 @@ public class Player : MonoBehaviour
 
 
         FindObjectOfType<TouchMove>().Move += PlayerControl;
-
+        stateMachine = animator.GetBehaviour<CheckAnimationState>();
+        stateMachine.player = this;
+        stateMachine.ActionEnd += AnimationEnd;
         FindPlayer();
     }
 
@@ -105,7 +115,7 @@ public class Player : MonoBehaviour
         posZ = (int)transform.position.z;
         map[posZ, posX] = 5;
         check[posZ, posX] = true;
-        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);
+//        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);
     }
 
 
@@ -141,6 +151,7 @@ public class Player : MonoBehaviour
             if (distance < 0.25f)
             {
                 SetPlayerMarker();
+                animator.SetBool("move", false);
                 //Debug.Log("Arrive... target position : " + targetPos + "  distance : " + distance);
                 isMoving = false;
 
@@ -259,14 +270,14 @@ public class Player : MonoBehaviour
 
     }
 
-    bool stone = false;//call playercontrol once...
+   
 
     void PlayerControl(int direction)//direction 1 : u 2: r 3 : d 4 : l
     {
         
-        if (!isMoving && isActive && !stone)
+        if (isActive && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
-            stone = true;
+            
             getDirection = direction;
 
             if(state == State.Slave)
@@ -641,7 +652,7 @@ public class Player : MonoBehaviour
         dir = Vector3.forward;
 
         CheckMove(0);
-        stone = false;
+        //stone = false;
         
         //Debug.Log("target position in Up Method : " + targetPos);
     }
@@ -653,7 +664,7 @@ public class Player : MonoBehaviour
         dir = Vector3.right;
 
         CheckMove(1);
-        stone = false;
+        //stone = false;
         //Debug.Log("target position in Right Method : " + targetPos);
     }
 
@@ -665,7 +676,7 @@ public class Player : MonoBehaviour
         dir = Vector3.back;
 
         CheckMove(2);
-        stone = false;
+        //stone = false;
         Debug.Log("target position in Down Method : " + targetPos);
     }
 
@@ -678,7 +689,7 @@ public class Player : MonoBehaviour
 
 
         CheckMove(3);
-        stone = false;
+        //stone = false;
         Debug.Log("target position in Left Method : " + targetPos);
     }
 

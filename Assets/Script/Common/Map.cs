@@ -55,7 +55,7 @@ public class Map : MonoBehaviour
         {
             for(int j = 0; j < mapsizeW; j++)
             {
-                Debug.Log(mapsizeH - 1 - i);
+//                Debug.Log(mapsizeH - 1 - i);
                 map[mapsizeH-1-i,j] = sampleMap.map[i][j];
                 
             }
@@ -172,7 +172,7 @@ public class Map : MonoBehaviour
                     parfaitBlock[3].gameObject.SetActive(true);
                     parfaitBlock[3].gameObject.transform.position = new Vector3(j, -9, i);
                     parfaitBlock[3].sequence = 3;
-                    parfaitEndPoint = parfaitBlock[3].transform.position;
+                    parfaitEndPoint = parfaitBlock[3].transform.position + new Vector3(0,-0.5f,0);
                     
                     
                 }
@@ -221,7 +221,7 @@ public class Map : MonoBehaviour
                     parfaitBlock[3].gameObject.SetActive(true);
                     parfaitBlock[3].gameObject.transform.position = new Vector3(j, -8, i);
                     parfaitBlock[3].sequence = 3;
-                    parfaitEndPoint = parfaitBlock[3].transform.position;
+                    parfaitEndPoint = parfaitBlock[3].transform.position + new Vector3(0, -0.5f, 0);
                 }
 
 
