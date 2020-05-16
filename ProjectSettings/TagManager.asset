@@ -10,6 +10,7 @@ TagManager:
   - Leg
   - Floor
   - Obstacle
+  - BaseCanvas
   layers:
   - Default
   - TransparentFX
