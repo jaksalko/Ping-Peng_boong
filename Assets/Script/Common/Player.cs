@@ -557,7 +557,7 @@ public class Player : MonoBehaviour
                     targetPos = new Vector3(posX, y1, posZ);
 
 					Debug.Log("drop animation 없음");
-					actionnum = 0;	// 2층에서 1층으로 떨어지면 drop animation 추가 필요
+					actionnum = 5;	// 2층에서 1층으로 떨어지면 drop animation 추가 필요
 					isMoving = true;
 
                     //Debug.Log("target position in drop : " + targetPos);
@@ -573,7 +573,7 @@ public class Player : MonoBehaviour
                     Debug.Log("third floor drop... mean slave drop in second floor");
                     targetPos = new Vector3(posX, y2, posZ);
 
-					actionnum = 0;
+					actionnum = 5;
 					isMoving = true;
 
                     third_drop = false;
@@ -631,6 +631,7 @@ public class Player : MonoBehaviour
                     
                 else
                 {
+                    Debug.Log("??????");
                     third_drop = false;
                     targetPos = new Vector3(posX, y2+1, posZ);
 					actionnum = 0;
