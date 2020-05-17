@@ -212,12 +212,22 @@ public class Player : MonoBehaviour
         {
             animator.SetBool("move", true);
 			isPlayingParticle = false;
-			// nose.SetActive(true);
-		}
+            if (actionnum == 5)
+            {
+                float distance = Vector3.Distance(transform.position, targetPos + new Vector3(0, 1, 0));
+                if (distance < 1f)
+                {
+                    animator.SetInteger("action", actionnum);
+                }
+            }
+            // nose.SetActive(true);
+        }
         else
         {
 			animator.SetBool("move", false);
-			animator.SetInteger("action", actionnum);
+            if(actionnum !=5)
+			    animator.SetInteger("action", actionnum);
+            
 			//이동 시 발생하는 particle control
 			switch(actionnum)
 			{
