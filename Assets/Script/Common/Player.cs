@@ -235,7 +235,7 @@ public class Player : MonoBehaviour
 					if (!isPlayingParticle)
 					{
 						Debug.Log("play crash particle");
-						crashParticle.Play();
+						// crashParticle.Play();
 						isPlayingParticle = true;
 					}
 					break;
