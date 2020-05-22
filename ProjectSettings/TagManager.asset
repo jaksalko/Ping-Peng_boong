@@ -11,6 +11,7 @@ TagManager:
   - Floor
   - Obstacle
   - BaseCanvas
+  - BackgroundSound
   layers:
   - Default
   - TransparentFX

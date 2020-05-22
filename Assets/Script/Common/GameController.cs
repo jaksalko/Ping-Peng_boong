@@ -15,9 +15,9 @@ public class GameController : MonoBehaviour
 
     public Player nowPlayer;
 
-   
 
-    private bool isRunning;
+
+	private bool isRunning;
     public static bool Running
     {
         get => instance.isRunning;
@@ -32,8 +32,11 @@ public class GameController : MonoBehaviour
 
     public float startTime, endTime;
 
+	[SerializeField]
+	GameObject backgroundSound;
+	SoundManager soundManagerScript;
 
-    private void Awake()
+	private void Awake()
     {
         if (instance == null)
             instance = this;
@@ -47,7 +50,13 @@ public class GameController : MonoBehaviour
 
     }
 
-    public void SetPlaying(bool play)
+	private void Start()
+	{
+		backgroundSound = GameObject.FindWithTag("BackgroundSound");
+		soundManagerScript = backgroundSound.GetComponent<SoundManager>();
+	}
+
+	public void SetPlaying(bool play)
     {
         isPlaying = play;
     }
@@ -73,7 +82,12 @@ public class GameController : MonoBehaviour
         
         ui.inGame.SetActive(false);
         ui.resultPopup.SetActive(true);
-        if(isSuccess)
+		if(backgroundSound != null)
+		{
+			soundManagerScript.GameResultPopup();
+		}		
+
+		if (isSuccess)
         {
             int level = PlayerPrefs.GetInt("level", 0);
             int nextlevel;

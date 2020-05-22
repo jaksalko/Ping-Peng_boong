@@ -9,38 +9,68 @@ public class SoundManager : MonoBehaviour
 {
 	public AudioClip mainBGSound;
 	public AudioClip gameBGSound;
-
-	public int[] mainSoundScene;
-	public int[] gameSoundScene;
+	public AudioClip popupSound;
 
 	public Slider bgmVolumnSlider;
 
 	AudioSource audioSource;
-	int swtichScene = -1;
+	bool gameSceneOn = false;
 
-    // Start is called before the first frame update
-    void Start()
+	// Start is called before the first frame update
+	void Start()
     {
 		audioSource = gameObject.GetComponent<AudioSource>();
+
+		audioSource.clip = mainBGSound;
+		audioSource.Play();
 	}
 
     // Update is called once per frame
     void Update()
     {
-		int index = SceneManager.GetActiveScene().buildIndex;
-		if (mainSoundScene.Contains(index) && swtichScene == -1)
+		audioSource.volume = bgmVolumnSlider.value;
+	}
+
+	void OnEnable()
+	{
+		SceneManager.sceneLoaded += OnSceneLoaded;
+	}
+
+	void OnDisable()
+	{
+		SceneManager.sceneLoaded -= OnSceneLoaded;
+	}
+
+	void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+	{
+		if (scene.name == "GameScene")
 		{
-			audioSource.clip = mainBGSound;
-			audioSource.Play();
-			swtichScene = 0;
-		}
-		else if(gameSoundScene.Contains(index) && swtichScene == 0)
-		{
+			gameSceneOn = true;
+
+			audioSource.loop = true;
 			audioSource.clip = gameBGSound;
-			audioSource.Play();
-			swtichScene = -1;
+
+			audioSource.Play();			
 		}
 
-		audioSource.volume = bgmVolumnSlider.value;
+		if (scene.name == "MainScene" && gameSceneOn)
+		{
+			gameSceneOn = false;
+
+			audioSource.loop = true;
+			audioSource.clip = mainBGSound;
+
+			audioSource.Play();			
+		}
+	}
+
+	public void GameResultPopup()
+	{
+		audioSource.Stop();
+
+		audioSource.loop = false;
+		audioSource.clip = popupSound;
+
+		audioSource.Play();
 	}
 }
