@@ -25,7 +25,7 @@ public class UiController : MonoBehaviour
         GameController.instance.SetPlaying(!mini);
     }
 
-    public void ChangeCharacter()
+    /*public void ChangeCharacter()
     {
         Player now = GameController.instance.nowPlayer;
 
@@ -52,7 +52,7 @@ public class UiController : MonoBehaviour
 			Debug.Log("Can't change!");
 		}
         
-    }
+    }*/
 
     public void NextLevel()
     {

@@ -7,28 +7,21 @@ public class GameController : MonoBehaviour
     public static GameController instance;
 
     public CameraController cameraController;
-    
+    public PlayerController playerController;
     public UiController ui;
+    public Map map;
+
     public Player player1;
     public Player player2;
-    public Map map;
+    
 
     public Player nowPlayer;
 
 
 
-	private bool isRunning;
-    public static bool Running
-    {
-        get => instance.isRunning;
+	private bool isRunning; public static bool Running{ get => instance.isRunning;}
 
-    }
-
-    private bool isPlaying;
-    public static bool Playing
-    {
-        get => instance.isPlaying;
-    }
+    private bool isPlaying; public static bool Playing{ get => instance.isPlaying;}
 
     public float startTime, endTime;
 
@@ -38,21 +31,27 @@ public class GameController : MonoBehaviour
 
 	private void Awake()
     {
+        Application.targetFrameRate = 60;
+
+
         if (instance == null)
             instance = this;
         else
             Destroy(gameObject);
 
-        //DontDestroyOnLoad(gameObject);
+        
         map.GenerateMap(PlayerPrefs.GetInt("level", 0));
-        player1.SetPosition(map.sampleMap.startPositionA + new Vector3(0,-0.5f,0), map.sampleMap.startUpstairA); //position correction fix .. 5/13
-        player2.SetPosition(map.sampleMap.startPositionB + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairB);
+        playerController.Map = map.sampleMap;
+
+        //player1.SetPosition(map.sampleMap.startPositionA + new Vector3(0,-0.5f,0), map.sampleMap.startUpstairA); //position correction fix .. 5/13
+        //player2.SetPosition(map.sampleMap.startPositionB + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairB);
 
     }
 
 	private void Start()
 	{
 		backgroundSound = GameObject.FindWithTag("BackgroundSound");
+        if(soundManagerScript != null)
 		soundManagerScript = backgroundSound.GetComponent<SoundManager>();
 	}
 
@@ -64,8 +63,8 @@ public class GameController : MonoBehaviour
     public void GameStart()//called by cameracontroller.cs after mapscanning...
     {
         
-        nowPlayer = player1;
-        nowPlayer.isActive = true;
+        //nowPlayer = player1;
+        //nowPlayer.isActive = true;
         isRunning = true;
         isPlaying = true;
         startTime = Time.time;

@@ -1,45 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using System;
+
+
 
 public class Player : MonoBehaviour
 {
+    public delegate void TryMove();
+    public delegate void SetPosition(Player player , Vector3 vector);
 
-    public float speed;
-    //public Text moveCountText;
+    public static event TryMove tryMove;
+    public static event SetPosition setPosition;
 
-
-
-    Map stage;
-
-    int mapsizeH;
-    int mapsizeW;
-    int[,] map;
-    bool[,] check;
-    int posZ;     // vertical
-    int posX;     // horizental
-
-    //int count = 0;
-    [SerializeField]
-    public bool isMoving = false;
-
-    [SerializeField]
-    bool upstair = false;//if player located in second floor --> true
-
-    public ParticleSystem moveParticle;
-	public ParticleSystem crashParticle;
-	public GameObject bumpParticle;
-	bool isPlayingParticle = false;
-
-    public Animator animator;
-    public GameObject nose;
-	public int actionnum;
-    CharacterController cc;
-    Vector3 dir;
-
-    [SerializeField]
-    Player other;
+    public delegate void CollisionEvent();
+    public static event CollisionEvent collisionEvent;
 
     public enum State
     {
@@ -47,79 +22,125 @@ public class Player : MonoBehaviour
         Master,//in interaction and state is master
         Slave//in interaction and state is slave...
     }
-    [SerializeField]
-    State state;
-    [SerializeField]
-    bool stateChange;
-    [SerializeField]
-    bool third_drop;
-    public bool Moving()
+
+    [Serializable]
+    public class PlayerPosition
     {
-        return isMoving;
+        Player player;
+
+        [SerializeField]
+        Vector3 currentPosition;// must be integer
+        public Vector3 CurrentPosition
+        {
+            get { return currentPosition; }
+            set
+            {
+                
+                if(currentPosition != value)
+                {
+                    Debug.Log("invoke setposition");
+                    currentPosition = value;
+                    setPosition?.Invoke(player , currentPosition);
+                }
+            }
+        }
+        [SerializeField]
+        Vector3 targetPosition;//must be integer
+        public Vector3 TargetPosition
+        {
+            get { return targetPosition; }
+            set
+            {
+                targetPosition = value;
+                if(targetPosition != currentPosition)
+                {
+                    tryMove?.Invoke();
+                }
+            }
+        }
+
+        public PlayerPosition(Player player , Vector3 current)
+        {
+            this.player = player;
+            currentPosition = current;
+            setPosition?.Invoke(player, currentPosition);
+        }
     }
-    [SerializeField]
-    public bool isActive = false;
-    Vector3 targetPos;
-
-    int getDirection = -1;
-
-    // Start is called before the first frame update
-    //public Animator animator;
-
-    private CheckAnimationState stateMachine;
-    void AnimationEnd()
+    [Serializable]
+    public class PlayerState
     {
-        Debug.Log("Animation End...");
-        animator.SetInteger("action", 0);
-        actionnum = 0;
         
-    }
 
-    void Start()
-    {
-        state = State.Idle;
-        stateChange = false;
-        third_drop = false;
-
-        isMoving = false;
+        [SerializeField]
+        State state; public State State { get { return state; } set { state = value; } }
+        [SerializeField]
+        int floor; public int Floor { get { return floor; } set { floor = value; } }
+        [SerializeField]
+        bool isActive; public bool IsActive { get { return isActive; } set { isActive = value; } }
         
-        //isActive = false;
 
-        cc = GetComponent<CharacterController>();
-        stage = GameController.instance.map;
-        mapsizeH = stage.mapsizeH;
-        mapsizeW = stage.mapsizeW;
-        map = stage.map;
-        check = stage.check;
+        public PlayerState(State st, int fl, bool act)
+        {
+            state = st;
+            floor = fl;
+            isActive = act;
+            
+        }
 
-
-        FindObjectOfType<TouchMove>().Move += PlayerControl;
-        stateMachine = animator.GetBehaviour<CheckAnimationState>();
-        stateMachine.player = this;
-        stateMachine.ActionEnd += AnimationEnd;
-        FindPlayer();
     }
-
+    [SerializeField]
+    PlayerState state_;
+    public PlayerState playerState
+    {
+        get { return state_; }
+        set { state_ = value; }
+    }
     
-    public void SetPosition(Vector3 startpos , bool upstair)
-    {
-        transform.position = startpos;
-        this.upstair = upstair;
-    }
 
-    public void FindPlayer()
+    [SerializeField]
+    PlayerPosition position_;
+    public PlayerPosition playerPosition
     {
-        
-
-        posX = (int)transform.position.x;
-        posZ = (int)transform.position.z;
-        map[posZ, posX] = 5;
-        check[posZ, posX] = true;
-//        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);
+        get { return position_; }
+        set { position_ = value; }
     }
 
 
-    // Update is called once per frame
+    float speed; public float Speed { get { return speed; } set { speed = value; } }
+    public CharacterController cc;
+
+
+
+    public ParticleSystem crashParticle;
+	public GameObject bumpParticle;
+	bool isPlayingParticle = false;
+
+    public Animator animator;
+   
+	public int actionnum;
+    
+
+    [SerializeField]
+    Player other;
+
+
+
+
+
+
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.CompareTag("Obstacle"))
+        {
+            Debug.Log("collision");
+            collisionEvent?.Invoke();
+        }
+    }
+
+
+
+    /*
     void FixedUpdate()
     {
         if (!GameController.Running)
@@ -285,7 +306,7 @@ public class Player : MonoBehaviour
     void PlayerControl(int direction)//direction 1 : u 2: r 3 : d 4 : l
     {
         
-        if (isActive && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        if (isActive && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") && !isMoving)
         {
             
             getDirection = direction;
@@ -765,4 +786,5 @@ public class Player : MonoBehaviour
 	{
 		bumpParticle.SetActive(false);
 	}
+    */
 }

@@ -14,7 +14,7 @@ public class PlayerAnimator : MonoBehaviour
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    /*void LateUpdate()
     {
         if(player.isMoving)
         {
@@ -24,5 +24,5 @@ public class PlayerAnimator : MonoBehaviour
         {
             animator.SetBool("move", false);
         }
-    }
+    }*/
 }
