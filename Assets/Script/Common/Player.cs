@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UniRx;
+using UniRx.Triggers;
+using System;
 
 public class Player : MonoBehaviour
 {
@@ -66,6 +69,14 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     //public Animator animator;
 
+
+    [SerializeField]
+    Vector2 down;
+    [SerializeField]
+    Vector2 up;
+    [SerializeField]
+    bool click;
+
     private CheckAnimationState stateMachine;
     void AnimationEnd()
     {
@@ -93,14 +104,89 @@ public class Player : MonoBehaviour
         check = stage.check;
 
 
-        FindObjectOfType<TouchMove>().Move += PlayerControl;
+        //FindObjectOfType<TouchMove>().Move += PlayerControl;
         stateMachine = animator.GetBehaviour<CheckAnimationState>();
         stateMachine.player = this;
         stateMachine.ActionEnd += AnimationEnd;
         FindPlayer();
+
+
+        
+
+
+        //Reactive stream
+#if UNITY_EDITOR
+        var mouseDownStream = this.UpdateAsObservable()
+            .Where(_ => !click)
+            .Where(_ => Input.GetMouseButtonDown(0))
+            .Select(_ => Input.mousePosition)
+            .Subscribe(_ => { down = _; click = true; });
+
+        var mouseUpStream = this.UpdateAsObservable()
+            .Where(_ => click)
+            .Where(_ => Input.GetMouseButtonUp(0))
+            .Select(_ => Input.mousePosition)
+            .Subscribe(_ => { up = _; PlayerMove(); click = false; });
+
+#else
+        var touchDownStream = this.UpdateAsObservable()
+            .Where(_ => !click)
+            .Where(_ => Input.touchCount > 0)
+            .Where(_ => Input.GetTouch(0).phase == TouchPhase.Began)
+            .Select(_ => Input.GetTouch(0))
+            .Subscribe(_ => { down = _.position; click = true; } );
+
+        var touchUpStream = this.UpdateAsObservable()
+            .Where(_ => click)
+            .Where(_ => Input.touchCount > 0)
+            .Where(_ => Input.GetTouch(0).phase == TouchPhase.Ended)
+            .Select(_ => Input.mousePosition)
+            .Subscribe(_ => { up = _; PlayerMove(); click = false; });
+#endif
+
+    }
+  
+   
+    void PlayerMove()
+    {
+        Debug.Log("distance : " + Vector2.Distance(up, down));
+        if(Vector2.Distance(up, down) < 1)
+        {
+            return;
+        }
+        Vector2 normalized = (up - down).normalized;
+        
+
+        if (normalized.x < -0.5)
+        {
+            //left
+            PlayerControl(4);
+        }
+        else if (normalized.x > 0.5)
+        {
+            //right
+            PlayerControl(2);
+        }
+        else
+        {
+            if (normalized.y > 0)
+            {
+                //up
+                PlayerControl(1);
+
+            }
+            else
+            {
+                //down
+                PlayerControl(3);
+            }
+
+        }
+
+
+        
     }
 
-    
     public void SetPosition(Vector3 startpos , bool upstair)
     {
         transform.position = startpos;

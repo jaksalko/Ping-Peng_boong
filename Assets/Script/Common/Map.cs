@@ -12,7 +12,13 @@ public class Map : MonoBehaviour
     public bool[,] check;
     public bool checkparfait;
     public GameObject groundBlock;
+    public GameObject groundBlock_sky;
+    public GameObject ground_half_sky;
+    public GameObject ground_half;
     public GameObject obstacleBlock;
+
+    public GameObject secondfloor_block;
+
     public ParfaitObject[] parfaitBlock;
     public GameObject slope;
     
@@ -72,19 +78,85 @@ public class Map : MonoBehaviour
 
     void MakeGround()
     {
-        for (int i = 0; i < mapsizeH; i++)
+        for(int i = 0; i < mapsizeW; i++)
         {
-            for (int j = 0; j < mapsizeW; j++)
+            GameObject ground;
+            GameObject half_ground;
+            if (i == 0 || i == (mapsizeW-1))
+            {
+                for(int j = 0; j < mapsizeH; j++)
+                {
+                    if ((i + j) % 2 == 0)
+                    {
+                        ground = Instantiate(groundBlock_sky, new Vector3(i, -10, j), Quaternion.identity) as GameObject;
+                        half_ground = Instantiate(ground_half_sky, new Vector3(i, -9.25f, j), Quaternion.identity) as GameObject;
+                    }
+                    else
+                    {
+                        ground = Instantiate(groundBlock, new Vector3(i, -10, j), Quaternion.identity) as GameObject;
+                        half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), Quaternion.identity) as GameObject;
+                    }
+                    check[j,i] = true;
+                    ground.transform.parent = groundParent;
+                    half_ground.transform.parent = groundParent;
+                }
+            }
+            else
+            {
+                int j = 0;
+                check[j, i] = true;
+                if ((i + j) % 2 == 0)
+                {
+                    ground = Instantiate(groundBlock_sky, new Vector3(i, -10, j), Quaternion.identity) as GameObject;
+                    half_ground = Instantiate(ground_half_sky, new Vector3(i, -9.25f, j), Quaternion.identity) as GameObject;
+                }
+                else
+                {
+                    ground = Instantiate(groundBlock, new Vector3(i, -10, j), Quaternion.identity) as GameObject;
+                    half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), Quaternion.identity) as GameObject;
+                }
+                ground.transform.parent = groundParent;
+                half_ground.transform.parent = groundParent;
+                j = mapsizeH-1;
+                check[j, i] = true;
+                if ((i + j) % 2 == 0)
+                {
+                    ground = Instantiate(groundBlock_sky, new Vector3(i, -10, j), Quaternion.identity) as GameObject;
+                    half_ground = Instantiate(ground_half_sky, new Vector3(i, -9.25f, j), Quaternion.identity) as GameObject;
+                }
+                else
+                {
+                    ground = Instantiate(groundBlock, new Vector3(i, -10, j), Quaternion.identity) as GameObject;
+                    half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), Quaternion.identity) as GameObject;
+                }
+                ground.transform.parent = groundParent;
+                half_ground.transform.parent = groundParent;
+            }
+        }
+
+
+        for (int i = 1; i < mapsizeH-1; i++)
+        {
+            for (int j = 1; j < mapsizeW-1; j++)
             {
                 //instantiate ground object at all of area . parent is spawnGround object
-                GameObject ground = Instantiate(groundBlock, new Vector3(j, -10,i), Quaternion.identity) as GameObject;
+                GameObject ground;
+                if ((i+j)%2 == 0)
+                {
+                    ground = Instantiate(groundBlock_sky, new Vector3(j, -10, i), Quaternion.identity) as GameObject;
+                }
+                else
+                {
+                    ground = Instantiate(groundBlock, new Vector3(j, -10, i), Quaternion.identity) as GameObject;
+                }
+                
                 ground.transform.parent = groundParent;
 
                 if (map[i, j] == 1)
                 {
                     //generate obstacle
                     check[i, j] = true;
-                    GameObject obstacle = Instantiate(obstacleBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
+                    GameObject obstacle = Instantiate(obstacleBlock, new Vector3(j, -8.7f, i), obstacleBlock.transform.rotation) as GameObject;
                     obstacle.transform.parent = obstacleParent;
 
                 }
@@ -92,7 +164,7 @@ public class Map : MonoBehaviour
                 {
                     //generate second floor
                     
-                    GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
+                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
                     second_ground.transform.parent = groundParent;
                 }
                 else if(map[i,j] == 3)//second floor obstacle
@@ -101,7 +173,7 @@ public class Map : MonoBehaviour
                     second_ground.transform.parent = groundParent;
 
                     check[i, j] = true;
-                    GameObject obstacle = Instantiate(obstacleBlock, new Vector3(j, -8, i), Quaternion.identity) as GameObject;
+                    GameObject obstacle = Instantiate(obstacleBlock, new Vector3(j, -7.7f, i), obstacleBlock.transform.rotation) as GameObject;
                     obstacle.transform.parent = obstacleParent;
                 }
                 else if(map[i,j] == 21)
