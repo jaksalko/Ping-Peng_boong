@@ -36,7 +36,7 @@ public class Player : MonoBehaviour
 	bool isPlayingParticle = false;
 
     public Animator animator;
-    public GameObject nose;
+    
 	public int actionnum;
     CharacterController cc;
     Vector3 dir;

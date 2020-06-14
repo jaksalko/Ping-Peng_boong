@@ -12,6 +12,7 @@ TagManager:
   - Obstacle
   - BaseCanvas
   - BackgroundSound
+  - Indexer
   layers:
   - Default
   - TransparentFX
