@@ -12,7 +12,7 @@ public class SampleMap1 : SampleMap
 		mapsizeH = 17;
 		mapsizeW = 12;
 		parfait = false;
-		map = new int[][] {
+		/*map = new int[][] {
 		new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 		new int[] { 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1 },
 		new int[] { 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1 },
@@ -31,7 +31,7 @@ public class SampleMap1 : SampleMap
 		new int[] { 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1 },
 		new int[] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }
 		};
-
+        */
 		startPositionA = new Vector3(1, -9, 1);
 		startPositionB = new Vector3(1, -9, 2);
 	}

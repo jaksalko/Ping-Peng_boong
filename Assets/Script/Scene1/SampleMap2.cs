@@ -22,7 +22,7 @@ public class SampleMap2 : SampleMap
 		mapsizeH = 7;
 		mapsizeW = 5;
 		parfait = true;
-		map = new int[][]
+		/*map = new int[][]
 		{
 			new int[] { 1, 1, 1, 1, 1},
 			new int[] { 1, -6, -7, 2, 1},
@@ -39,7 +39,7 @@ public class SampleMap2 : SampleMap
 			//new int[] { 1, 0, 1, 0, 1},
 			//new int[] { 1, 1, 1, 1, 1}
 
-		};
+		};*/
 
 		startPositionA = new Vector3(1, -8, 1);
 		startUpstairA = true;

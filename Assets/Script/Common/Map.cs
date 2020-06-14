@@ -62,7 +62,7 @@ public class Map : MonoBehaviour
             for(int j = 0; j < mapsizeW; j++)
             {
 //                Debug.Log(mapsizeH - 1 - i);
-                map[mapsizeH-1-i,j] = sampleMap.map[i][j];
+                map[i,j] = sampleMap.map[i,j];
                 
             }
         }

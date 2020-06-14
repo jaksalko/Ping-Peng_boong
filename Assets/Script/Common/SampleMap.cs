@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class SampleMap : MonoBehaviour
 {
@@ -17,8 +18,15 @@ public class SampleMap : MonoBehaviour
     public bool startUpstairA = false;
     public bool startUpstairB = false;
 
+    [Serializable]
+    public class Line
+    {
+        public List<int> line = new List<int>();
+    }
 
-    
+    public List<Line> lines = new List<Line>();
+
+
     /*
     * 파르페 -1 -2 -3 -4
     * 1층 0
@@ -28,9 +36,21 @@ public class SampleMap : MonoBehaviour
     * 2층 장애물 3
     * 2층 파르페 -5 -6 -7 -8
     * */
+    
+    public int[,] map;
 
-    public int[][] map;
+    public void LineToMap()
+    {
+        map = new int[mapsizeH, mapsizeW];
+        for(int i = 0; i < mapsizeH; i++)
+        {
+            for(int j = 0; j < mapsizeW; j++)
+            {
+                map[i, j] = lines[i].line[j];
+            }
+        }
 
+    }
 
     public virtual void init()
     {

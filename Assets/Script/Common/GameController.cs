@@ -63,9 +63,12 @@ public class GameController : MonoBehaviour
 
     public void GameStart()//called by cameracontroller.cs after mapscanning...
     {
-        
+        player1.FindPlayer();
+        player2.FindPlayer();
+
         nowPlayer = player1;
         nowPlayer.isActive = true;
+        
         isRunning = true;
         isPlaying = true;
         startTime = Time.time;

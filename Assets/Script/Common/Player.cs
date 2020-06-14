@@ -77,6 +77,9 @@ public class Player : MonoBehaviour
     [SerializeField]
     bool click;
 
+    [SerializeField]
+    bool simulating;
+
     private CheckAnimationState stateMachine;
     void AnimationEnd()
     {
@@ -85,7 +88,14 @@ public class Player : MonoBehaviour
         actionnum = 0;
         
     }
-
+    public void SetSimulatorData()
+    {
+        stage = Simulator.instance.simulatingMap;
+        mapsizeH = stage.mapsizeH;
+        mapsizeW = stage.mapsizeW;
+        map = stage.map;
+        check = stage.check;
+    }
     void Start()
     {
         state = State.Idle;
@@ -97,18 +107,25 @@ public class Player : MonoBehaviour
         //isActive = false;
 
         cc = GetComponent<CharacterController>();
-        stage = GameController.instance.map;
-        mapsizeH = stage.mapsizeH;
-        mapsizeW = stage.mapsizeW;
-        map = stage.map;
-        check = stage.check;
+        if (!simulating)
+        {
+            stage = Simulator.instance.simulatingMap;
+            mapsizeH = stage.mapsizeH;
+            mapsizeW = stage.mapsizeW;
+            map = stage.map;
+            check = stage.check;
+        }
+           
+       
+
+    
 
 
         //FindObjectOfType<TouchMove>().Move += PlayerControl;
         stateMachine = animator.GetBehaviour<CheckAnimationState>();
         stateMachine.player = this;
         stateMachine.ActionEnd += AnimationEnd;
-        FindPlayer();
+        //FindPlayer();
 
 
         
@@ -150,7 +167,7 @@ public class Player : MonoBehaviour
     void PlayerMove()
     {
         Debug.Log("distance : " + Vector2.Distance(up, down));
-        if(Vector2.Distance(up, down) < 1)
+        if(Vector2.Distance(up, down) <= 1)
         {
             return;
         }
@@ -208,7 +225,9 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!GameController.Running)
+        if (!simulating && !GameController.Running)
+            return;
+        if (simulating && !Simulator.Running)
             return;
 
         if (isMoving)
@@ -482,7 +501,7 @@ public class Player : MonoBehaviour
 
 
 
-            while ((next <= 0 && next > -5) || next == checkSlopeNumber )
+            while ((next <= 0 && next > -5) || next == checkSlopeNumber )//1층 또는 1층 파르페 또는 올라갈수있는 슬로프
             {
                 //Debug.Log("while...");
                 if (direction == 0)
@@ -566,7 +585,7 @@ public class Player : MonoBehaviour
             else
             {
 
-                if ((next == 2 || next < -4) && state == State.Master)
+                if ((next == 2 || next < -4) && state == State.Master)//2층 또는 2층 파르페 이고 내가 마스터
                 {
                     Debug.Log("state change   " + posZ + "," + posX);
                     stateChange = true;
@@ -646,7 +665,7 @@ public class Player : MonoBehaviour
                 check[posZ, posX] = true;
 
 
-                if (map[posZ, posX] <= 0 && map[posZ,posX] > -5)//다음이 1층 또는 1층 파
+                if (map[posZ, posX] <= 0 && map[posZ,posX] > -5)//다음이 1층 또는 1층 파르페면 드p
                 {
                     Debug.Log("drop");
                     upstair = false;
