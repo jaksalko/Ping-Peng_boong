@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+// 구글 플레이 연동
+using GooglePlayGames;
+using GooglePlayGames.BasicApi;
 
 public class LoadingScene : MonoBehaviour
 {
-
+    public Text id;
     public Image fade;
     public Image title;
     public float minSize;
@@ -15,7 +18,49 @@ public class LoadingScene : MonoBehaviour
     private void Awake()
     {
         StartCoroutine(Interpolation());
+
+        PlayGamesPlatform.InitializeInstance(new PlayGamesClientConfiguration.Builder().Build());
+        PlayGamesPlatform.DebugLogEnabled = true;
+        PlayGamesPlatform.Activate();
+
     }
+    public void OnLogin()
+    {
+        if (!Social.localUser.authenticated)
+        {
+            Social.localUser.Authenticate((bool bSuccess) =>
+            {
+                if (bSuccess)
+                {
+                    Debug.Log("Success : " + Social.localUser.userName);
+                    id.text = Social.localUser.userName;
+                    GoogleInstance.instance.id = Social.localUser.userName;
+                    if (!once)
+                        StartCoroutine(Fader());
+                }
+                else
+                {
+                    Debug.Log("Fall");
+                    id.text = "Fail";
+                    GoogleInstance.instance.id = "guest";
+                    if (!once)
+                        StartCoroutine(Fader());
+                }
+            });
+        }
+    }
+    public void GuestLogin()
+    {
+        GoogleInstance.instance.id = "guest";
+        if (!once)
+            StartCoroutine(Fader());
+    }
+    public void OnLogOut()
+    {
+        ((PlayGamesPlatform)Social.Active).SignOut();
+        id.text = "Logout";
+    }
+
     public void LoadMainScene()
     {
         if(!once)

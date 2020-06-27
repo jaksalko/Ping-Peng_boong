@@ -14,8 +14,8 @@ public class GameController : MonoBehaviour
     public Map map;
 
     public Player nowPlayer;
-
-
+    public bool infiniteMode;
+    //public int infiniteLevel;
 
 	private bool isRunning;
     public static bool Running
@@ -44,16 +44,43 @@ public class GameController : MonoBehaviour
             Destroy(gameObject);
 
         //DontDestroyOnLoad(gameObject);
-        map.GenerateMap(PlayerPrefs.GetInt("level", 0));
-        player1.SetPosition(map.sampleMap.startPositionA + new Vector3(0,-0.5f,0), map.sampleMap.startUpstairA); //position correction fix .. 5/13
-        player2.SetPosition(map.sampleMap.startPositionB + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairB);
+        if (!infiniteMode)
+        {
+            map.GenerateMap(PlayerPrefs.GetInt("level", 0));
+            player1.SetPosition(map.sampleMap.startPositionA + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairA); //position correction fix .. 5/13
+            player2.SetPosition(map.sampleMap.startPositionB + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairB);
+        }
+            
+        else
+        {
+            Debug.Log("infinite mode");
+            StartCoroutine(InfiniteModeSetting());
+        }
+            
+
+
+       
 
     }
+    IEnumerator InfiniteModeSetting()
+    {
+        yield return StartCoroutine(map.InfiniteMAP(GoogleInstance.instance.infiniteLevel));
 
+
+        //Debug.Log("set position" + map.sampleMap.startPositionA);
+        player1.SetMap();
+        player2.SetMap();
+        player1.SetPosition(map.sampleMap.startPositionA + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairA); //position correction fix .. 5/13
+        player2.SetPosition(map.sampleMap.startPositionB + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairB);
+
+        cameraController.gameObject.SetActive(true);
+        yield break;
+    }
 	private void Start()
 	{
 		backgroundSound = GameObject.FindWithTag("BackgroundSound");
-		soundManagerScript = backgroundSound.GetComponent<SoundManager>();
+        if(backgroundSound != null)
+		    soundManagerScript = backgroundSound.GetComponent<SoundManager>();
 	}
 
 	public void SetPlaying(bool play)

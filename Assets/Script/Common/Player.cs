@@ -5,13 +5,13 @@ using UnityEngine.UI;
 using UniRx;
 using UniRx.Triggers;
 using System;
-
+using UnityEngine.EventSystems;
 public class Player : MonoBehaviour
 {
 
     public float speed;
     //public Text moveCountText;
-
+    public int moveCount = 0;
 
 
     Map stage;
@@ -90,10 +90,26 @@ public class Player : MonoBehaviour
     }
     public void SetSimulatorData()
     {
+        
         stage = Simulator.instance.simulatingMap;
         mapsizeH = stage.mapsizeH;
         mapsizeW = stage.mapsizeW;
         map = stage.map;
+        check = stage.check;
+
+        stateMachine = animator.GetBehaviour<CheckAnimationState>();
+        stateMachine.player = this;
+        stateMachine.ActionEnd += AnimationEnd;
+
+    }
+    public void SetMap()
+    {
+        stage = GameController.instance.map;
+
+        mapsizeH = stage.mapsizeH;
+        mapsizeW = stage.mapsizeW;
+        map = stage.map;
+        Debug.Log(mapsizeH + "," + mapsizeW + " (MAP :" + stage.map.Length);
         check = stage.check;
     }
     void Start()
@@ -104,28 +120,18 @@ public class Player : MonoBehaviour
 
         isMoving = false;
         
-        //isActive = false;
+      
 
         cc = GetComponent<CharacterController>();
-        if (!simulating)
+
+        if(!simulating)
         {
-            stage = Simulator.instance.simulatingMap;
-            mapsizeH = stage.mapsizeH;
-            mapsizeW = stage.mapsizeW;
-            map = stage.map;
-            check = stage.check;
+            stateMachine = animator.GetBehaviour<CheckAnimationState>();
+            stateMachine.player = this;
+            stateMachine.ActionEnd += AnimationEnd;
         }
-           
        
-
-    
-
-
-        //FindObjectOfType<TouchMove>().Move += PlayerControl;
-        stateMachine = animator.GetBehaviour<CheckAnimationState>();
-        stateMachine.player = this;
-        stateMachine.ActionEnd += AnimationEnd;
-        //FindPlayer();
+      
 
 
         
@@ -145,10 +151,12 @@ public class Player : MonoBehaviour
             .Select(_ => Input.mousePosition)
             .Subscribe(_ => { up = _; PlayerMove(); click = false; });
 
-#else
+#elif UNITY_ANDROID || UNITY_IOS
         var touchDownStream = this.UpdateAsObservable()
+            
             .Where(_ => !click)
             .Where(_ => Input.touchCount > 0)
+            .Where(_ => !EventSystem.current.IsPointerOverGameObject(0))
             .Where(_ => Input.GetTouch(0).phase == TouchPhase.Began)
             .Select(_ => Input.GetTouch(0))
             .Subscribe(_ => { down = _.position; click = true; } );
@@ -167,7 +175,9 @@ public class Player : MonoBehaviour
     void PlayerMove()
     {
         Debug.Log("distance : " + Vector2.Distance(up, down));
-        if(Vector2.Distance(up, down) <= 1)
+        bool isMove = false;
+
+        if(Vector2.Distance(up, down) <= 30)
         {
             return;
         }
@@ -177,28 +187,31 @@ public class Player : MonoBehaviour
         if (normalized.x < -0.5)
         {
             //left
-            PlayerControl(4);
+            isMove = PlayerControl(4);
         }
         else if (normalized.x > 0.5)
         {
             //right
-            PlayerControl(2);
+            isMove = PlayerControl(2);
         }
         else
         {
             if (normalized.y > 0)
             {
                 //up
-                PlayerControl(1);
+                isMove = PlayerControl(1);
 
             }
             else
             {
                 //down
-                PlayerControl(3);
+                isMove = PlayerControl(3);
             }
 
         }
+
+        if (isMove)
+            moveCount++;
 
 
         
@@ -216,6 +229,7 @@ public class Player : MonoBehaviour
 
         posX = (int)transform.position.x;
         posZ = (int)transform.position.z;
+        Debug.Log(name + posZ+","+posX);
         map[posZ, posX] = 5;
         check[posZ, posX] = true;
 //        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);
@@ -269,7 +283,10 @@ public class Player : MonoBehaviour
                 
                 if (CheckStageClear(stage.parfait))
                 {
-                    GameController.instance.GameEnd(true);
+                    if (!simulating)
+                        GameController.instance.GameEnd(true);
+                    else
+                        Simulator.instance.SimulatingSuccess();
                 }
 
                 if (stateChange)
@@ -278,8 +295,12 @@ public class Player : MonoBehaviour
                     other.state = State.Idle;
                     stateChange = false;
                     other.transform.SetParent(null);
-                    GameController.instance.ui.ChangeCharacter();
+                    if (!simulating)
+                        GameController.instance.ui.ChangeCharacter();
+                    else
+                        Simulator.instance.ChangeCharacter();
                     other.PlayerControl(getDirection);
+                    
 
                     
                 }
@@ -287,6 +308,7 @@ public class Player : MonoBehaviour
                 {
                     if(posX == other.posX && posZ == other.posZ)//위치가 같고 갈라질 상황이 아니다? 무조건 같이 붙어 있는 상태
                     {
+                        Debug.Log("slave master");
                         if(transform.position.y > other.transform.position.y)//움직인 놈이 더 위에 있다
                         {
                             state = State.Slave;
@@ -313,14 +335,15 @@ public class Player : MonoBehaviour
     }
     private void LateUpdate()
     {
+        animator.SetBool("move", isMoving);
         if (isMoving)
         {
-            animator.SetBool("move", true);
+            
 			isPlayingParticle = false;
-            if (actionnum == 5)
+            if (actionnum == 5)//drop
             {
                 float distance = Vector3.Distance(transform.position, targetPos + new Vector3(0, 1, 0));
-                if (distance < 1f)
+                if (distance < 1f)//거리가 1일때부터 드랍 애니메이션 실행 , 움직이고 있던상태에서 애니메이션 실행
                 {
                     animator.SetInteger("action", actionnum);
                 }
@@ -329,8 +352,8 @@ public class Player : MonoBehaviour
         }
         else
         {
-			animator.SetBool("move", false);
-            if(actionnum !=5)
+			
+            if(actionnum !=5)//이미 전에 실행해서 드랍만 예외처리
 			    animator.SetInteger("action", actionnum);
             
 			//이동 시 발생하는 particle control
@@ -357,8 +380,10 @@ public class Player : MonoBehaviour
 				default:
 					break;
 			}
-			// nose.SetActive(false);
+			
 		}
+
+
     }
 
     bool CheckStageClear(bool parfait)
@@ -387,7 +412,7 @@ public class Player : MonoBehaviour
 
    
 
-    void PlayerControl(int direction)//direction 1 : u 2: r 3 : d 4 : l
+    bool PlayerControl(int direction)//direction 1 : u 2: r 3 : d 4 : l
     {
         
         if (isActive && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
@@ -425,6 +450,12 @@ public class Player : MonoBehaviour
                     break;
             }
 
+            return true;
+
+        }
+        else
+        {
+            return false;
         }
       
         

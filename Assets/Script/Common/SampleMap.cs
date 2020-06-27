@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+
+
+
+[Serializable]
 public class SampleMap : MonoBehaviour
 {
 
@@ -27,6 +31,7 @@ public class SampleMap : MonoBehaviour
     public List<Line> lines = new List<Line>();
 
 
+    
     /*
     * 파르페 -1 -2 -3 -4
     * 1층 0
@@ -52,8 +57,13 @@ public class SampleMap : MonoBehaviour
 
     }
 
+   
+    
     public virtual void init()
     {
 
     }
+
+   
 }
+

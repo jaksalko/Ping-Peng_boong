@@ -15,12 +15,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Build/GameScene.unity
     guid: b52064e9a33812541ab81c4a31e5ffad
   - enabled: 1
+    path: Assets/Scenes/Build/CustomMapPlayScene.unity
+    guid: 484b6d2154e004b7997920058e829125
+  - enabled: 1
     path: Assets/Scenes/Build/MyInfoScene.unity
     guid: a40e66875f1fd7f4d975031721a71851
   - enabled: 1
     path: Assets/Scenes/Build/LevelScene.unity
     guid: aca287b911d2b5e448752088287d206e
-  - enabled: 0
-    path: 
-    guid: 62c2b33db7e8a4b218ff801479cfccae
+  - enabled: 1
+    path: Assets/Scenes/Test/MapEditor.unity
+    guid: c82952ef68098492c8da680796cf7081
   m_configObjects: {}

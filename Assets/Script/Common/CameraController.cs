@@ -22,6 +22,7 @@ public class CameraController : MonoBehaviour
 
     Vector3 centerOfMap;
 
+    
     // Start is called before the first frame update
     void Start()
     {

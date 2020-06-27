@@ -56,7 +56,7 @@ public class UiController : MonoBehaviour
 
     public void NextLevel()
     {
-        SceneManager.LoadScene("GameScene");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void Pause()

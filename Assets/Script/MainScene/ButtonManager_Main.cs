@@ -6,6 +6,10 @@ using UnityEngine.SceneManagement;
 
 public class ButtonManager_Main : MonoBehaviour
 {
+
+    public GameObject EditorPlayPopup;
+    public GameObject EditorSettingPopup;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,4 +36,19 @@ public class ButtonManager_Main : MonoBehaviour
 	{
 		SceneManager.LoadScene("MyInfoScene");
 	}
+
+    public void EditorPlayBtn()
+    {
+        //추후에 난이도 설정
+        EditorPlayPopup.SetActive(true);
+
+        //SceneManager.LoadScene("CustomMapPlayScene");
+    }
+
+    public void EditorBtn()
+    {
+        //맵크기설정
+        EditorSettingPopup.SetActive(true);
+        //SceneManager.LoadScene("MapEditor");
+    }
 }
