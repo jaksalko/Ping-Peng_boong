@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.45140082, g: 0.5008932, b: 0.5723176, a: 1}
+  m_IndirectSpecularColor: {r: 0.45140117, g: 0.5008937, b: 0.5723182, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -171,6 +171,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &16820404
 GameObject:
   m_ObjectHideFlags: 0
@@ -221,6 +222,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &32587631
 GameObject:
   m_ObjectHideFlags: 0
@@ -378,6 +380,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &76632563
 GameObject:
   m_ObjectHideFlags: 0
@@ -414,7 +417,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100002, guid: 333b34acacb424cee8c17e80facba62f, type: 3}
+  - {fileID: 2100000, guid: 73e76eb8a031910469e08fbc442db3ae, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -507,6 +510,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &125084531
 GameObject:
   m_ObjectHideFlags: 0
@@ -15369,6 +15373,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &349256300
 GameObject:
   m_ObjectHideFlags: 0
@@ -20512,6 +20517,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &474524916
 GameObject:
   m_ObjectHideFlags: 0
@@ -20592,6 +20598,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &491674642
 GameObject:
   m_ObjectHideFlags: 0
@@ -20642,6 +20649,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &494476140
 GameObject:
   m_ObjectHideFlags: 0
@@ -21316,6 +21324,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &575296558
 GameObject:
   m_ObjectHideFlags: 0
@@ -21573,6 +21582,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &616744137
 GameObject:
   m_ObjectHideFlags: 0
@@ -21737,6 +21747,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &646122173
 GameObject:
   m_ObjectHideFlags: 0
@@ -26749,6 +26760,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &713918116
 GameObject:
   m_ObjectHideFlags: 0
@@ -31739,6 +31751,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &769282240
 GameObject:
   m_ObjectHideFlags: 0
@@ -41421,6 +41434,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &810421906
 GameObject:
   m_ObjectHideFlags: 0
@@ -41583,6 +41597,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &848431730
 GameObject:
   m_ObjectHideFlags: 0
@@ -41881,6 +41896,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &1006010304
 GameObject:
   m_ObjectHideFlags: 0
@@ -42206,6 +42222,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!114 &1095636603 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 73632590787236873, guid: 3ac82bc68c75540479e8a13b4e72053f,
@@ -42614,6 +42631,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &1210342403
 GameObject:
   m_ObjectHideFlags: 0
@@ -42763,6 +42781,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!4 &1245036081
 Transform:
   m_ObjectHideFlags: 0
@@ -47856,6 +47875,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &1575879827
 GameObject:
   m_ObjectHideFlags: 0
@@ -47906,6 +47926,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &1620785453
 GameObject:
   m_ObjectHideFlags: 0
@@ -57577,6 +57598,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &1737940022
 GameObject:
   m_ObjectHideFlags: 0
@@ -62444,6 +62466,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &1808333155
 GameObject:
   m_ObjectHideFlags: 0
@@ -72234,6 +72257,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &1949773186
 GameObject:
   m_ObjectHideFlags: 0
@@ -77038,6 +77062,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!4 &1988237363 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6638971462340700943, guid: 2279f9ccbe16c4c3e82a465d39befbc2,
@@ -91515,6 +91540,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &2046151757
 GameObject:
   m_ObjectHideFlags: 0
@@ -96319,6 +96345,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &2058226372
 GameObject:
   m_ObjectHideFlags: 0
@@ -96369,6 +96396,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &2068860860
 GameObject:
   m_ObjectHideFlags: 0
@@ -96419,6 +96447,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!95 &2071244550
 Animator:
   serializedVersion: 3
@@ -97627,7 +97656,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d32a1fd12e1101c4299e8f3e317a8f91, type: 2}
+  - {fileID: 2100000, guid: 73e76eb8a031910469e08fbc442db3ae, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -97744,7 +97773,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebc89e6318600b047bd0b2cfae2ed3f5, type: 2}
+  - {fileID: 2100000, guid: 47da2a918aa3841ab907d15ebc7b455b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -97783,7 +97812,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebc89e6318600b047bd0b2cfae2ed3f5, type: 2}
+  - {fileID: 2100000, guid: 47da2a918aa3841ab907d15ebc7b455b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -97822,7 +97851,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebc89e6318600b047bd0b2cfae2ed3f5, type: 2}
+  - {fileID: 2100000, guid: 47da2a918aa3841ab907d15ebc7b455b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -97861,7 +97890,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebc89e6318600b047bd0b2cfae2ed3f5, type: 2}
+  - {fileID: 2100000, guid: 47da2a918aa3841ab907d15ebc7b455b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98644,7 +98673,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebc89e6318600b047bd0b2cfae2ed3f5, type: 2}
+  - {fileID: 2100000, guid: 47da2a918aa3841ab907d15ebc7b455b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98683,7 +98712,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebc89e6318600b047bd0b2cfae2ed3f5, type: 2}
+  - {fileID: 2100000, guid: 47da2a918aa3841ab907d15ebc7b455b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98722,7 +98751,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebc89e6318600b047bd0b2cfae2ed3f5, type: 2}
+  - {fileID: 2100000, guid: 47da2a918aa3841ab907d15ebc7b455b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98800,7 +98829,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebc89e6318600b047bd0b2cfae2ed3f5, type: 2}
+  - {fileID: 2100000, guid: 47da2a918aa3841ab907d15ebc7b455b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98839,7 +98868,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebc89e6318600b047bd0b2cfae2ed3f5, type: 2}
+  - {fileID: 2100000, guid: 47da2a918aa3841ab907d15ebc7b455b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98878,7 +98907,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebc89e6318600b047bd0b2cfae2ed3f5, type: 2}
+  - {fileID: 2100000, guid: 47da2a918aa3841ab907d15ebc7b455b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98917,7 +98946,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ebc89e6318600b047bd0b2cfae2ed3f5, type: 2}
+  - {fileID: 2100000, guid: 47da2a918aa3841ab907d15ebc7b455b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -101351,7 +101380,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &2078661956
 GameObject:
   m_ObjectHideFlags: 0
@@ -106562,6 +106591,7 @@ MonoBehaviour:
   startPositionB: {x: 0, y: 0, z: 0}
   startUpstairA: 0
   startUpstairB: 0
+  lines: []
 --- !u!1 &2138244916
 GameObject:
   m_ObjectHideFlags: 0
