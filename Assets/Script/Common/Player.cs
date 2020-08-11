@@ -230,6 +230,8 @@ public class Player : MonoBehaviour
         posX = (int)transform.position.x;
         posZ = (int)transform.position.z;
         Debug.Log(name + posZ+","+posX);
+		if (map == null)
+			Debug.Log("null exception");
         map[posZ, posX] = 5;
         check[posZ, posX] = true;
 //        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);

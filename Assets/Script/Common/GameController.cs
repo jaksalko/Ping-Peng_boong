@@ -47,7 +47,9 @@ public class GameController : MonoBehaviour
         if (!infiniteMode)
         {
             map.GenerateMap(PlayerPrefs.GetInt("level", 0));
-            player1.SetPosition(map.sampleMap.startPositionA + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairA); //position correction fix .. 5/13
+			player1.SetMap();
+			player2.SetMap();
+			player1.SetPosition(map.sampleMap.startPositionA + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairA); //position correction fix .. 5/13
             player2.SetPosition(map.sampleMap.startPositionB + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairB);
         }
             
