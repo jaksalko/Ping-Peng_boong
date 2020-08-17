@@ -8,41 +8,47 @@ using System;
 using UnityEngine.EventSystems;
 public class Player : MonoBehaviour
 {
-
+    [Header("Character Infomation")]
     public float speed;
-    //public Text moveCountText;
+    int posZ;     // vertical
+    int posX;     // horizental
     public int moveCount = 0;
+    bool isPlayingParticle = false;
+    public int actionnum;
+    public int parfaitOrder = 0; // parfait step 0~4(clear)
+    int getDirection = -1;
 
+    //public Text moveCountText;
 
+    [Header("Map Infomation")]
     Map stage;
-
     int mapsizeH;
     int mapsizeW;
     int[,] map;
+    
     bool[,] check;
-    int posZ;     // vertical
-    int posX;     // horizental
+    public List<int> through;
+    public List<int> stop;
+    [SerializeField]
+    int temp;
+ 
 
-    //int count = 0;
+
+    [Header("Character State")]
     [SerializeField]
     public bool isMoving = false;
-
     [SerializeField]
     bool upstair = false;//if player located in second floor --> true
-
-    public ParticleSystem moveParticle;
-	public ParticleSystem crashParticle;
-	public GameObject bumpParticle;
-	bool isPlayingParticle = false;
-
-    public Animator animator;
-    
-	public int actionnum;
-    CharacterController cc;
-    Vector3 dir;
-
     [SerializeField]
-    Player other;
+    State state;
+    [SerializeField]
+    bool stateChange;
+    [SerializeField]
+    bool thirdFloor;
+    [SerializeField]
+    public bool onCloud;
+    [SerializeField]
+    public bool isActive = false;
 
     public enum State
     {
@@ -50,21 +56,27 @@ public class Player : MonoBehaviour
         Master,//in interaction and state is master
         Slave//in interaction and state is slave...
     }
-    [SerializeField]
-    State state;
-    [SerializeField]
-    bool stateChange;
-    [SerializeField]
-    bool third_drop;
     public bool Moving()
     {
         return isMoving;
     }
+
+    [Header("Character Particle System")]
+    public ParticleSystem moveParticle;
+	public ParticleSystem crashParticle;
+	public GameObject bumpParticle;
+    public Animator animator;
+    
+	
+    CharacterController cc;
+    Vector3[] dir = new Vector3[] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
+
     [SerializeField]
-    public bool isActive = false;
+    Player other;
+
     Vector3 targetPos;
 
-    int getDirection = -1;
+
 
     // Start is called before the first frame update
     //public Animator animator;
@@ -88,6 +100,7 @@ public class Player : MonoBehaviour
         actionnum = 0;
         
     }
+  
     public void SetSimulatorData()
     {
         
@@ -95,6 +108,8 @@ public class Player : MonoBehaviour
         mapsizeH = stage.mapsizeH;
         mapsizeW = stage.mapsizeW;
         map = stage.map;
+        
+
         check = stage.check;
 
         stateMachine = animator.GetBehaviour<CheckAnimationState>();
@@ -112,14 +127,15 @@ public class Player : MonoBehaviour
         Debug.Log(mapsizeH + "," + mapsizeW + " (MAP :" + stage.map.Length);
         check = stage.check;
     }
+
     void Start()
     {
         state = State.Idle;
         stateChange = false;
-        third_drop = false;
+        thirdFloor = false;
 
         isMoving = false;
-        
+        onCloud = false;
       
 
         cc = GetComponent<CharacterController>();
@@ -130,11 +146,17 @@ public class Player : MonoBehaviour
             stateMachine.player = this;
             stateMachine.ActionEnd += AnimationEnd;
         }
-       
-      
 
 
-        
+
+        /*
+        map.ObserveEveryValueChanged(data => map[posZ, posX])
+            .Subscribe(_ => Debug.Log("change my position :" + posZ + "," + posX +" : " + _));
+
+        map.ObserveEveryValueChanged(data => map[other.posZ, other.posX])
+        .Subscribe(_ => Debug.Log("change other position :" + other.posZ + "," + other.posX + " : " + _));
+        */
+
 
 
         //Reactive stream
@@ -174,10 +196,10 @@ public class Player : MonoBehaviour
    
     void PlayerMove()
     {
-        Debug.Log("distance : " + Vector2.Distance(up, down));
+        //Debug.Log("distance : " + Vector2.Distance(up, down));
         bool isMove = false;
 
-        if(Vector2.Distance(up, down) <= 30)
+        if(Vector2.Distance(up, down) <= 30)//민감도
         {
             return;
         }
@@ -186,26 +208,22 @@ public class Player : MonoBehaviour
 
         if (normalized.x < -0.5)
         {
-            //left
-            isMove = PlayerControl(4);
+            isMove = PlayerControl(3); //left
         }
         else if (normalized.x > 0.5)
         {
-            //right
-            isMove = PlayerControl(2);
+            isMove = PlayerControl(1); //right
         }
         else
         {
             if (normalized.y > 0)
             {
-                //up
-                isMove = PlayerControl(1);
+                isMove = PlayerControl(0); //up
 
             }
             else
             {
-                //down
-                isMove = PlayerControl(3);
+                isMove = PlayerControl(2); // down
             }
 
         }
@@ -215,6 +233,46 @@ public class Player : MonoBehaviour
 
 
         
+    }
+    bool PlayerControl(int direction)//0 : u // 1 : r // 2 : d // 3 : l
+    {
+
+        if (isActive && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        {
+
+            getDirection = direction;
+
+            if (state == State.Slave)
+            {
+                Debug.Log("slave move");
+                state = State.Idle;
+                other.state = State.Idle;
+                transform.SetParent(null);
+
+                if (other.upstair)
+                {
+                    Debug.Log("thirdfloor mode");
+                    thirdFloor = true;//slave이고 master가 2층이면 나는 3층이다.
+                }
+            }
+
+            Debug.Log("move direction : " + getDirection);
+            transform.rotation = Quaternion.Euler(new Vector3(0f, getDirection * 90 , 0f));
+
+            CharacterMove();
+
+            return true;
+
+        }
+        else
+        {
+            //getDirection = -1;
+            return false;
+        }
+
+
+
+
     }
 
     public void SetPosition(Vector3 startpos , bool upstair)
@@ -229,8 +287,16 @@ public class Player : MonoBehaviour
 
         posX = (int)transform.position.x;
         posZ = (int)transform.position.z;
-        Debug.Log(name + posZ+","+posX);
-        map[posZ, posX] = 5;
+
+
+        temp = map[posZ, posX];
+        if (upstair)
+            map[posZ, posX] = BlockNumber.upperCharacter;
+        else
+            map[posZ, posX] = BlockNumber.character;
+
+        Debug.Log(map[posZ, posX] + "," + other.map[posZ, posX]);
+
         check[posZ, posX] = true;
 //        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);
     }
@@ -258,7 +324,7 @@ public class Player : MonoBehaviour
 			if (cc.isGrounded)	// 바닥에 붙어있으면 움직임
             {
                 //Debug.Log("is grounded");
-                cc.Move(speed * Time.deltaTime * dir);
+                cc.Move(speed * Time.deltaTime * dir[getDirection]);
             }
             else				// 바닥이 없으면 떨어짐 (여기다 쿵! 넣으면되는데 지금 잘 작동이 안 되서 넣으면 안 됨)
             {
@@ -266,14 +332,39 @@ public class Player : MonoBehaviour
                 cc.Move(speed * Time.deltaTime * Vector3.down);
             }
             float distance = Vector3.Distance(transform.position, targetPos);
-            //transform.position = Vector3.MoveTowards(transform.position, targetPos, speed);
-            if (distance < 0.25f)
+            
+            if (distance < 0.25f)//arrive condition
             {
-                SetPlayerMarker();
-                animator.SetBool("move", false);
-                //Debug.Log("Arrive... target position : " + targetPos + "  distance : " + distance);
-                isMoving = false;
+                if(state == State.Master)
+                {
+                    other.posX = posX;
+                    other.posZ = posZ;
+                }
+                temp = map[posZ, posX];
+                Debug.Log("temp : " + temp);
+                if (upstair)
+                    map[posZ, posX] = BlockNumber.upperCharacter;
+                else
+                    map[posZ, posX] = BlockNumber.character;
 
+                Debug.Log(map[posZ, posX] + "," + other.map[posZ, posX]);
+
+                /*
+                     if (other.upstair)
+                         map[other.posZ, other.posX] = BlockNumber.upperCharacter;
+                     else
+                         map[other.posZ, other.posX] = BlockNumber.character;
+
+               */
+
+
+
+                
+                animator.SetBool("move", false);
+                Debug.Log("Arrive... target position : " + targetPos + "  distance : " + distance);
+                isMoving = false;
+                /*if (onCloud)
+                    onCloud = false;*/
 				//이동 시 발생하는 particle control
 				moveParticle.loop = false;
 
@@ -281,7 +372,7 @@ public class Player : MonoBehaviour
 
 
                 
-                if (CheckStageClear(stage.parfait))
+                if (CheckStageClear())
                 {
                     if (!simulating)
                         GameController.instance.GameEnd(true);
@@ -289,16 +380,18 @@ public class Player : MonoBehaviour
                         Simulator.instance.SimulatingSuccess();
                 }
 
-                if (stateChange)
+                if (stateChange)//state == master !upstair 에서 (갈수없는 블럭을 제외한)2층의 블럭과 부딪히면 true
                 {
                     state = State.Idle;
                     other.state = State.Idle;
                     stateChange = false;
                     other.transform.SetParent(null);
+
                     if (!simulating)
                         GameController.instance.ui.ChangeCharacter();
                     else
                         Simulator.instance.ChangeCharacter();
+
                     other.PlayerControl(getDirection);
                     
 
@@ -309,23 +402,38 @@ public class Player : MonoBehaviour
                     if(posX == other.posX && posZ == other.posZ)//위치가 같고 갈라질 상황이 아니다? 무조건 같이 붙어 있는 상태
                     {
                         Debug.Log("slave master");
+
                         if(transform.position.y > other.transform.position.y)//움직인 놈이 더 위에 있다
                         {
                             state = State.Slave;
                             other.state = State.Master;
                             transform.SetParent(other.transform);
+
+                            /*if (!simulating)
+                                GameController.instance.ui.MasterFocus(other);
+                            else
+                                Simulator.instance.MasterFocus(other);*/
+
                         }
                         else//움직인 놈이 더 아래에 있다.
                         {
                             state = State.Master;
                             other.state = State.Slave;
                             other.transform.SetParent(transform);
+
+                            /*if (!simulating)
+                                GameController.instance.ui.MasterFocus(this);
+                            else
+                                Simulator.instance.MasterFocus(this);*/
                         }
+
+                       
                     }
                 }
 
-                map[posZ, posX] = 5;
-                map[other.posZ, other.posX] = 5;
+              
+
+              
 
 
             }
@@ -348,7 +456,7 @@ public class Player : MonoBehaviour
                     animator.SetInteger("action", actionnum);
                 }
             }
-            // nose.SetActive(true);
+            
         }
         else
         {
@@ -386,10 +494,9 @@ public class Player : MonoBehaviour
 
     }
 
-    bool CheckStageClear(bool parfait)
+    bool CheckStageClear()
     {
-        if (!parfait)
-        {
+        
             for (int i = 0; i < mapsizeH; i++)
             {
                 for (int j = 0; j < mapsizeW; j++)
@@ -401,67 +508,13 @@ public class Player : MonoBehaviour
                 }
             }
             return true;
-        }
-        else//parfait mode clear
-        {
-            return stage.checkparfait;
-
-        }
+      
 
     }
 
    
 
-    bool PlayerControl(int direction)//direction 1 : u 2: r 3 : d 4 : l
-    {
-        
-        if (isActive && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-        {
-            
-            getDirection = direction;
-
-            if(state == State.Slave)
-            {
-                
-                state = State.Idle;
-                other.state = State.Idle;
-                transform.SetParent(null);
-
-                if(other.upstair)
-                {
-                    third_drop = true;
-                }
-            }
-
-            Debug.Log("move direction : " + direction);
-            switch (direction)
-            {
-                case 1:
-                    Up_2();
-                    break;
-                case 2:
-                    Right_2();
-                    break;
-                case 3:
-                    Down_2();
-                    break;
-                 case 4:
-                    Left_2();
-                    break;
-            }
-
-            return true;
-
-        }
-        else
-        {
-            return false;
-        }
-      
-        
-
-
-    }
+   
 
     bool SetEndPoint_Paint()
     {
@@ -479,414 +532,395 @@ public class Player : MonoBehaviour
 
     }
 
-    void SetPlayerMarker()
+   
+    public void CrackedBlockisBroken(int x , int z , int block_num)
     {
-        //Debug.Log("Set Player Marker : " + gameObject.name + "  (" + posZ + "," + posX + ")");
-        map[posZ, posX] = 5;
-        if(state != State.Idle)
+        map[z, x] = block_num;
+        other.map[z, x] = block_num;
+    }
+    public void MoveByCloud(int block_num)
+    {
+        /*while(isMoving)
         {
-            other.posX = posX;
-            other.posZ = posZ;
+            yield return new WaitForSeconds(Time.deltaTime);
+        }*/
+
+        
+        getDirection = (block_num % 10) - 1;
+
+        through.Clear();
+        through.Add(block_num);
+
+        if (upstair)
+        {
+            switch (getDirection)
+            {
+                case 0:
+                    through.Add(BlockNumber.slopeDown);
+                    break;
+                case 1:
+                    through.Add(BlockNumber.slopeLeft);
+                    break;
+                case 2:
+                    through.Add(BlockNumber.slopeUp);
+                    break;
+                case 3:
+                    through.Add(BlockNumber.slopeRight);
+                    break;
+            }
+          
         }
+        else
+        {
+           
+            through.Add(BlockNumber.slopeUp + getDirection);
+           
+        }
+        StopSetting();
+
+        
+        map[posZ, posX] = temp;//set initializedMap data
+
+        
+
+        CompareWithNextBlock();
+
+
+
+      
+
+        //set targetposition
+        //isMoving = true;
+
     }
 
-   
-
-    void CheckMove(int direction)
+    void CharacterMove()
     {
+        SettingBlockLevel();
+
+        map[posZ, posX] = temp;//set initializedMap data
+
+        CompareWithNextBlock();
+    }
+
+    void CompareWithNextBlock()
+    {
+        float firstFloorY = -9.5f;//animation character modification.. 5/13
+        float secondFloorY = -8.5f;//
         int[,] step = new int[4, 2] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
 
-        int next = map[posZ + step[direction, 0], posX + step[direction, 1]];
+        int next = map[posZ + step[getDirection, 0], posX + step[getDirection, 1]];
+        
 
-		float y1 = -9.5f;//animation character modification.. 5/13
-        float y2 = -8.5f;//
-
-        int checkSlopeNumber = 0;
-        int downSlopeNumer = 0;
-
-        switch (direction)
+        if (IsThrough(next) && ThroughCheckChangeState(next))// next block is through block
         {
-            case 0:
-                checkSlopeNumber = 21;
-                downSlopeNumer = 23;
-                break;
-            case 1:
-                checkSlopeNumber = 22;
-                downSlopeNumer = 24;
-                break;
-            case 2:
-                checkSlopeNumber = 23;
-                downSlopeNumer = 21;
-                break;
-            case 3:
-                checkSlopeNumber = 24;
-                downSlopeNumer = 22;
 
-                break;
-        }
+            posZ += step[getDirection, 0];
+            posX += step[getDirection, 1];
+            check[posZ, posX] = true;
 
-        if (!upstair)
-        {
-            if (map[posZ, posX] < 20)
-                map[posZ, posX] = 0;
-
-
-
-            while ((next <= 0 && next > -5) || next == checkSlopeNumber )//1층 또는 1층 파르페 또는 올라갈수있는 슬로프
+            if (!SetEndPoint_Paint())
             {
-                //Debug.Log("while...");
-                if (direction == 0)
-                {
-                    posZ++;
-                    //Debug.Log("posz++" + posZ);
-                }
-                else if (direction == 1)
-                {
-                    posX++;
-
-                }
-                else if (direction == 2)
-                {
-                    posZ--;
-
-                }
-                else if (direction == 3)
-                {
-                    posX--;
-
-                }
-
-                next = map[posZ + step[direction, 0], posX + step[direction, 1]];
-
-                if (map[posZ, posX] == checkSlopeNumber)
-                {
-                    if(next == 5)
-                    {
-                        posX -= step[direction, 1];
-                        posZ -= step[direction, 0];
-
-
-                        targetPos = new Vector3(posX, y1, posZ);
-
-						actionnum = 1;  // slop 올라가려는데 다른 캐릭터 있으면 stop
-						isMoving = true;
-
-
-
-                        return;
-                    }
-
-                    upstair = true;
-                    break;
-                }
-
-               
-                check[posZ, posX] = true;
-
-
-                if (SetEndPoint_Paint() && !stage.parfait)
-                    break;
-
-
-
-
-            }
-
-           
-
-            if (upstair)//1층에서 가다가 경사로를 만남
-            {
-                switch (direction)
-                {
-                    case 0:
-                        Up_2();
-                        break;
-                    case 1:
-                        Right_2();
-                        break;
-                    case 2:
-                        Down_2();
-                        break;
-                    case 3:
-                        Left_2();
-                        break;
-                }
+                CompareWithNextBlock();
                 return;
+            }
+            
+                
+           
+            
+
+
+        }
+        else if (IsStop(next))// next block is stop block
+        {
+
+            StopCheckChangeState(next);
+
+            posZ += step[getDirection, 0];
+            posX += step[getDirection, 1];
+            check[posZ, posX] = true;
+            
+        }
+        else// next block is cant block
+        {
+            if ((!upstair && next == BlockNumber.character) || (upstair && next == BlockNumber.upperCharacter))
+            {
+                actionnum = 4;//캐릭터//bump
+            }
+            else if (!upstair && state == State.Master)
+            {
+                stateChange = true;
+                actionnum = 3;//crash
+                //state change
+                //other character move
             }
             else
             {
+                actionnum = 3;//crash
+            }
 
-                if ((next == 2 || next < -4) && state == State.Master)//2층 또는 2층 파르페 이고 내가 마스터
+           
+        }
+
+
+        if (upstair)
+        {
+            targetPos = new Vector3(posX, secondFloorY, posZ);
+        }
+        else
+        {
+            targetPos = new Vector3(posX, firstFloorY, posZ);
+        }
+        Debug.Log("targetposition : " + targetPos);
+        isMoving = true;
+        //cant go 
+
+
+
+    }
+    bool IsThrough(int next)
+    {
+        for (int i = 0; i < through.Count; i++)
+        {
+            if (through[i] == next)
+                return true;
+
+        }
+
+        return false;
+
+    }
+    bool IsStop(int next)
+    {
+        for (int i = 0; i < stop.Count; i++)
+        {
+            if (stop[i] == next)
+                return true;
+        }
+
+        return false;
+    }
+    bool ThroughCheckChangeState(int next)//next block is throughlevel and check if block is slopeBlock?
+    {
+
+        int[,] step = new int[4, 2] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
+        int nextnext = map[posZ + (step[getDirection, 0] * 2), posX + (step[getDirection, 1] * 2)];
+        //int next = map[posZ + step[getDirection, 0], posX + step[getDirection, 1]];
+        //meet parfait block
+        if (!upstair)
+        {
+            if(next >= BlockNumber.parfaitA && next <= BlockNumber.parfaitD)
+            {
+                map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] = BlockNumber.normal;
+                parfaitOrder++;
+                other.parfaitOrder++;
+                SettingBlockLevel();
+            }
+        }
+        else
+        {
+            if(next >= BlockNumber.upperParfaitA && next <= BlockNumber.upperParfaitD)
+            {
+                map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] = BlockNumber.upperNormal;
+                parfaitOrder++;
+                other.parfaitOrder++;
+                SettingBlockLevel();
+
+            }
+        }
+
+        //through
+        if (upstair && next >= BlockNumber.slopeUp && next <= BlockNumber.slopeLeft)
+        {
+            upstair = false;
+            SettingBlockLevel();
+
+            //if next block is slope block(can through)
+            if (IsThrough(nextnext) || IsStop(nextnext))// next next block is can position
+            {
+                return true;
+            }
+            else//cant through slope block because next next block cannot position
+            {
+                upstair = true;
+                SettingBlockLevel();
+                //actionnum = 1;
+                return false;
+            }
+
+
+        }
+        else if (!upstair && next >= BlockNumber.slopeUp && next <= BlockNumber.slopeLeft)
+        {
+            upstair = true;
+            SettingBlockLevel();
+
+            if (IsThrough(nextnext) || IsStop(nextnext))
+            {
+                return true;
+            }
+            else
+            {
+                upstair = false;
+                SettingBlockLevel();
+                return false;
+            }
+        }
+        else
+        {
+            return true;
+        }
+
+
+    }
+    void StopCheckChangeState(int next)//cloud or ride or drop
+    {
+        //stop
+        if (upstair && next == BlockNumber.character)
+        {
+          
+            actionnum = 2; //ride motion
+            Debug.Log("master slave!");
+        }
+        else if (upstair &&
+            (next == BlockNumber.normal || next == BlockNumber.cracked
+            || next == BlockNumber.parfaitA + parfaitOrder || (next >= BlockNumber.cloudUp && next <= BlockNumber.cloudLeft)))
+        {
+            upstair = false;
+            actionnum = 5; // drop motion
+        }
+    }
+    void SettingBlockLevel()//player state change callback method
+    {
+        ThroughSetting();
+        StopSetting();
+    }
+
+    void ThroughSetting()
+    {
+        through.Clear();
+
+        if(thirdFloor)
+        {
+            //nothing to add through list
+        }
+        else if (upstair)
+        {
+            switch (getDirection)
+            {
+                case 0:
+                    through.Add(BlockNumber.slopeDown);
+                    break;
+                case 1:
+                    through.Add(BlockNumber.slopeLeft);
+                    break;
+                case 2:
+                    through.Add(BlockNumber.slopeUp);
+                    break;
+                case 3:
+                    through.Add(BlockNumber.slopeRight);
+                    break;
+            }
+            through.AddRange(BlockNumber.secondLevel);
+            through.Add(BlockNumber.upperParfaitA + parfaitOrder);
+        }
+        else
+        {
+            through.AddRange(BlockNumber.firstlevel);
+            through.Add(BlockNumber.slopeUp + getDirection);
+            through.Add(BlockNumber.parfaitA + parfaitOrder);
+        }
+
+
+    }
+    void StopSetting()
+    {
+        stop.Clear();
+
+        if(thirdFloor)
+        {
+            stop.AddRange(BlockNumber.secondLevel);
+            stop.AddRange(BlockNumber.firstlevel);
+
+            for (int i = 0; i <= 3; i++)
+            {
+                if (Mathf.Abs(getDirection - i) != 2)
                 {
-                    Debug.Log("state change   " + posZ + "," + posX);
-                    stateChange = true;
+                    stop.Add(BlockNumber.upperCloudUp + i);
+                    stop.Add(BlockNumber.cloudUp + i);
                 }
-
-
-                Debug.Log("set pos");
-
-                targetPos = new Vector3(posX, y1, posZ);
-				//SetPlayerMarker();
-				if (next == 5)
-					actionnum = 4;  // 다른 플레이어랑 부딪혀 bump (1층에서)
-				else
-					actionnum = 3;  // 벽이랑 부딪혀 crash (1층에서)
-				isMoving = true;
             }
 
 
         }
         else if (upstair)
         {
-            if (map[posZ, posX] < 20)
-                map[posZ, posX] = 2;
-
-            while (next == 2 || next == downSlopeNumer || next == 0
-                || next < 0 || (next == 5 && !other.upstair && state == State.Idle))
+            if(onCloud)
             {
-                //Debug.Log("while...");
-                if (direction == 0)
-                {
-                    posZ++;
-                    //Debug.Log("z++" + posZ);
-                }
-                else if (direction == 1)
-                {
-                    posX++;
-
-                }
-                else if (direction == 2)
-                {
-                    posZ--;
-
-                }
-                else if (direction == 3)
-                {
-                    posX--;
-
-                }
-
-                //Debug.Log("posz :" + posZ + "  posx : " + posX + " value : " + map[posZ, posX]);
-
-
-                next = map[posZ + step[direction, 0], posX + step[direction, 1]];
-
-                if (map[posZ, posX] == downSlopeNumer)
-                {
-                    if(next == 5)
-                    {
-                        posX -= step[direction, 1];
-                        posZ -= step[direction, 0];
-
-
-                        targetPos = new Vector3(posX, y2, posZ);
-
-						actionnum = 1;	// slop 내려가는데 다른 캐릭터 있으면 stop
-                        isMoving = true;
-
-                        
-
-                        return;
-                    }
-                    upstair = false;
-                    break;//While break
-                }
-
-                
-                check[posZ, posX] = true;
-
-
-                if (map[posZ, posX] <= 0 && map[posZ,posX] > -5)//다음이 1층 또는 1층 파르페면 드p
-                {
-                    Debug.Log("drop");
-                    upstair = false;
-                    targetPos = new Vector3(posX, y1, posZ);
-
-					Debug.Log("drop animation 없음");
-					actionnum = 5;	// 2층에서 1층으로 떨어지면 drop animation 추가 필요
-					isMoving = true;
-
-                    //Debug.Log("target position in drop : " + targetPos);
-
-                    return;
-
-                }
-
-
-                if (third_drop)
-                {
-                    upstair = true;
-                    Debug.Log("third floor drop... mean slave drop in second floor");
-                    targetPos = new Vector3(posX, y2, posZ);
-
-					actionnum = 5;
-					isMoving = true;
-
-                    third_drop = false;
-
-                    return;
-                }
-
-
-                if (map[posZ, posX] == 5 && !other.upstair && state == State.Idle)//next block is other player and stay first floor..
-                {
-
-                    targetPos = new Vector3(posX, y2, posZ);
-
-					actionnum = 2;	// 다른 캐릭터에게 업힐 때 ride
-					isMoving = true;
-					//Debug.Log("target position in other player : " + targetPos);
-                    return;//end method...
-                }
-
-
-                if (SetEndPoint_Paint() && !stage.parfait)
-                    break;
+                stop.AddRange(BlockNumber.secondLevel);
             }
+            stop.AddRange(BlockNumber.firstlevel);//normal , cracked
+            stop.Add(BlockNumber.parfaitA + parfaitOrder);//first floor parfait
 
-            if (!upstair)//while break --> upstair false...
+
+
+            stop.Add(BlockNumber.character);
+            for (int i = 0; i <= 3; i++)
             {
-                switch (direction)
+                if (Mathf.Abs(getDirection - i) != 2)
                 {
-                    case 0:
-                        Up_2();
-                        break;
-                    case 1:
-                        Right_2();
-                        break;
-                    case 2:
-                        Down_2();
-                        break;
-                    case 3:
-                        Left_2();
-                        break;
+                    stop.Add(BlockNumber.upperCloudUp + i);
+                    stop.Add(BlockNumber.cloudUp + i);
                 }
-
-                return;
             }
-            else
-            {
-                if(!third_drop)
-				{
-					targetPos = new Vector3(posX, y2, posZ);
-					if (next == 5)
-						actionnum = 4;  // 다른 플레이어랑 부딪혀 bump (2층에서)
-					else
-						actionnum = 3;  // 벽이랑 부딪혀 crash (2층에서)
-				}
-                    
-                else
-                {
-                    Debug.Log("??????");
-                    third_drop = false;
-                    targetPos = new Vector3(posX, y2+1, posZ);
-					actionnum = 0;
-				}
-                
-                isMoving = true;
-               
-            }
-
         }
-        
-    }
-
-
-    void Up_2()
-    {
-        //Debug.Log(" up move!");
-        transform.rotation = Quaternion.Euler(new Vector3(0f, 0f, 0f));
-        dir = Vector3.forward;
-
-        CheckMove(0);
-        //stone = false;
-        
-        //Debug.Log("target position in Up Method : " + targetPos);
-    }
-
-    void Right_2()
-    {
-        //Debug.Log(" right move!");
-        transform.rotation = Quaternion.Euler(new Vector3(0f, 90f, 0f));
-        dir = Vector3.right;
-
-        CheckMove(1);
-        //stone = false;
-        //Debug.Log("target position in Right Method : " + targetPos);
-    }
-
-
-    void Down_2()
-    {
-        //Debug.Log(" down move!");
-        transform.rotation = Quaternion.Euler(new Vector3(0f, 180f, 0f));
-        dir = Vector3.back;
-
-        CheckMove(2);
-        //stone = false;
-        Debug.Log("target position in Down Method : " + targetPos);
-    }
-
-
-    void Left_2()
-    {
-        //Debug.Log(" left move!");
-        transform.rotation = Quaternion.Euler(new Vector3(0f, 270f, 0f));
-        dir = Vector3.left;
-
-
-        CheckMove(3);
-        //stone = false;
-        Debug.Log("target position in Left Method : " + targetPos);
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private void OnTriggerStay(Collider other)
-    {
-        if (other.gameObject.CompareTag("Parfait"))
+        else
         {
-            ParfaitObject parfait = other.GetComponent<ParfaitObject>();
-            if (parfait.state == ParfaitObject.State.active)
+            if(onCloud)
             {
-                if (parfait.GetParfait())//if true end game
-                {
-                    Debug.Log("end parfait mode.");
-                    targetPos = stage.parfaitEndPoint;
-                    stage.checkparfait = true;
-                }
-
+                stop.AddRange(BlockNumber.firstlevel);
+                stop.Add(BlockNumber.parfaitA + parfaitOrder);
             }
-            else
+            for (int i = 0; i <= 3; i++)
             {
-                Debug.Log("pass inactive parfait...");
+                if (Mathf.Abs(getDirection - i) != 2)
+                {
+                    stop.Add(BlockNumber.cloudUp + i);
+                }
             }
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+    private void OnTriggerEnter(Collider collider)
     {
-        if (other.gameObject.CompareTag("Parfait"))
+        if (collider.gameObject.CompareTag("Parfait"))
         {
-            ParfaitObject parfait = other.GetComponent<ParfaitObject>();
+            ParfaitObject parfait = collider.GetComponent<ParfaitObject>();
             if (parfait.state == ParfaitObject.State.active)
             {
-                if (parfait.GetParfait())//if true end game
+                //parfaitOrder++;
+                //other.parfaitOrder++;
+                //ThroughSetting();
+                if (parfait.GetParfait(stage))//if true end game
                 {
                     Debug.Log("end parfait mode.");
-                    targetPos = stage.parfaitEndPoint;
-                    stage.checkparfait = true;
+                    //targetPos = stage.parfaitEndPoint;
+                    //stage.checkparfait = true;
                 }
 
             }
@@ -901,4 +935,7 @@ public class Player : MonoBehaviour
 	{
 		bumpParticle.SetActive(false);
 	}
+
+
+
 }

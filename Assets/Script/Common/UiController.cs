@@ -53,7 +53,12 @@ public class UiController : MonoBehaviour
 		}
         
     }
-
+    public void MasterFocus(Player master)
+    {
+        GameController.instance.nowPlayer = master;
+        GameController.instance.nowPlayer.isActive = true;
+        Debug.Log("master : " + master.name);
+    }
     public void NextLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

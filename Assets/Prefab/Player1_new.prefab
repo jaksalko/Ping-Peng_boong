@@ -132,21 +132,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 7
+  moveCount: 0
+  actionnum: 0
+  through: 
+  stop: 
+  temp: 0
   isMoving: 0
   upstair: 0
+  state: 0
+  stateChange: 0
+  thirdFloor: 0
+  onCloud: 0
+  isActive: 0
   moveParticle: {fileID: 73632591247473268}
   crashParticle: {fileID: 73632591279504055}
   bumpParticle: {fileID: 73632591024345714}
   animator: {fileID: 73632590779819972}
-  actionnum: 0
   other: {fileID: 1077155176077156266, guid: b7a55b8d09c3e4949a8e555adc042d16, type: 3}
-  state: 0
-  stateChange: 0
-  third_drop: 0
-  isActive: 0
   down: {x: 0, y: 0}
   up: {x: 0, y: 0}
   click: 0
+  simulating: 0
 --- !u!65 &73632590787236875
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -29620,10 +29626,10 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 73632592612302727}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.3, y: 0.3, z: 0.3}
+  m_Size: {x: 1, y: 0.3, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &73632592730868320
 GameObject:

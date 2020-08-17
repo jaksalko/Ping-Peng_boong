@@ -43,9 +43,9 @@ public class Indexer : MonoBehaviour
             myRenderer.material = transparent_material;
         }
     }
-    public void SetXZ(int x, int z)
+    public void SetXZ(int x, int z)//initialized data is "obstacle block"
     {
-        data = 1;
+        data = BlockNumber.obstacle;
         floor = 0;
         isFull = false;
         this.x = x;

@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class ParfaitObject : MonoBehaviour
 {
-    [SerializeField]
-    Renderer renderer;
-
-    float y_rot = 0;
+    public GameObject iceBox;
     public enum State
     {
         inactive,
@@ -26,7 +23,7 @@ public class ParfaitObject : MonoBehaviour
         //renderer.material.color = Color.black;
 
     }
-    private void FixedUpdate()
+    /*private void FixedUpdate()
     {
         if(state == State.active)
         {
@@ -34,37 +31,31 @@ public class ParfaitObject : MonoBehaviour
             
             transform.rotation = Quaternion.Euler(new Vector3(transform.rotation.eulerAngles.x, transform.rotation.eulerAngles.y + y_rot, transform.rotation.eulerAngles.z));
         }
-    }
+    }*/
 
     public void Activate()
     {
         Debug.Log("activate");
         state = State.active;
-        for(int i = 0; i < renderer.materials.Length; i++)
-        {
-            Color color = renderer.materials[i].color;
-            color.a = 1f;
-            renderer.materials[i].color = color;
-           
-        }
+        iceBox.SetActive(false);
         //renderer.material.color = Color.white;// reveal real color
 
     }
 
-    public bool GetParfait()
+    public bool GetParfait(Map map)
     {
         state = State.clear;
         if (sequence < 3)
         {
-            GameController.instance.map.parfaitBlock[sequence + 1].Activate();
+            map.parfaitBlock[sequence + 1].Activate();
             Destroy(this.gameObject);
-            return false;
+            return false;//active next parfait
         }
         else
         {
 
             Destroy(this.gameObject);
-            return true;
+            return true;//clear game
         }
             
        

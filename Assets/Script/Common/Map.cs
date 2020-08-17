@@ -9,6 +9,41 @@ using System;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 
+[System.Serializable]
+static class BlockNumber
+{
+
+    public const int
+        //0층 블럭
+        normal = 0,
+        cloudUp = 1, cloudRight = 2, cloudDown = 3, cloudLeft = 4,
+        cracked = 5,
+        broken = 6,
+
+        //1층 블럭
+        upperNormal = 10,
+        upperCloudUp = 11, upperCloudRight = 12, upperCloudDown = 13, upperCloudLeft = 14,
+        upperCracked = 15,
+        upperBroken = 16,
+        slopeUp = 17, slopeRight = 18, slopeDown = 19, slopeLeft = 20,
+        parfaitA = 21, parfaitB = 22, parfaitC = 23, parfaitD = 24,
+        obstacle = 26,
+
+        //** character
+        characterA = 28, characterB = 29, character = 27,
+
+        //2층 블럭
+        upperCharacter = 38,
+        upperParfaitA = 31, upperParfaitB = 32, upperParfaitC = 33, upperParfaitD = 34,
+        upperObstacle = 36;
+
+    public static int[] firstlevel = new int[2] { normal, cracked };
+    public static int[] secondLevel = new int[2] { upperNormal, upperCracked };
+    public static int[] slopeLevel = new int[4] { slopeUp, slopeRight, slopeDown, slopeLeft };
+
+
+}
+
 
 public class Map : MonoBehaviour
 {
@@ -29,7 +64,10 @@ public class Map : MonoBehaviour
 
     public ParfaitObject[] parfaitBlock;
     public GameObject slope;
-    
+
+    public GameObject cloud;
+    public GameObject cracked;
+    public GameObject broken;
 
     public Transform groundParent;
     public Transform obstacleParent;
@@ -155,19 +193,59 @@ public class Map : MonoBehaviour
             for (int j = 1; j < mapsizeW-1; j++)
             {
                 //instantiate ground object at all of area . parent is spawnGround object
-                GameObject ground;
-                if ((i+j)%2 == 0)
-                {
-                    ground = Instantiate(groundBlock_sky, new Vector3(j, -10, i), Quaternion.identity) as GameObject;
-                }
-                else
-                {
-                    ground = Instantiate(groundBlock, new Vector3(j, -10, i), Quaternion.identity) as GameObject;
-                }
                 
-                ground.transform.parent = groundParent;
 
-                if (map[i, j] == 1)
+                //0층 빌드
+                if(map[i,j] == 0 || map[i,j] > 6)// not cloud , cracked , broken (0 floor)
+                {
+                    GameObject ground;
+                    if ((i + j) % 2 == 0)
+                    {
+                        ground = Instantiate(groundBlock_sky, new Vector3(j, -10, i), Quaternion.identity) as GameObject;
+                    }
+                    else
+                    {
+                        ground = Instantiate(groundBlock, new Vector3(j, -10, i), Quaternion.identity) as GameObject;
+                    }
+                    ground.transform.parent = groundParent;
+                }
+                else//cloud , cracked or broken (0 floor)
+                {
+                    GameObject ground;
+
+                    if(map[i,j] == BlockNumber.cracked)
+                    {
+                        ground = Instantiate(cracked, new Vector3(j, -10, i), Quaternion.identity) as GameObject;
+                        ground.transform.parent = groundParent;
+
+                        CrackedBlock crackedBlock = ground.GetComponent<CrackedBlock>();
+                        crackedBlock.x = j;
+                        crackedBlock.z = i;
+                        crackedBlock.num = map[i, j];
+
+                    }
+                    else if(map[i,j] == BlockNumber.broken)
+                    {
+                        ground = Instantiate(broken, new Vector3(j, -10, i), Quaternion.identity) as GameObject;
+                        check[i, j] = true;
+                        ground.transform.parent = obstacleParent;
+                    }
+                    else
+                    {
+                        //cloud
+                        ground = Instantiate(cloud, new Vector3(j, -10, i), Quaternion.Euler(new Vector3(0, 90 * (map[i,j] - BlockNumber.cloudUp), 0))) as GameObject;
+                        ground.transform.parent = groundParent;
+                        check[i, j] = true;
+
+                        ground.GetComponent<CloudBlock>().num = map[i, j];
+                    }
+                    
+                }
+               
+                
+                
+                //1층,2층 빌드
+                if (map[i, j] == BlockNumber.obstacle)
                 {
                     //generate obstacle
                     check[i, j] = true;
@@ -175,27 +253,7 @@ public class Map : MonoBehaviour
                     obstacle.transform.parent = obstacleParent;
 
                 }
-                else if(map[i,j] == 5)//second floor 
-                {
-                    if(sampleMap.startPositionA.z == i && sampleMap.startPositionA.x == j && sampleMap.startUpstairA)
-                    {
-                        GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
-                        second_ground.transform.parent = groundParent;
-                    }
-                    if(sampleMap.startPositionB.z == i && sampleMap.startPositionB.x == j && sampleMap.startUpstairB)
-                    {
-                        GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
-                        second_ground.transform.parent = groundParent;
-                    }
-                }
-                else if(map[i,j] == 2)//second floor
-                {
-                    //generate second floor
-                    
-                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
-                    second_ground.transform.parent = groundParent;
-                }
-                else if(map[i,j] == 3)//second floor obstacle
+                else if (map[i, j] == BlockNumber.upperObstacle)//second floor obstacle
                 {
                     GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
                     second_ground.transform.parent = groundParent;
@@ -204,30 +262,68 @@ public class Map : MonoBehaviour
                     GameObject obstacle = Instantiate(obstacleBlock, new Vector3(j, -7.7f, i), obstacleBlock.transform.rotation) as GameObject;
                     obstacle.transform.parent = obstacleParent;
                 }
-                else if(map[i,j] == 21)
+              
+                else if(map[i,j] == BlockNumber.upperNormal)//second floor
+                {
+                    //generate second floor
+                    
+                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
+                    second_ground.transform.parent = groundParent;
+                }
+                else if (map[i, j] == BlockNumber.upperCharacter)//second floor with character?
+                {
+                    if (sampleMap.startPositionA.z == i && sampleMap.startPositionA.x == j && sampleMap.startUpstairA)
+                    {
+                        Debug.Log("char A : " + i + "," + j);
+                        GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
+                        second_ground.transform.parent = groundParent;
+                    }
+                    if (sampleMap.startPositionB.z == i && sampleMap.startPositionB.x == j && sampleMap.startUpstairB)
+                    {
+                        Debug.Log("char B : " + i + "," + j);
+                        GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
+                        second_ground.transform.parent = groundParent;
+                    }
+                }
+                else if(map[i,j] >= BlockNumber.slopeUp && map[i, j] <= BlockNumber.slopeLeft)
                 {
                     check[i, j] = true;
-                    GameObject slope_up = Instantiate(slope, new Vector3(j, -9, i), Quaternion.Euler(new Vector3(0, 0, 0)));
-                    slope_up.transform.parent = groundParent;
+                    GameObject slopeBlock = Instantiate(slope, new Vector3(j, -9, i), Quaternion.Euler(new Vector3(0, 90 * (map[i,j] - BlockNumber.slopeUp) , 0)));
+                    slopeBlock.transform.parent = groundParent;
                 }
-                else if(map[i,j] == 22)
+                else if(map[i,j] == BlockNumber.upperCracked)
+                {
+                    GameObject crackedBlock = Instantiate(cracked, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
+                    crackedBlock.transform.parent = groundParent;
+                }
+                else if (map[i, j] == BlockNumber.upperBroken)
                 {
                     check[i, j] = true;
-                    GameObject slope_right = Instantiate(slope, new Vector3(j, -9, i), Quaternion.Euler(new Vector3(0, 90, 0)));
-                    slope_right.transform.parent = groundParent;
+                    GameObject brokenBlock = Instantiate(broken, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
+                    brokenBlock.transform.parent = obstacleParent;
                 }
-                else if (map[i, j] == 23)
+                else if (map[i, j] >= BlockNumber.upperCloudUp && map[i, j] <= BlockNumber.upperCloudLeft)
                 {
                     check[i, j] = true;
-                    GameObject slope_down = Instantiate(slope, new Vector3(j, -9, i), Quaternion.Euler(new Vector3(0, 180, 0)));
-                    slope_down.transform.parent = groundParent;
+                    GameObject upperCloudBlock = Instantiate(cloud, new Vector3(j, -9, i), Quaternion.Euler(new Vector3(0, 90 * (map[i, j] - BlockNumber.upperCloudUp), 0)));
+                    upperCloudBlock.transform.parent = groundParent;
+                    upperCloudBlock.GetComponent<CloudBlock>().num = map[i, j];
                 }
-                else if (map[i, j] == 24)
+                /*else if (map[i, j] >= BlockNumber.parfaitA && map[i, j] <= BlockNumber.parfaitD)
                 {
-                    check[i, j] = true;
-                    GameObject slope_left = Instantiate(slope, new Vector3(j, -9, i), Quaternion.Euler(new Vector3(0, 270, 0)));
-                    slope_left.transform.parent = groundParent;
+                    
+                    GameObject parfait = Instantiate(cloud, new Vector3(j, -9, i), Quaternion.Euler(new Vector3(0, 90 * (map[i, j] - BlockNumber.upperCloudUp), 0)));
+                    parfait.transform.parent = groundParent;
+                    //parfait.GetComponent<CloudBlock>().num = map[i, j];
                 }
+                else if (map[i, j] >= BlockNumber.upperParfaitA && map[i, j] <= BlockNumber.upperParfaitD)
+                {
+                    
+                    GameObject upperParfait = Instantiate(cloud, new Vector3(j, -7.7f, i), Quaternion.Euler(new Vector3(0, 90 * (map[i, j] - BlockNumber.upperCloudUp), 0)));
+                    upperParfait.transform.parent = groundParent;
+                    //upperCloudBlock.GetComponent<CloudBlock>().num = map[i, j];
+                }*/
+                //추가해야할 것 : 구름길 (0층 1층 ) , 부서지는 블럭(0층 1층) , 
             }
         }
     }
@@ -240,7 +336,7 @@ public class Map : MonoBehaviour
             for (int j = 0; j < mapsizeW; j++)
             {
                 
-                if (map[i, j] == -1)
+                if (map[i, j] == BlockNumber.parfaitA)
                 {
                     parfaitBlock[0].gameObject.SetActive(true);
                     parfaitBlock[0].gameObject.transform.position = new Vector3(j, -9, i);
@@ -249,7 +345,7 @@ public class Map : MonoBehaviour
                  
                 }
                     
-                else if (map[i, j] == -2)
+                else if (map[i, j] == BlockNumber.parfaitB)
                 {
                     parfaitBlock[1].gameObject.SetActive(true);
                     parfaitBlock[1].gameObject.transform.position = new Vector3(j, -9, i);
@@ -258,7 +354,7 @@ public class Map : MonoBehaviour
                 }
 
                     
-                else if (map[i, j] == -3)
+                else if (map[i, j] == BlockNumber.parfaitC)
                 {
                     parfaitBlock[2].gameObject.SetActive(true);
                     parfaitBlock[2].gameObject.transform.position = new Vector3(j, -9, i);
@@ -267,7 +363,7 @@ public class Map : MonoBehaviour
                    
                 }
                     
-                else if (map[i, j] == -4)
+                else if (map[i, j] == BlockNumber.parfaitD)
                 {
                     parfaitBlock[3].gameObject.SetActive(true);
                     parfaitBlock[3].gameObject.transform.position = new Vector3(j, -9, i);
@@ -276,7 +372,7 @@ public class Map : MonoBehaviour
                     
                     
                 }
-                else if (map[i, j] == -5)
+                else if (map[i, j] == BlockNumber.upperParfaitA)
                 {
                     GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
                     second_ground.transform.parent = groundParent;
@@ -291,7 +387,7 @@ public class Map : MonoBehaviour
                     
                 }
 
-                else if (map[i, j] == -6)
+                else if (map[i, j] == BlockNumber.upperParfaitB)
                 {
                     GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
                     second_ground.transform.parent = groundParent;
@@ -302,7 +398,7 @@ public class Map : MonoBehaviour
                 }
 
 
-                else if (map[i, j] == -7)
+                else if (map[i, j] == BlockNumber.upperParfaitC)
                 {
                     GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
                     second_ground.transform.parent = groundParent;
@@ -313,7 +409,7 @@ public class Map : MonoBehaviour
 
                 }
 
-                else if (map[i, j] == -8)
+                else if (map[i, j] == BlockNumber.upperParfaitD)
                 {
                     GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
                     second_ground.transform.parent = groundParent;
@@ -344,16 +440,17 @@ public class Map : MonoBehaviour
         else
         {
             // Show results as text
-            //Debug.Log(www.downloadHandler.text);
+            Debug.Log(www.downloadHandler.text);
 
             // Or retrieve results as binary data
             byte[] results = www.downloadHandler.data;
 
             //Get data and convert to samplemap list..
 
+            
             string fixdata = fixJson(www.downloadHandler.text);
             JsonData[] datas = JsonHelper.FromJson<JsonData>(fixdata);
-
+            Debug.Log(datas.Length);
             JsonData selectedData = datas[UnityEngine.Random.Range(0, datas.Length)];
             sampleMap = selectedData.MakeSampleMap();
             selectedData.DataToString();

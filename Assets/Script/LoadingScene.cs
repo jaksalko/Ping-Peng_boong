@@ -15,6 +15,7 @@ public class LoadingScene : MonoBehaviour
     public float minSize;
     public float maxSize;
     bool once;
+    public InputField nickname;
     private void Awake()
     {
         StartCoroutine(Interpolation());
@@ -51,7 +52,7 @@ public class LoadingScene : MonoBehaviour
     }
     public void GuestLogin()
     {
-        GoogleInstance.instance.id = "guest";
+        GoogleInstance.instance.id = nickname.text;
         if (!once)
             StartCoroutine(Fader());
     }

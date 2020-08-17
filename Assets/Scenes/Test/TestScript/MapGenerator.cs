@@ -9,7 +9,8 @@ using System;
 public class MapGenerator : MonoBehaviour
 {
     [Header("Prefabs")]
-    public GameObject[] blockPrefab;
+    public GameObject[] blockPrefab;// 0 normal 1 obstacle 2 second 3 slope 4 5 char 6 cracked 7 cloud
+    public GameObject[] parfaitPrefab;//0 cup 1 ice 2 syrup 3 cherry
     public Indexer blockPositionPrefab;
 
     [Header("Camera")]
@@ -38,6 +39,8 @@ public class MapGenerator : MonoBehaviour
     RaycastHit hit;
     int selected_id;
     int slope_id;
+    int cloud_id;
+    int parfait_id;
     public Text warning;
 
     public Simulator simulator;
@@ -106,7 +109,8 @@ public class MapGenerator : MonoBehaviour
                                 {
                                     Destroy(firstFloorObject.gameObject);
                                     indexer.Floor = 0;
-                                    indexer.data = 1;//obstacle
+                                    indexer.data = BlockNumber.obstacle;//obstacle
+                                    indexer.isFull = false;
                                     break;
                                 }
                             }
@@ -120,7 +124,8 @@ public class MapGenerator : MonoBehaviour
                                 {
                                     Destroy(secondFloorObject.gameObject);
                                     indexer.Floor = 1;
-                                    indexer.data = 0;
+                                    indexer.data = BlockNumber.normal;
+                                    indexer.isFull = false;
                                     break;
                                 }
                             }
@@ -134,7 +139,8 @@ public class MapGenerator : MonoBehaviour
                                 {
                                     Destroy(thirdFloorObject.gameObject);
                                     indexer.Floor = 2;
-                                    indexer.data = 2;
+                                    indexer.data = BlockNumber.upperNormal;
+                                    indexer.isFull = false;
                                     break;
                                 }
                             }
@@ -142,28 +148,30 @@ public class MapGenerator : MonoBehaviour
                             break;
 
                     }
-                    if(indexer.data == 5)//character erase
+                    if (indexer.data == BlockNumber.character || indexer.data == BlockNumber.upperCharacter)//character erase
                     {
-                        if(blockPrefab[4].activeSelf && blockPrefab[4].transform.position.x == indexer.X && blockPrefab[4].transform.position.z == indexer.Z)
+                        if(blockPrefab[BlockNumber.characterA].activeSelf && blockPrefab[BlockNumber.characterA].transform.position.x == indexer.X && blockPrefab[BlockNumber.characterA].transform.position.z == indexer.Z)
                         {
                             //char1 erase
-                            blockPrefab[4].SetActive(false);
-                            blockPrefab[4].transform.position = default;
+                            blockPrefab[BlockNumber.characterA].SetActive(false);
+                            blockPrefab[BlockNumber.characterA].transform.position = default;
                             indexer.Floor--;
                            
                         }
-                        if (blockPrefab[5].activeSelf && blockPrefab[5].transform.position.x == indexer.X && blockPrefab[5].transform.position.z == indexer.Z)
+                        if (blockPrefab[BlockNumber.characterB].activeSelf && blockPrefab[BlockNumber.characterB].transform.position.x == indexer.X && blockPrefab[BlockNumber.characterB].transform.position.z == indexer.Z)
                         {
                             //char2 erase
-                            blockPrefab[5].SetActive(false);
-                            blockPrefab[5].transform.position = default;
+                            blockPrefab[BlockNumber.characterB].SetActive(false);
+                            blockPrefab[BlockNumber.characterB].transform.position = default;
                             indexer.Floor--;
                         }
 
                         if (indexer.Floor == 1)
-                            indexer.data = 0;
+                            indexer.data = BlockNumber.normal;
                         else if (indexer.Floor == 2)
-                            indexer.data = 2;
+                            indexer.data = BlockNumber.upperNormal;
+
+                        indexer.isFull = false;
                     }
                 }
             }
@@ -181,83 +189,130 @@ public class MapGenerator : MonoBehaviour
                 {
                     warning.text = "";
                     Indexer indexer = hit.transform.GetComponent<Indexer>();
-                    if (indexer.Floor == 0 && selected_id == 0)
+                    if (indexer.Floor == 0 && selected_id < 10)
+                        //아무것도 깔려있지 않은 상태에서는 노말블럭 또는 깨지는 블럭 또는 구름블럭
                     {
-                        GameObject selected = Instantiate(selectedPrefab, new Vector3(indexer.X, 0, indexer.Z), selectedPrefab.transform.rotation);
-                        firstFloorHolder.SetParent(selected);
-                        indexer.Floor = 1;
-                        indexer.data = 0;
-                    }
-                    else if (indexer.Floor == 1 && selected_id != 0)//first floor and not selected block
-                    {
-                        if ((selected_id == 4 || selected_id == 5))//if character setting
+
+                        if(selected_id == BlockNumber.cloudUp)
                         {
-                            if(!selectedPrefab.activeSelf)
+                            GameObject selected = Instantiate(selectedPrefab, new Vector3(indexer.X, 0, indexer.Z), Quaternion.Euler(new Vector3(0,90 * cloud_id, 0)));
+                            firstFloorHolder.SetParent(selected);
+                            indexer.data = BlockNumber.cloudUp + cloud_id;
+                        }
+                        else
+                        {
+                            GameObject selected = Instantiate(selectedPrefab, new Vector3(indexer.X, 0, indexer.Z), selectedPrefab.transform.rotation);
+                            firstFloorHolder.SetParent(selected);
+                            indexer.data = selected_id;
+                        }
+                        
+                        
+                        indexer.Floor = 1;
+
+                        if (selected_id != BlockNumber.normal)//2층 블럭이 아니면 더이상 위에 무엇을 올릴 수가 없으므로 
+                            indexer.isFull = true;
+
+                    }
+                    else if (indexer.Floor == 1 && !indexer.isFull && selected_id > 0 && selected_id < 30)//바닥이 깔려있는 상태에서 선택 블럭이 노말블럭이 아니며
+                    {
+                        if (selected_id == BlockNumber.characterA || selected_id == BlockNumber.characterB)//if character setting
+                        {
+                            if (!selectedPrefab.activeSelf)
                             {
-                                if(selected_id == 4)
+                                if (selected_id == BlockNumber.characterA)
                                 {
                                     newMap.startUpstairA = false;
-                                    newMap.startPositionA = new Vector3(indexer.X+1, -9, indexer.Z+1);
+                                    newMap.startPositionA = new Vector3(indexer.X + 1, -9, indexer.Z + 1);
                                 }
-                                else if(selected_id == 5)
+                                else if (selected_id == BlockNumber.characterB)
                                 {
                                     newMap.startUpstairB = false;
-                                    newMap.startPositionB = new Vector3(indexer.X+1, -9, indexer.Z+1);
+                                    newMap.startPositionB = new Vector3(indexer.X + 1, -9, indexer.Z + 1);
                                 }
-                                selectedPrefab.SetActive(true);
-                                selectedPrefab.transform.position = new Vector3(indexer.X, 0.5f, indexer.Z);
                                 
-                                indexer.data = 5;
+                                selectedPrefab.transform.position = new Vector3(indexer.X, 0.5f, indexer.Z);
+                                selectedPrefab.SetActive(true);
+                                //indexer.data = BlockNumber.character;//블럭 넘버 1층 캐릭터로 바꿔야
                             }
                             else
                             {
                                 warning.text = "이미 존재합니다";
                                 return;
                             }
-                          
+                             //Character positioning 수정해야함
 
-                            
+
+
                         }
-                        else if(selected_id == 3)
+                        else if (selected_id == BlockNumber.slopeUp)
                         {
-                            GameObject selected = Instantiate(selectedPrefab, new Vector3(indexer.X, 0, indexer.Z), Quaternion.Euler(new Vector3(0,90 * slope_id , 0)));
+                            GameObject selected = Instantiate(selectedPrefab, new Vector3(indexer.X, 0, indexer.Z), Quaternion.Euler(new Vector3(0, 90 * slope_id, 0)));
                             secondFloorHolder.SetParent(selected);
-                            indexer.data = 21 + slope_id;
+                            indexer.data = BlockNumber.slopeUp + slope_id;
+
                         }
-                        else// 1 2  : 장애물 , 2층
+                        else if (selected_id == BlockNumber.cloudUp)
+                        {
+                            GameObject selected = Instantiate(selectedPrefab, new Vector3(indexer.X, 0, indexer.Z), Quaternion.Euler(new Vector3(0, 90 * cloud_id, 0)));
+                            secondFloorHolder.SetParent(selected);
+                            indexer.data = BlockNumber.upperCloudUp + cloud_id;
+                        }
+                        else if (selected_id == BlockNumber.parfaitA)
+                        {
+                            if(parfait_id < 4)
+                            {
+                                GameObject selected = Instantiate(parfaitPrefab[parfait_id], new Vector3(indexer.X, 0, indexer.Z), Quaternion.identity);
+                                secondFloorHolder.SetParent(selected);
+                                indexer.data = BlockNumber.parfaitA + parfait_id;
+                                parfait_id++;
+                            }
+                            else
+                            {
+                                warning.text = "모두 배치했습니다";
+                                return;
+                            }
+                           
+                        }
+                        else// 1 2  : 장애물 , 2층 , 2층 부서지는 블럭
                         {
                             GameObject selected = Instantiate(selectedPrefab, new Vector3(indexer.X, 0, indexer.Z), selectedPrefab.transform.rotation);
                             secondFloorHolder.SetParent(selected);
+
+                            //indexer.data = selected_id;
+
                             indexer.data = selected_id;
-                            
+
                         }
                       
                         indexer.Floor = 2;
 
-                        if (selected_id != 2)
+                        if (selected_id != BlockNumber.upperNormal)//2층 블럭이 아니면 더이상 위에 무엇을 올릴 수가 없으므로 
                             indexer.isFull = true;
                         
                     }
-                    else if (indexer.Floor == 2 && !indexer.isFull && selected_id != 0 && selected_id != 2 && selected_id != 3)
+                    else if (indexer.Floor == 2 && !indexer.isFull && selected_id >= 21)
                     {
-                        if ((selected_id == 4 || selected_id == 5))//character setting
+                        if (selected_id == BlockNumber.characterA || selected_id == BlockNumber.characterB)//character setting
                         {
                             if (!selectedPrefab.activeSelf)
                             {
-                                if (selected_id == 4)
+                                if (selected_id == BlockNumber.characterA)
                                 {
                                     newMap.startUpstairA = true;
                                     newMap.startPositionA = new Vector3(indexer.X+1, -8, indexer.Z+1);
                                 }
-                                else if (selected_id == 5)
+                                else if (selected_id == BlockNumber.characterB)
                                 {
                                     newMap.startUpstairB = true;
                                     newMap.startPositionB = new Vector3(indexer.X+1, -8, indexer.Z+1);
                                 }
-                                selectedPrefab.SetActive(true);
+                               
                                 selectedPrefab.transform.position = new Vector3(indexer.X, 1.5f, indexer.Z);
+                                selectedPrefab.SetActive(true);
                                 //thirdFloorHolder.SetParent(selectedPrefab);
-                                indexer.data = 5;
+
+
+                                //indexer.data = BlockNumber.upperCharacter;//2층 캐릭터
                             }
                             else
                             {
@@ -266,13 +321,29 @@ public class MapGenerator : MonoBehaviour
                             }
 
 
+
+                        }
+                        else if (selected_id == BlockNumber.parfaitA)
+                        {
+                            if (parfait_id < 4)
+                            {
+                                GameObject selected = Instantiate(parfaitPrefab[parfait_id], new Vector3(indexer.X, 0, indexer.Z), Quaternion.identity);
+                                thirdFloorHolder.SetParent(selected);
+                                indexer.data = BlockNumber.upperParfaitA + parfait_id;
+                                parfait_id++;
+                            }
+                            else
+                            {
+                                warning.text = "모두 배치했습니다";
+                                return;
+                            }
 
                         }
                         else
                         {
                             GameObject selected = Instantiate(selectedPrefab, new Vector3(indexer.X, 0, indexer.Z), selectedPrefab.transform.rotation);
                             thirdFloorHolder.SetParent(selected);
-                            indexer.data = 3;
+                            indexer.data = BlockNumber.upperObstacle;
                         }
                        
                         indexer.Floor = 3;
@@ -361,11 +432,25 @@ public class MapGenerator : MonoBehaviour
         selectedPrefab = blockPrefab[selected_id];
         
     }
+    public void SelectParfaitButtonClicked(int id)
+    {
+        erase = false;
+        selected_id = BlockNumber.parfaitA;
+        //parfait_id = parfaitOrder;
+        //selectedPrefab = blockPrefab[selected_id + parfait_id];
+    }
     public void SlopeButtonClicked(int id)
     {
         erase = false;
-        selected_id = 3;
+        selected_id = BlockNumber.slopeUp;
         slope_id = id;
+        selectedPrefab = blockPrefab[selected_id];
+    }
+    public void CloudButtonClicked(int id)
+    {
+        erase = false;
+        selected_id = BlockNumber.cloudUp;
+        cloud_id = id;// 0 up 1 right 2 down 3 left
         selectedPrefab = blockPrefab[selected_id];
     }
     public void EraseButtonClicked()
@@ -376,6 +461,26 @@ public class MapGenerator : MonoBehaviour
     //Simulating Button Function
     public void StartSimulatorButtonClicked()
     {
+
+        //실핼할수 없는 조건 넣기
+        //캐릭터 미배치 // 파르페 일부 배치
+        if(parfait_id != 0 && parfait_id < 4)
+        {
+            warning.text = "파르페를 모두 배치하거나 모두 삭제해주세요";
+            return;
+        }
+        else if(!blockPrefab[BlockNumber.characterA].activeSelf || !blockPrefab[BlockNumber.characterB].activeSelf)
+        {
+            warning.text = "캐릭터를 모두 배치해주세요";
+            return;
+        }
+
+        if(parfait_id == 4)
+        {
+            newMap.parfait = true;
+        }
+
+
         newMap.mapsizeH = (int)maxSize.y + 2;
         newMap.mapsizeW = (int)maxSize.x + 2;
 
@@ -384,7 +489,7 @@ public class MapGenerator : MonoBehaviour
             SampleMap.Line line = new SampleMap.Line();
             for (int j = 0; j < newMap.mapsizeW; j++)
             {
-                line.line.Add(1);
+                line.line.Add(BlockNumber.obstacle);
             }
             newMap.lines.Add(line);
         }
@@ -397,7 +502,7 @@ public class MapGenerator : MonoBehaviour
 
         }
 
-        newMap.parfait = false;
+        //newMap.parfait = false;
         newMap.LineToMap();
         simulator.StartSimulator();
     }

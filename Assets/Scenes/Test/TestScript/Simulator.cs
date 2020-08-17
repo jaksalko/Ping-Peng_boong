@@ -16,15 +16,15 @@ using UniRx.Triggers;
 public class JsonData
 {
     public int num;//pk
-    public string id;
-    public int height;
-    public int width;
-    public string value;
-    public string posA;
-    public string posB;
-    public int moveCount;
-    public int difficulty;
-
+    public string id;//user id
+    public int height;//map height
+    public int width;//map width
+    public string value;//map index value to string
+    public string posA;//character a position to string
+    public string posB;//character b position to string
+    public int moveCount;//simulating game move count
+    public int difficulty;//game difficulty from movecount
+    public int parfait;//default 0 == false
     public void DataToString()
     {
         Debug.Log(JsonUtility.ToJson(this));
@@ -35,7 +35,11 @@ public class JsonData
         SampleMap sampleMap = new SampleMap();
         sampleMap.mapsizeW = width;
         sampleMap.mapsizeH = height;
-        sampleMap.parfait = false;
+
+        if (parfait == 0)
+            sampleMap.parfait = false;
+        else
+            sampleMap.parfait = true;
         
         sampleMap.map = new int[height, width];
         sampleMap.startPositionA = StringToPosition(posA);
@@ -72,7 +76,7 @@ public class JsonData
 
     int CharToIndex(char value)
     {
-        int ascii = (int)value - 97;
+        int ascii = (int)value - 65; // a -> 0
         return ascii;
 
     }
@@ -273,6 +277,12 @@ public class Simulator : MonoBehaviour
             jsonData.moveCount = player1.moveCount + player2.moveCount;
 
             jsonData.difficulty = (jsonData.moveCount / 5) + 1;
+
+            if (simulatingMap.parfait)
+                jsonData.parfait = 1;
+            else
+                jsonData.parfait = 0;
+            
             if (jsonData.difficulty > 5)
                 jsonData.difficulty = 5;
 
@@ -311,7 +321,7 @@ public class Simulator : MonoBehaviour
     char IndexToChar(int value)
     {
         
-        char ascii = Convert.ToChar(value + 97);
+        char ascii = Convert.ToChar(value + 65);// 0 -> A
         return ascii;
     }
    
@@ -332,7 +342,7 @@ public class Simulator : MonoBehaviour
     {
         
 
-        if (!nowPlayer.Moving())
+        if (!nowPlayer.Moving())//now player is not moving
         {
             Debug.Log("change Character");
             nowPlayer.isActive = false;
@@ -355,6 +365,12 @@ public class Simulator : MonoBehaviour
             Debug.Log("Can't change!");
         }
 
+    }
+    public void MasterFocus(Player master)
+    {
+        nowPlayer = master;
+        nowPlayer.isActive = true;
+        Debug.Log("master : " + nowPlayer.name);
     }
 
 }
