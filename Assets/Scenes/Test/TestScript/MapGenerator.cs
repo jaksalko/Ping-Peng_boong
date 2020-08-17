@@ -109,7 +109,7 @@ public class MapGenerator : MonoBehaviour
                                 {
                                     Destroy(firstFloorObject.gameObject);
                                     indexer.Floor = 0;
-                                    indexer.data = BlockNumber.obstacle;//obstacle
+                                    indexer.data = BlockNumber.broken;//obstacle
                                     indexer.isFull = false;
                                     break;
                                 }

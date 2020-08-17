@@ -45,7 +45,7 @@ public class Indexer : MonoBehaviour
     }
     public void SetXZ(int x, int z)//initialized data is "obstacle block"
     {
-        data = BlockNumber.obstacle;
+        data = BlockNumber.broken;
         floor = 0;
         isFull = false;
         this.x = x;

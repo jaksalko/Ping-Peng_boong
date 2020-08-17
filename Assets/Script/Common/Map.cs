@@ -82,6 +82,8 @@ public class Map : MonoBehaviour
 
     public SampleMap sampleMap;
 
+    public Transform waterQuad;
+
     /*public void InfiniteMap()
     {
         StartCoroutine(GET());
@@ -105,7 +107,9 @@ public class Map : MonoBehaviour
 
         centerOfMap = new Vector3((float)(mapsizeW-1)/2, -10 , (float)(mapsizeH-1)/2);
         minimapTarget.position = centerOfMap;
-
+        waterQuad.position = centerOfMap;
+        waterQuad.localScale = new Vector3(mapsizeW, mapsizeH, 1);
+        
         design[0].position = centerOfMap + new Vector3(0, -0.5f, 0);
         design[1].localPosition = design[1].localPosition + new Vector3(0, 0, centerOfMap.z + 8);
         design[2].localPosition = design[2].localPosition + new Vector3(0, 0, -(centerOfMap.z + 8));
