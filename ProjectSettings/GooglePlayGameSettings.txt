@@ -1,5 +1,5 @@
-lastUpgrade=01009
-proj.pluginVersion=0.10.09
+lastUpgrade=01010
+proj.pluginVersion=0.10.10
 proj.AppId=846754668550
 and.BundleId=com.project99.PingPengBooong
 proj.classDir=Assets

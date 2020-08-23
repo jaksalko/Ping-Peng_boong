@@ -23394,6 +23394,7 @@ MonoBehaviour:
   - {fileID: 1786098111}
   - {fileID: 541262797}
   sampleMap: {fileID: 0}
+  waterQuad: {fileID: 0}
 --- !u!4 &349129486
 Transform:
   m_ObjectHideFlags: 0

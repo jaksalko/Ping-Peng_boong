@@ -3,12 +3,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Security.Cryptography;
+using System;
+using System.Text;
+
+using UnityEngine.SocialPlatforms.GameCenter;
+
+
 // 구글 플레이 연동
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
+#if UNITY_ANDROID
+//using GooglePlayGames;
+//using GooglePlayGames.BasicApi;
+
+
+#elif UNITY_IOS
+//using AppleAuth.Editor;
+using AppleAuth;
+using AppleAuth.Native;
+using AppleAuth.Enums;
+using AppleAuth.Extensions;
+using AppleAuth.Interfaces;
+#endif
 
 public class LoadingScene : MonoBehaviour
 {
+#if UNITY_IOS
+    private IAppleAuthManager appleAuthManager;
+#endif
+    public Text appleArg;
     public Text id;
     public Image fade;
     public Image title;
@@ -20,12 +42,30 @@ public class LoadingScene : MonoBehaviour
     {
         StartCoroutine(Interpolation());
 
-        PlayGamesPlatform.InitializeInstance(new PlayGamesClientConfiguration.Builder().Build());
+#if UNITY_ANDROID
+        /*PlayGamesPlatform.InitializeInstance(new PlayGamesClientConfiguration.Builder().Build());
         PlayGamesPlatform.DebugLogEnabled = true;
-        PlayGamesPlatform.Activate();
+        PlayGamesPlatform.Activate();*/
+#elif UNITY_IOS
+        //initializing
+        if(AppleAuthManager.IsCurrentPlatformSupported)
+        {
+            var deserializer = new PayloadDeserializer();
+            appleAuthManager = new AppleAuthManager(deserializer);
+        }
+
+#endif
 
     }
-    public void OnLogin()
+    private void Update()
+    {
+#if UNITY_IOS
+        //update the appleauthmanager instance to execute
+        //pending callbacks inside unity's execution loop
+        appleAuthManager?.Update();
+#endif
+    }
+    public void GoogleLogin()//if android => playstore , ios => gamecenter
     {
         if (!Social.localUser.authenticated)
         {
@@ -33,16 +73,19 @@ public class LoadingScene : MonoBehaviour
             {
                 if (bSuccess)
                 {
-                    Debug.Log("Success : " + Social.localUser.userName);
-                    id.text = Social.localUser.userName;
+                    //Debug.Log("Success : " + Social.localUser.userName);
+                    GoogleInstance.instance.SetDebugText("user name :" + Social.localUser.userName);
+
                     GoogleInstance.instance.id = Social.localUser.userName;
                     if (!once)
                         StartCoroutine(Fader());
                 }
                 else
                 {
-                    Debug.Log("Fall");
-                    id.text = "Fail";
+                    //Debug.Log("Fall");
+                    GoogleInstance.instance.SetDebugText("user name : guest");
+
+                    
                     GoogleInstance.instance.id = "guest";
                     if (!once)
                         StartCoroutine(Fader());
@@ -50,6 +93,71 @@ public class LoadingScene : MonoBehaviour
             });
         }
     }
+
+    public void AppleSuccess()
+    {
+        appleArg.text = "success";
+    }
+    public void AppleError()
+    {
+        appleArg.text = "error";
+    }
+    public void AppleCredential()
+    {
+        appleArg.text = "credential";
+    }
+
+    public void AppleLogin()//Apple login button clicked..
+    {
+#if ANDROID_IOS
+        var loginArgs = new AppleAuthLoginArgs(LoginOptions.IncludeEmail | LoginOptions.IncludeFullName);
+
+        
+
+        this.appleAuthManager.LoginWithAppleId(
+            loginArgs,
+            credential =>
+            {
+        // Obtained credential, cast it to IAppleIDCredential
+        var appleIdCredential = credential as IAppleIDCredential;
+                if (appleIdCredential != null)
+                {
+            // Apple User ID
+            // You should save the user ID somewhere in the device
+            var userId = appleIdCredential.User;
+                    PlayerPrefs.SetString("AppleUserIdKey", userId);
+
+            // Email (Received ONLY in the first login)
+            var email = appleIdCredential.Email;
+
+                    // Full name (Received ONLY in the first login)
+                    var fullName = appleIdCredential.FullName;
+        
+            // Identity token
+            var identityToken = Encoding.UTF8.GetString(
+                        appleIdCredential.IdentityToken,
+                        0,
+                        appleIdCredential.IdentityToken.Length);
+
+            // Authorization code
+            var authorizationCode = Encoding.UTF8.GetString(
+                        appleIdCredential.AuthorizationCode,
+                        0,
+                        appleIdCredential.AuthorizationCode.Length);
+
+            // And now you have all the information to create/login a user in your system
+        }
+            },
+            error =>
+            {
+        // Something went wrong
+        var authorizationErrorCode = error.GetAuthorizationErrorCode();
+            });
+#endif
+    }
+
+
+
     public void GuestLogin()
     {
         GoogleInstance.instance.id = nickname.text;
@@ -58,8 +166,12 @@ public class LoadingScene : MonoBehaviour
     }
     public void OnLogOut()
     {
-        ((PlayGamesPlatform)Social.Active).SignOut();
+#if UNITY_ANDROID
+        //((PlayGamesPlatform)Social.Active).SignOut();
         id.text = "Logout";
+#elif UNITY_IOS
+
+#endif
     }
 
     public void LoadMainScene()

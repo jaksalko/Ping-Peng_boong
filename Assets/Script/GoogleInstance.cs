@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GoogleInstance : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class GoogleInstance : MonoBehaviour
 
     public int infiniteLevel;
     public Vector2 maxSize;
+
+    public Text debug;
 
     private void Awake()
     {
@@ -25,5 +28,10 @@ public class GoogleInstance : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);//Dont destroy this singleton gameobject :(
+    }
+
+    public void SetDebugText(string txt)
+    {
+        debug.text = txt;
     }
 }
