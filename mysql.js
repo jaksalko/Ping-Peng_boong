@@ -78,6 +78,26 @@ app.post('/test',function(req,res){
 		res.end(JSON.stringify(results));
 	});
 });
+//Account Setting
+
+app.post('/account/add',function(req,res){
+	var nickname = req.query.nickname;
+	var cash = 0;
+
+	var user = {'id':nickname,
+	'cash':cash};
+	connection.query('insert into user set ?',user,
+	function(err,result){
+		if(err){
+			console.error(err);
+			throw err;
+		}
+		console.log(query);
+		res.send(200,'success');
+	});
+});
+
+//Store API
 
 app.get('/igloo/playerskin', function(req,res){
 	var userid = req.query.userid;
