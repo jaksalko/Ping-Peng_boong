@@ -90,10 +90,15 @@ app.post('/account/add',function(req,res){
 	function(err,result,fields){
 		if(err){
 			console.error(err);
-			throw err;
+
+			//throw err;
 		}
-		console.log(result);
-		res.send(200,'success');
+		else
+		{
+			console.log(result);
+			res.send(200,'success');
+		}
+	
 	});
 });
 
