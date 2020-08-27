@@ -87,12 +87,12 @@ app.post('/account/add',function(req,res){
 	var user = {'id':nickname,
 	'cash':cash};
 	connection.query('insert into user set ?',user,
-	function(err,result){
+	function(err,result,fields){
 		if(err){
 			console.error(err);
 			throw err;
 		}
-		console.log(query);
+		console.log(result);
 		res.send(200,'success');
 	});
 });
