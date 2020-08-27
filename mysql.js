@@ -90,8 +90,8 @@ app.post('/account/add',function(req,res){
 	function(err,result,fields){
 		if(err){
 			console.error(err);
-			res.end(err);
-			//throw err;
+			res.end('error');
+			
 		}
 		else
 		{
