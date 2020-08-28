@@ -96,7 +96,7 @@ app.get('/account/checkid' , function(req,res){
 			console.log(count);
 
 		
-			res.end(count);
+			res.send(JSON.stringify(results));
 			
 
 			//res.end(JSON.stringify(results));
@@ -124,7 +124,7 @@ app.post('/account/add',function(req,res){
 		{
 			
 			console.log(result);
-			res.send(JSON.stringify(result));
+			res.send(200,'success');
 		}
 	
 	});
