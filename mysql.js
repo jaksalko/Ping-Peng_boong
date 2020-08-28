@@ -79,12 +79,31 @@ app.post('/test',function(req,res){
 	});
 });
 //Account Setting
+app.get('/account/checkid' , function(req,res){
+	var id = req.query.id;
+	var sql = 'select count(*) from user where id = ?';
+
+	
+	connection.query(sql,[id],function(error,results,fields){
+		if(error){
+			console.error(error);
+			res.end('error');
+		}
+		else{
+			console.log(results);
+			res.end(results);
+		}
+	})
+
+});
 
 app.post('/account/add',function(req,res){
+	var id = req.query.id;
 	var nickname = req.query.nickname;
 	var cash = 0;
 
-	var user = {'id':nickname,
+	var user = {'id':id,
+	'nickname':nickname,
 	'cash':cash};
 	connection.query('insert into user set ?',user,
 	function(err,result,fields){
