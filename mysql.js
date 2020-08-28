@@ -81,7 +81,7 @@ app.post('/test',function(req,res){
 //Account Setting
 app.get('/account/checkid' , function(req,res){
 	var id = req.query.id;
-	var sql = 'select count(*) from user where id = ?';
+	var sql = 'select count(*) as idCount from user where id = ?';
 
 	
 	connection.query(sql,[id],function(error,results,fields){
@@ -92,7 +92,8 @@ app.get('/account/checkid' , function(req,res){
 		else{
 			
 
-			var count = results[0].count;
+			var count = results[0].idCount;
+			console.log(count);
 
 			if(count == 0)
 			{
