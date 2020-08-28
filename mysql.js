@@ -91,7 +91,7 @@ app.get('/account/checkid' , function(req,res){
 		}
 		else{
 			console.log(results);
-			res.end(200,'success');
+			res.end(JSON.stringify(results));
 		}
 	})
 
