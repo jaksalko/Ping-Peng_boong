@@ -96,7 +96,7 @@ app.get('/account/checkid' , function(req,res){
 			console.log(count);
 
 		
-			res.send(JSON.stringify(results));
+			res.send(count);
 			
 
 			//res.end(JSON.stringify(results));
