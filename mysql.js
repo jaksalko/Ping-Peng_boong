@@ -90,8 +90,20 @@ app.get('/account/checkid' , function(req,res){
 			res.end('error');
 		}
 		else{
-			console.log(results);
-			res.end(JSON.stringify(results));
+			var count = result.count;
+
+			console.log(count);
+			
+			if(count !=0)
+			{
+				res.send("must make account");
+			}
+			else
+			{
+				res.send("already exist");
+			}
+
+			//res.end(JSON.stringify(results));
 		}
 	})
 
@@ -114,6 +126,7 @@ app.post('/account/add',function(req,res){
 		}
 		else
 		{
+			
 			console.log(result);
 			res.send(200,'success');
 		}
