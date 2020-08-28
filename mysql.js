@@ -124,7 +124,7 @@ app.post('/account/add',function(req,res){
 		{
 			
 			console.log(result);
-			res.send(200,'success');
+			res.send(JSON.stringify(result));
 		}
 	
 	});
