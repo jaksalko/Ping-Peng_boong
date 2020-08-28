@@ -95,14 +95,9 @@ app.get('/account/checkid' , function(req,res){
 			var count = results[0].idCount;
 			console.log(count);
 
-			if(count == 0)
-			{
-				res.send("must make account");
-			}
-			else
-			{
-				res.send("already exist");
-			}
+		
+			res.send(JSON.stringify(results));
+			
 
 			//res.end(JSON.stringify(results));
 		}
