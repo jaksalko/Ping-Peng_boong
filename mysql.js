@@ -90,10 +90,10 @@ app.get('/account/checkid' , function(req,res){
 			res.end('error');
 		}
 		else{
-			var count = result.count;
+			var count = results.count;
 
 			console.log(count);
-			
+
 			if(count !=0)
 			{
 				res.send("must make account");
