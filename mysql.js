@@ -115,23 +115,49 @@ app.post('/account/add',function(req,res){
 	'cash':cash};*/
 	var postData = req.body;
 	console.log("id :" + req.body.id +"nickname : " + req.body.nickname);
-	
 
-	connection.query('insert into user set ?',postData,
-	function(err,result,fields){
-		if(err){
-			console.error(err);
+	connection.query('select count(*) as nickCount from user where nickname = ?',req.body.nickname
+	,function(error , results , fields){
+		if(error){
+			console.error(error);
 			res.end('error');
-			
 		}
-		else
-		{
+		else{
 			
-			console.log(result);
-			res.end(JSON.stringify(result));
+
+			var count = results[0].nickCount;
+			console.log(count);
+
+			if(count == 0)
+			{
+				connection.query('insert into user set ?',postData,
+				function(err,result,fields){
+					if(err){
+						console.error(err);
+						res.end('error');
+						
+					}
+					else
+					{
+						
+						console.log(result);
+						res.status(200).send('success');
+					}
+				
+				});
+			}
+			else
+			{
+				res.status(204).send('alreay exist');
+			}
+			
+			
+
+			//res.end(JSON.stringify(results));
 		}
+	})
+
 	
-	});
 });
 
 //Store API
