@@ -114,6 +114,8 @@ app.post('/account/add',function(req,res){
 	'nickname':nickname,
 	'cash':cash};*/
 	var postData = req.body;
+	console.log("id :" + req.body.id +"nickname : " + req.body.nickname);
+	
 
 	connection.query('insert into user set ?',postData,
 	function(err,result,fields){
@@ -126,7 +128,7 @@ app.post('/account/add',function(req,res){
 		{
 			
 			console.log(result);
-			res.send(200,'success');
+			res.end(JSON.stringify(result));
 		}
 	
 	});
