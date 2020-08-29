@@ -95,8 +95,16 @@ app.get('/account/checkid' , function(req,res){
 			var count = results[0].idCount;
 			console.log(count);
 
+			if(count == 0)
+			{
+				res.status(200).send('success');
+			}
+			else
+			{
+				res.status(204).send('alreay exist');
+			}
 		
-			res.send(JSON.stringify(results));
+			//res.send(JSON.stringify(results));
 			
 
 			//res.end(JSON.stringify(results));
