@@ -106,14 +106,16 @@ app.get('/account/checkid' , function(req,res){
 });
 
 app.post('/account/add',function(req,res){
-	var id = req.query.id;
+	/*var id = req.query.id;
 	var nickname = req.query.nickname;
-	var cash = 0;
+	var cash = req.query.cash;
 
 	var user = {'id':id,
 	'nickname':nickname,
-	'cash':cash};
-	connection.query('insert into user set ?',user,
+	'cash':cash};*/
+	var postData = req.body;
+
+	connection.query('insert into user set ?',postData,
 	function(err,result,fields){
 		if(err){
 			console.error(err);
