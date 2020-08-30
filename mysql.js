@@ -195,6 +195,7 @@ app.post('/igloo/playerskin',function(req,res){
 		if(!existuser) {res.end("wrong user id");}
 	});
 
+	var existskin = false;
 	var key1 = "default";
 	var key2 = "default";
 	var rid = 0;
@@ -211,7 +212,7 @@ app.post('/igloo/playerskin',function(req,res){
 				rows[j].skinid_5 == skinid)
 			{
 				res.end("already have");
-				// 여기서 안끝나고 자꾸 새로운 row 생성 -> 수정해야함
+				break;
 			}
 
 			rid = rows[j].rid;
@@ -249,7 +250,7 @@ app.post('/igloo/playerskin',function(req,res){
 
 		}
 
-		if(key1 == "default")
+		if(key1 == "default" && !existskin)
 		{
 			connection.query('insert into skin(userid, skinid_1, gettime_1) values(?, ?, sysdate())', [userid, skinid], function(error, results)
 			{
@@ -258,7 +259,7 @@ app.post('/igloo/playerskin',function(req,res){
 				console.log(JSON.stringify(results));
 			});
 		}
-		else
+		else if(key1 != "default" && !existskin)
 		{
 	        	connection.query('update skin set ' + key1 + '=?, ' + key2 + '=sysdate() where rid=?', [skinid, rid], function(error, results)
         		{	
