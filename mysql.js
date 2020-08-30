@@ -169,7 +169,6 @@ app.post('/account/add',function(req,res){
 });
 
 //Store API
-
 app.get('/igloo/playerskin', function(req,res){
 	var userid = req.query.userid;
 	var sql = 'select * from skin where userid=?';
