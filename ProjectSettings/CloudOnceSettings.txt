@@ -1,0 +1,24 @@
+{
+	"AchievementIDs":[
+		{
+			"InternalID":"FirstPlay",
+			"AppleID":"CgkIhsCLtNIYEAIQAg",
+			"GoogleID":"CgkIhsCLtNIYEAIQAg"
+		}
+	],
+	"LeaderboardIDs":[
+		{
+			"InternalID":"LeaderBoard",
+			"AppleID":"CgkIhsCLtNIYEAIQAQ",
+			"GoogleID":"CgkIhsCLtNIYEAIQAQ"
+		}
+	],
+	"CloudVariables":[],
+	"AppleSupported":true,
+	"GoogleSupported":true,
+	"GoogleAppID":"846754668550",
+	"GoogleSetupRun":true,
+	"DebugModeEnabled":false,
+	"Version":"2.6.8",
+	"SettingsLocation":"0"
+}

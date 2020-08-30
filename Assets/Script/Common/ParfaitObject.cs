@@ -5,6 +5,7 @@ using UnityEngine;
 public class ParfaitObject : MonoBehaviour
 {
     public GameObject iceBox;
+
     public enum State
     {
         inactive,

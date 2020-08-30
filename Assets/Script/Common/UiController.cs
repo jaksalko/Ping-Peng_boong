@@ -4,6 +4,11 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+using CloudOnce;
+
+
+
+
 public class UiController : MonoBehaviour
 {
     public GameObject inGame;
@@ -17,7 +22,10 @@ public class UiController : MonoBehaviour
     private void Awake()
     {
         devtext.text = "platform : " + Application.platform + "\n" + "level : " + PlayerPrefs.GetInt("level", 0);
+       
     }
+
+
 
     public void MiniMapButton()
     {
@@ -61,6 +69,7 @@ public class UiController : MonoBehaviour
     }
     public void NextLevel()
     {
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
@@ -80,8 +89,16 @@ public class UiController : MonoBehaviour
     }
 
 
+    public void CloudInitializeCompleted()
+    {
+        Cloud.OnInitializeComplete -= CloudInitializeCompleted;
+        Debug.Log("initialize completed");
+    }
 
-
-
+    public void FirstClear()
+    {
+        Achievements.FirstPlay.Unlock();
+        Debug.Log("first play");
+    }
 
 }

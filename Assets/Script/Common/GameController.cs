@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using CloudOnce;
 
 public class GameController : MonoBehaviour
 {
@@ -56,10 +57,10 @@ public class GameController : MonoBehaviour
             Debug.Log("infinite mode");
             StartCoroutine(InfiniteModeSetting());
         }
-            
+
+        
 
 
-       
 
     }
     IEnumerator InfiniteModeSetting()
@@ -105,6 +106,7 @@ public class GameController : MonoBehaviour
 
     public void GameEnd(bool isSuccess)
     {
+
         Debug.Log("Game End... result is " + isSuccess);
         isRunning = false;
         isPlaying = false;
@@ -119,6 +121,9 @@ public class GameController : MonoBehaviour
 
 		if (isSuccess)
         {
+            FirstClear();
+
+
             int level = PlayerPrefs.GetInt("level", 0);
             int nextlevel;
             //Showcase scope Level admin
@@ -220,6 +225,17 @@ public class GameController : MonoBehaviour
         isRunning = !stop;
         ui.inGame.SetActive(!stop);
         ui.popup.SetActive(stop);
+    }
+
+
+
+   
+
+    public void FirstClear()
+    {
+        Achievements.FirstPlay.Unlock();
+        Debug.Log("first play");
+        GoogleInstance.instance.SetText("first Play Achievement");
     }
 
 }

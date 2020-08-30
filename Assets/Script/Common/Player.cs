@@ -537,6 +537,7 @@ public class Player : MonoBehaviour
     {
         map[z, x] = block_num;
         other.map[z, x] = block_num;
+        Debug.Log(block_num + " is changed!");
     }
     public void MoveByCloud(int block_num)
     {

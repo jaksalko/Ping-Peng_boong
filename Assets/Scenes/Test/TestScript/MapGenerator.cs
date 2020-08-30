@@ -279,8 +279,16 @@ public class MapGenerator : MonoBehaviour
                             secondFloorHolder.SetParent(selected);
 
                             //indexer.data = selected_id;
-
-                            indexer.data = selected_id;
+                            if(selected_id == BlockNumber.cracked)
+                            {
+                                Debug.Log("uppercracker");
+                                indexer.data = BlockNumber.upperCracked;
+                            }
+                            else
+                            {
+                                indexer.data = selected_id;
+                            }
+                           
 
                         }
                       

@@ -221,7 +221,7 @@ public class Map : MonoBehaviour
                     {
                         ground = Instantiate(cracked, new Vector3(j, -10, i), Quaternion.identity) as GameObject;
                         ground.transform.parent = groundParent;
-
+                        check[i, j] = true;
                         CrackedBlock crackedBlock = ground.GetComponent<CrackedBlock>();
                         crackedBlock.x = j;
                         crackedBlock.z = i;
@@ -299,6 +299,11 @@ public class Map : MonoBehaviour
                 {
                     GameObject crackedBlock = Instantiate(cracked, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
                     crackedBlock.transform.parent = groundParent;
+                    check[i, j] = true;
+                    CrackedBlock c = crackedBlock.GetComponent<CrackedBlock>();
+                    c.x = j;
+                    c.z = i;
+                    c.num = map[i, j];
                 }
                 else if (map[i, j] == BlockNumber.upperBroken)
                 {
@@ -452,7 +457,7 @@ public class Map : MonoBehaviour
             //Get data and convert to samplemap list..
 
             
-            string fixdata = fixJson(www.downloadHandler.text);
+            string fixdata = JsonHelper.fixJson(www.downloadHandler.text);
             JsonData[] datas = JsonHelper.FromJson<JsonData>(fixdata);
             Debug.Log(datas.Length);
             JsonData selectedData = datas[UnityEngine.Random.Range(0, datas.Length)];
@@ -523,41 +528,10 @@ public class Map : MonoBehaviour
 
 
 
-    string fixJson(string value)
-    {
-        value = "{\"Items\":" + value + "}";
-        return value;
-    }
+   
 
 }
 
-public static class JsonHelper
-{
-    public static T[] FromJson<T>(string json)
-    {
-        Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(json);
-        return wrapper.Items;
-    }
-
-    public static string ToJson<T>(T[] array)
-    {
-        Wrapper<T> wrapper = new Wrapper<T>();
-        wrapper.Items = array;
-        return JsonUtility.ToJson(wrapper);
-    }
-
-    public static string ToJson<T>(T[] array, bool prettyPrint)
-    {
-        Wrapper<T> wrapper = new Wrapper<T>();
-        wrapper.Items = array;
-        return JsonUtility.ToJson(wrapper, prettyPrint);
-    }
-
-    [Serializable]
-    private class Wrapper<T>
-    {
-        public T[] Items;
-    }
 
 
-}
+

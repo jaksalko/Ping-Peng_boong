@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 // 구글 플레이 연동
-using GooglePlayGames;
-using GooglePlayGames.BasicApi;
+using CloudOnce;
+using UnityEngine.Networking;
 
 public class LoadingScene : MonoBehaviour
 {
@@ -16,14 +16,93 @@ public class LoadingScene : MonoBehaviour
     public float maxSize;
     bool once;
     public InputField nickname;
+    public Text addAccountText;
+    public GameObject addAccountPanel;
+
+
     private void Awake()
     {
+        JsonAdapter.GET += IsNew;
+        JsonAdapter.POST += IsUnique;
         StartCoroutine(Interpolation());
 
-        PlayGamesPlatform.InitializeInstance(new PlayGamesClientConfiguration.Builder().Build());
-        PlayGamesPlatform.DebugLogEnabled = true;
-        PlayGamesPlatform.Activate();
 
+        Cloud.OnInitializeComplete += CloudInitializeCompleted;
+        Cloud.OnSignInFailed += SignFailed;
+
+        Cloud.OnSignedInChanged += SignChanged;
+
+        Cloud.Initialize(false, true);
+        //Cloud.Initialize();
+        
+    }
+    public void IsNew(bool add)
+    {
+        
+        if(add)
+        {
+            //Debug.Log("add account");
+            addAccountPanel.SetActive(true);
+        }
+        else
+        {
+            Debug.Log("already exist");
+            SceneManager.LoadScene("MainScene");
+
+            //Load Lobby Scene
+        }
+        JsonAdapter.GET -= IsNew;
+    }
+    public void IsUnique(bool unique)
+    {
+        if(unique)
+        {
+            addAccountText.text = "created successfully";
+        }
+        else
+        {
+            addAccountText.text = "already exist!";
+        }
+    }
+    public void AddAccount()
+    {
+        JsonAdapter jsonAdapter = new JsonAdapter();
+        UserData newAccount = new UserData();
+        newAccount.id = Cloud.PlayerDisplayName;
+        newAccount.nickname = nickname.text;
+        newAccount.cash = 0;
+
+        var json = JsonUtility.ToJson(newAccount);
+
+        
+        StartCoroutine(jsonAdapter.API_POST("account/add",json));
+
+
+    }
+    public void CloudInitializeCompleted()
+    {
+        Cloud.OnInitializeComplete -= CloudInitializeCompleted;
+        GoogleInstance.instance.SetText("initialized completed ! " + Cloud.PlayerDisplayName);
+
+        Debug.LogWarning("initialize completed");
+
+        string userId = Cloud.PlayerDisplayName;
+
+        JsonAdapter jsonAdapter = new JsonAdapter();
+        StartCoroutine(jsonAdapter.API_GET("account/checkid?id="+userId));
+
+    }
+    public void SignChanged(bool signin)
+    {
+        if(signin)
+            GoogleInstance.instance.SetText("sign in " + Cloud.PlayerDisplayName);
+        else
+            GoogleInstance.instance.SetText("sign out");
+
+    }
+    public void SignFailed()
+    {
+        GoogleInstance.instance.SetText("sign failed");
     }
     public void OnLogin()
     {
@@ -36,6 +115,7 @@ public class LoadingScene : MonoBehaviour
                     Debug.Log("Success : " + Social.localUser.userName);
                     id.text = Social.localUser.userName;
                     GoogleInstance.instance.id = Social.localUser.userName;
+                    GoogleInstance.instance.SetText(Social.localUser.userName);
                     if (!once)
                         StartCoroutine(Fader());
                 }
@@ -43,9 +123,8 @@ public class LoadingScene : MonoBehaviour
                 {
                     Debug.Log("Fall");
                     id.text = "Fail";
-                    GoogleInstance.instance.id = "guest";
-                    if (!once)
-                        StartCoroutine(Fader());
+                    GoogleInstance.instance.SetText("fail login");
+                    
                 }
             });
         }
@@ -58,8 +137,8 @@ public class LoadingScene : MonoBehaviour
     }
     public void OnLogOut()
     {
-        ((PlayGamesPlatform)Social.Active).SignOut();
-        id.text = "Logout";
+        GoogleInstance.instance.id = Cloud.PlayerID;
+        StartCoroutine(Fader());
     }
 
     public void LoadMainScene()
