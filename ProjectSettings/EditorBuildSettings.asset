@@ -10,9 +10,15 @@ EditorBuildSettings:
     guid: d9b1f75ec306049688cc0033c7b30aa3
   - enabled: 1
     path: Assets/Scenes/Build/MainScene.unity
+    guid: 386e9dd165bb8d44faf05b55e1294dca
+  - enabled: 0
+    path: Assets/Scenes/Build/MainScene_old.unity
     guid: 37b76f540e2cfd14b9020a970e677543
   - enabled: 1
     path: Assets/Scenes/Build/GameScene.unity
+    guid: eac0d3f9388873d488ee81817da4c92f
+  - enabled: 0
+    path: Assets/Scenes/Build/GameScene_old.unity
     guid: b52064e9a33812541ab81c4a31e5ffad
   - enabled: 1
     path: Assets/Scenes/Build/CustomMapPlayScene.unity
@@ -20,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Build/MyInfoScene.unity
     guid: a40e66875f1fd7f4d975031721a71851
+  - enabled: 1
+    path: Assets/Scenes/Build/StoreScene.unity
+    guid: a218e0d015d3a004a9fe5c2a5900b792
   - enabled: 1
     path: Assets/Scenes/Build/LevelScene.unity
     guid: aca287b911d2b5e448752088287d206e

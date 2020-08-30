@@ -37,6 +37,11 @@ public class ButtonManager_Main : MonoBehaviour
 		SceneManager.LoadScene("MyInfoScene");
 	}
 
+	public void PressStoreBtn()
+	{
+		SceneManager.LoadScene("StoreScene");
+	}
+
     public void EditorPlayBtn()
     {
         //추후에 난이도 설정
