@@ -211,6 +211,7 @@ app.post('/igloo/playerskin',function(req,res){
 				rows[j].skinid_5 == skinid)
 			{
 				res.end("already have");
+				existskin = true;
 				break;
 			}
 
