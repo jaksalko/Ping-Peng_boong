@@ -124,7 +124,7 @@ app.post('/account/add',function(req,res){
 	var postData = req.body;
 	console.log("id :" + req.body.id +"nickname : " + req.body.nickname);
 
-	connection.query('select count(*) as nickCount from user where nickname = ?',req.body.nickname
+	connection.query('select count(*) as nickCount from user where nickname = ? or id =?',[req.body.nickname,req.body.id]
 	,function(error , results , fields){
 		if(error){
 			console.error(error);
