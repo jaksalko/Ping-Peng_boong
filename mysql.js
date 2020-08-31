@@ -168,6 +168,29 @@ app.post('/account/add',function(req,res){
 	
 });
 
+//Account Cash
+app.post('/account/cash' , function(req,res)
+{
+	var id = req.query.id;
+	var change = req.query.change;
+
+	var sql = 'update user set cash = cash + ? where id = ?';
+	connection.query(sql,[change,id],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send('success change cash data');
+		}
+				
+	});
+})
+
+
 //Store API
 app.get('/igloo/playerskin', function(req,res){
 	var userid = req.query.userid;
