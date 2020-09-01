@@ -1,12 +1,12 @@
 id,grade,name,information,cost,location
-30,A,하프 물범 코스튬,하프 물범은 펭귄이랑 친구라던데…,1000 ,Assets/Resource/Player_material/dark.mat
-31,A,붕어빵 펭귄,붕어빵 섬 클리어 시 획득 가능,9999 ,Assets/Resource/Player_material/dark.mat
-20,B,땡땡이,어쩐지 옛날 생각이 나는 땡땡이 펭귄이다.,600 ,Assets/Resource/Player_material/dark.mat
-21,B,황금,어딘가 비싸보이는 펭귄이다.,600 ,Assets/Resource/Player_material/dark.mat
-22,B,밀크 초코,우유 맛이 날 것 같은 펭귄이다.,600 ,Assets/Resource/Player_material/dark.mat
-10,C,바나나,원숭이가 좋아할 것 같은 펭귄이다.,100 ,Assets/Resource/Player_material/banana.mat
-11,C,민트 초코, '누구나' 좋아하는 민트 초코 펭귄이다.,100 ,Assets/Resource/Player_material/melon.mat
-12,C,블루베리,몸에 좋은 슈퍼푸드 블루베리 펭귄이다.,100 ,Assets/Resource/Player_material/blueberry.mat
-13,C,초코,쪼꼬,100 ,Assets/Resource/Player_material/dark.mat
-14,C,포도,뽀또,100 ,Assets/Resource/Player_material/grape.mat
-15,C,딸기,딸끼,100 ,Assets/Resource/Player_material/red.mat
+30,A,하프 물범 코스튬,하프 물범은 펭귄이랑 친구라던데…,1000 ,Player_material/dark
+31,A,붕어빵 펭귄,붕어빵 섬 클리어 시 획득 가능,9999 ,Player_material/dark
+20,B,땡땡이,어쩐지 옛날 생각이 나는 땡땡이 펭귄이다.,600 ,Player_material/dark
+21,B,황금,어딘가 비싸보이는 펭귄이다.,600 ,Player_material/dark
+22,B,밀크 초코,우유 맛이 날 것 같은 펭귄이다.,600 ,Player_material/dark
+10,C,바나나,원숭이가 좋아할 것 같은 펭귄이다.,100 ,Player_material/banana
+11,C,민트 초코, '누구나' 좋아하는 민트 초코 펭귄이다.,100 ,Player_material/melon
+12,C,블루베리,몸에 좋은 슈퍼푸드 블루베리 펭귄이다.,100 ,Player_material/blueberry
+13,C,초코,쪼꼬,100 ,Player_material/dark
+14,C,포도,뽀또,100 ,Player_material/grape
+15,C,딸기,딸끼,100 ,Player_material/red

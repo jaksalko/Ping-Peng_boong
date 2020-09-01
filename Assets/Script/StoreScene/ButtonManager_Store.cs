@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
-using UnityEditor;
 
 public class ButtonManager_Store : MonoBehaviour
 {
@@ -81,7 +80,8 @@ public class ButtonManager_Store : MonoBehaviour
 				skinInfo.transform.GetChild(1).GetComponent<Text>().text = playerskin[index]["information"].ToString();
 				skinInfo.transform.GetChild(2).GetComponent<Text>().text = playerskin[index]["cost"].ToString();
 				string location = playerskin[index]["location"].ToString();
-				Material skinmat = (Material)AssetDatabase.LoadAssetAtPath(location, typeof(Material));
+				Debug.Log(location);
+				Material skinmat = Resources.Load<Material>(location);
 				skinPreview.GetComponent<SkinnedMeshRenderer>().material = skinmat;
 				break;
 			case 3:

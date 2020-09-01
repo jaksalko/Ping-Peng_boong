@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
-using UnityEditor;
 
 public class ButtonManager_MyInfo : MonoBehaviour
 {
@@ -67,7 +66,8 @@ public class ButtonManager_MyInfo : MonoBehaviour
 				skinInfo.transform.GetChild(0).GetComponent<Text>().text = playerskin[index]["name"].ToString();
 				skinInfo.transform.GetChild(1).GetComponent<Text>().text = playerskin[index]["information"].ToString();
 				string location = playerskin[index]["location"].ToString();
-				Material skinmat = (Material)AssetDatabase.LoadAssetAtPath(location, typeof(Material));
+				Debug.Log(location);
+				Material skinmat = Resources.Load<Material>(location);
 				skinPreview.GetComponent<SkinnedMeshRenderer>().material = skinmat;
 				break;
 			case 3:
