@@ -288,6 +288,8 @@ public class Player : MonoBehaviour
         posX = (int)transform.position.x;
         posZ = (int)transform.position.z;
 
+        if (map == null)
+            Debug.Log("null exception");
 
         temp = map[posZ, posX];
         if (upstair)
@@ -296,6 +298,8 @@ public class Player : MonoBehaviour
             map[posZ, posX] = BlockNumber.character;
 
         Debug.Log(map[posZ, posX] + "," + other.map[posZ, posX]);
+
+    
 
         check[posZ, posX] = true;
 //        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);

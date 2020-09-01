@@ -134,6 +134,7 @@ MonoBehaviour:
   speed: 7
   moveCount: 0
   actionnum: 0
+  parfaitOrder: 0
   through: 
   stop: 
   temp: 0
@@ -180,7 +181,7 @@ CharacterController:
   m_Height: 0.7
   m_Radius: 0.3
   m_SlopeLimit: 90
-  m_StepOffset: 0.3
+  m_StepOffset: 0.1
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.55, z: 0}

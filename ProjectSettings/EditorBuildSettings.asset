@@ -33,6 +33,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Build/LevelScene.unity
     guid: aca287b911d2b5e448752088287d206e
   - enabled: 1
-    path: Assets/Scenes/Test/MapEditor.unity
+    path: Assets/Scenes/Build/MapEditor.unity
     guid: c82952ef68098492c8da680796cf7081
   m_configObjects: {}

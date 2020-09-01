@@ -47,6 +47,8 @@ public class LoadingScene : MonoBehaviour
         else
         {
             Debug.Log("already exist");
+            GoogleInstance.instance.id = Cloud.PlayerDisplayName;
+
             SceneManager.LoadScene("MainScene");
 
             //Load Lobby Scene
@@ -58,6 +60,9 @@ public class LoadingScene : MonoBehaviour
         if(unique)
         {
             addAccountText.text = "created successfully";
+            GoogleInstance.instance.id = Cloud.PlayerDisplayName;
+
+            SceneManager.LoadScene("MainScene");
         }
         else
         {

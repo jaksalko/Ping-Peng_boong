@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d778772eb1894cc38adce6b9f88ef28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  iceBox: {fileID: 4929991392558926808}
+  iceBox: {fileID: 156708341076357066}
   sequence: 0
   state: 0
 --- !u!1001 &8226245119915730853
@@ -323,6 +323,12 @@ PrefabInstance:
 --- !u!4 &677630989492696439 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8885060630191280850, guid: 611195a96abd643c78fde36c99d2975b,
+    type: 3}
+  m_PrefabInstance: {fileID: 8226245119915730853}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &156708341076357066 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8072072578001029231, guid: 611195a96abd643c78fde36c99d2975b,
     type: 3}
   m_PrefabInstance: {fileID: 8226245119915730853}
   m_PrefabAsset: {fileID: 0}

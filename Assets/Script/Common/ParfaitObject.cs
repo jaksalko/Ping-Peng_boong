@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ParfaitObject : MonoBehaviour
 {
-    public GameObject iceBox;
-
+    //public GameObject iceBox;
+    public Animator iceBox;
     public enum State
     {
         inactive,
@@ -38,7 +38,8 @@ public class ParfaitObject : MonoBehaviour
     {
         Debug.Log("activate");
         state = State.active;
-        iceBox.SetActive(false);
+        iceBox.SetBool("melt", true);
+        //iceBox.SetActive(false);
         //renderer.material.color = Color.white;// reveal real color
 
     }
