@@ -17,25 +17,36 @@ public class IslandGenerator : MonoBehaviour
     private void Awake()
     {
         
-        sample.mapsizeH = (int)maxSize.y;
-        sample.mapsizeW = (int)maxSize.x;
+        
 
     }
   
-    public void SplitLine(string datas)
+    public void SplitLine(string datas , int island_num)
     {
+
+        splitToInt.Clear();
+        sample.lines.Clear();
+        sample.mapsizeH = (int)maxSize.y;
+        sample.mapsizeW = (int)maxSize.x;
+
         row = datas;
 
         string[] split = row.Split(' ');
-       
+
+        sample.map = new int[(int)maxSize.y,(int)maxSize.x];
+        
+
         for(int i = 0; i < split.Length; i++)
         {
             int data = int.Parse(split[i]);
             if (splitToInt.Count == maxSize.x * maxSize.y)
             {
                 Debug.Log("done map data");
+                sample.MapToLine();
+
                 SampleMap newMap = Instantiate(sample, default);
                 newMap.gameObject.transform.SetParent(transform);
+                newMap.name = "Island_" + island_num;
                 break;
 
             }
@@ -44,8 +55,14 @@ public class IslandGenerator : MonoBehaviour
 
             splitToInt.Add(data);
 
-            int x = splitToInt.Count / (int)maxSize.x;
-            int z = (splitToInt.Count - 1) % (int)maxSize.x;
+
+
+            int z = (splitToInt.Count-1) / (int)maxSize.x; // height
+            int x = (splitToInt.Count - 1) % (int)maxSize.x; // width
+
+
+            sample.map[z, x] = data;
+
 
             if(data >= BlockNumber.parfaitA && data <= BlockNumber.parfaitD)
             {
@@ -102,11 +119,11 @@ public class IslandGenerator : MonoBehaviour
 
     }
     #region Editor
-    public void GenerateMap(string datas)
+    public void GenerateMap(string datas , int num)
     {
         Debug.Log(datas);
 
-        SplitLine(datas);
+        SplitLine(datas, num);
 
 
     }

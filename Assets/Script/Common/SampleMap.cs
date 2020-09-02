@@ -30,7 +30,7 @@ public class SampleMap : MonoBehaviour
 
     public List<Line> lines = new List<Line>();
 
-
+    
     
     /*
     * 파르페 -1 -2 -3 -4
@@ -55,6 +55,21 @@ public class SampleMap : MonoBehaviour
             }
         }
 
+    }
+
+    public void MapToLine()
+    {
+        int dataCount = mapsizeH * mapsizeW;
+        for(int i = 0; i < mapsizeH; i++)
+        {
+            Line newLine = new Line();
+
+            lines.Add(newLine);
+            for(int j = 0; j < mapsizeW; j++)
+            {
+                lines[i].line.Add(map[i, j]);
+            }
+        }
     }
 
    
