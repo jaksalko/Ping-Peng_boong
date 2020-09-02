@@ -48,10 +48,6 @@ public class ButtonManager_Store : MonoBehaviour
 		GetContents("playerskin", "id");
 		skintype = "playerskin";
 		selectSkinType = 1;
-
-		skinInfo.transform.GetChild(0).GetComponent<Text>().text = "";
-		skinInfo.transform.GetChild(1).GetComponent<Text>().text = "";
-		skinInfo.transform.GetChild(2).GetComponent<Text>().text = "";
 	}
 
 	public void PressBlockSkinBtn()
@@ -60,27 +56,32 @@ public class ButtonManager_Store : MonoBehaviour
 		GetContents("blockskin", "id");
 		skintype = "blockskin";
 		selectSkinType = 3;
-
-		skinInfo.transform.GetChild(0).GetComponent<Text>().text = "";
-		skinInfo.transform.GetChild(1).GetComponent<Text>().text = "";
-		skinInfo.transform.GetChild(2).GetComponent<Text>().text = "";
 	}
 
 	public void PressSkinBtn()
 	{
-		int index = EventSystem.current.currentSelectedGameObject.transform.GetSiblingIndex();
-		selectSkinNum = index;
+		string skinname = EventSystem.current.currentSelectedGameObject.GetComponentInChildren<Text>().text;
+		int index = 0;
 
 		switch(selectSkinType)
 		{
 			case 1:
 			case 2:
 				List<Dictionary<string, object>> playerskin = CSVReader.Read("playerskin");
+
+				for(int i = 0; i < playerskin.Count; i++)
+				{
+					if (skinname == playerskin[i]["name"].ToString())
+					{
+						index = i;
+						break;
+					}
+				}
+
 				skinInfo.transform.GetChild(0).GetComponent<Text>().text = playerskin[index]["name"].ToString();
 				skinInfo.transform.GetChild(1).GetComponent<Text>().text = playerskin[index]["information"].ToString();
 				skinInfo.transform.GetChild(2).GetComponent<Text>().text = playerskin[index]["cost"].ToString();
 				string location = playerskin[index]["location"].ToString();
-				Debug.Log(location);
 				Material skinmat = Resources.Load<Material>(location);
 				skinPreview.GetComponent<SkinnedMeshRenderer>().material = skinmat;
 				break;
@@ -173,7 +174,6 @@ public class ButtonManager_Store : MonoBehaviour
 				break;
 		}
 		
-
 		for (var i = 0; i < skin.Count; i++)
 		{
 			GameObject skinBtn = Instantiate(skinBtnObj, new Vector3(0, 0, 0), Quaternion.identity);
@@ -181,6 +181,10 @@ public class ButtonManager_Store : MonoBehaviour
 			skinBtn.transform.GetComponentInChildren<Text>().text = skin[i]["name"].ToString();
 			skinBtn.GetComponent<Button>().onClick.AddListener(() => PressSkinBtn());
 		}
+
+		skinInfo.transform.GetChild(0).GetComponent<Text>().text = "";
+		skinInfo.transform.GetChild(1).GetComponent<Text>().text = "";
+		skinInfo.transform.GetChild(2).GetComponent<Text>().text = "";
 	}
 
 	private void ResetContents(GameObject obj)
@@ -194,5 +198,9 @@ public class ButtonManager_Store : MonoBehaviour
 					Destroy(childList[i].gameObject);
 			}
 		}
+
+		skinInfo.transform.GetChild(0).GetComponent<Text>().text = "";
+		skinInfo.transform.GetChild(1).GetComponent<Text>().text = "";
+		skinInfo.transform.GetChild(2).GetComponent<Text>().text = "";
 	}
 }
