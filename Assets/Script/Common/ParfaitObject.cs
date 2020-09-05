@@ -19,7 +19,7 @@ public class ParfaitObject : MonoBehaviour
     void Awake()
     {
         Debug.Log("parfait initialize...");
-        state = State.inactive;
+        //state = State.inactive;
         //renderer = this.gameObject.GetComponent<Renderer>();
         //renderer.material.color = Color.black;
 
