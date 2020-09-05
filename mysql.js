@@ -194,7 +194,7 @@ app.post('/account/cash' , function(req,res)
 //Store API
 app.get('/igloo/playerskin', function(req,res){
 	var userid = req.query.userid;
-	var sql = 'select * from skin where userid=?';
+	var sql = 'select skinid_1, skinid_2, skinid_3, skinid_4, skinid_5 from skin where userid=?';
 	console.log(sql + userid);
         connection.query(sql, userid, function(error, results, fields)
         {
