@@ -7,6 +7,7 @@ using UnityEditor;
 public class IslandEditor : Editor
 {
     string myString = "";
+    string title = "";
     int island_num = 0;
     public override void OnInspectorGUI()
     {
@@ -17,12 +18,15 @@ public class IslandEditor : Editor
         GUILayout.Label("Input Data", EditorStyles.boldLabel);
         myString = EditorGUILayout.TextField("Text Field", myString);
 
+        GUILayout.Label("Title", EditorStyles.boldLabel);
+        title = EditorGUILayout.TextField("Text Field", title);
+
         GUILayout.Label("Input Data", EditorStyles.boldLabel);
         island_num = EditorGUILayout.IntField("Island Number", island_num);
 
         if (GUILayout.Button("Edit"))
         {
-            generator.GenerateMap(myString , island_num);
+            generator.GenerateMap(myString ,title, island_num);
         }
     }
 }

@@ -21,7 +21,7 @@ public class IslandGenerator : MonoBehaviour
 
     }
   
-    public void SplitLine(string datas , int island_num)
+    public void SplitLine(string datas ,string title, int island_num)
     {
 
         splitToInt.Clear();
@@ -46,7 +46,7 @@ public class IslandGenerator : MonoBehaviour
 
                 SampleMap newMap = Instantiate(sample, default);
                 newMap.gameObject.transform.SetParent(transform);
-                newMap.name = "Island_" + island_num;
+                newMap.name = title + "_" + island_num;
                 break;
 
             }
@@ -119,11 +119,11 @@ public class IslandGenerator : MonoBehaviour
 
     }
     #region Editor
-    public void GenerateMap(string datas , int num)
+    public void GenerateMap(string datas ,string title, int num)
     {
         Debug.Log(datas);
 
-        SplitLine(datas, num);
+        SplitLine(datas,title, num);
 
 
     }

@@ -76,7 +76,7 @@ public class SampleMap : MonoBehaviour
     
     public virtual void init()
     {
-
+        LineToMap();
     }
 
    

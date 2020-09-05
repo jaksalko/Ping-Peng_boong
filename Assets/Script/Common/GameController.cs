@@ -39,6 +39,7 @@ public class GameController : MonoBehaviour
 
 	private void Awake()
     {
+        PlayerPrefs.DeleteAll();
         if (instance == null)
             instance = this;
         else

@@ -91,6 +91,7 @@ public class Map : MonoBehaviour
 
     public void GenerateMap(int index)
     {
+        Debug.Log(index);
         sample[index].init();
         sampleMap = sample[index];
         mapsizeH = sampleMap.mapsizeH;
