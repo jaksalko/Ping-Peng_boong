@@ -433,6 +433,8 @@ public class Player : MonoBehaviour
 
                        
                     }
+
+                   
                 }
 
               
@@ -543,13 +545,15 @@ public class Player : MonoBehaviour
         other.map[z, x] = block_num;
         Debug.Log(block_num + " is changed!");
     }
+
+
     public void MoveByCloud(int block_num)
     {
         /*while(isMoving)
         {
             yield return new WaitForSeconds(Time.deltaTime);
         }*/
-
+        Debug.Log("Moved by Cloud");
         
         getDirection = (block_num % 10) - 1;
 

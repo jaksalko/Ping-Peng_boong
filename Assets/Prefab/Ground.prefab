@@ -107,6 +107,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc56b1ca9138c7249b9ee98731ec4be9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  num: 0
+  snow: {fileID: 7820815061297326053}
 --- !u!1001 &8929786004709676865
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -118,6 +120,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: snowPrefab
+      objectReference: {fileID: 0}
+    - target: {fileID: 1686005233435504804, guid: 810b542ba71694c918374a748fef13c8,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2030618202843589150, guid: 810b542ba71694c918374a748fef13c8,
         type: 3}
@@ -176,6 +183,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 810b542ba71694c918374a748fef13c8, type: 3}
+--- !u!1 &7820815061297326053 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1686005233435504804, guid: 810b542ba71694c918374a748fef13c8,
+    type: 3}
+  m_PrefabInstance: {fileID: 8929786004709676865}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7476764212377075039 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2030618202843589150, guid: 810b542ba71694c918374a748fef13c8,

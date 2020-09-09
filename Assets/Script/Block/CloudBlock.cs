@@ -20,7 +20,14 @@ public class CloudBlock : Block
                 //StartCoroutine(onCloud_player.MoveByCloud(num));
                 onCloud_player.MoveByCloud(num);
             }
-                
+
+            //if (onCloud_player.onCloud && !onCloud_player.isMoving && !onCloud_player.isActive)
+            //{
+            //    onCloud_player.MoveByCloud(num);
+            //}
+
+
+
         }
     }
     private void OnTriggerExit(Collider other)
@@ -30,6 +37,8 @@ public class CloudBlock : Block
             Player onCloud_player = other.gameObject.GetComponent<Player>();
             Debug.Log("exit");
             onCloud_player.onCloud = false;
+
+            
         }
     }
 }

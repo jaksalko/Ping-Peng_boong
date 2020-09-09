@@ -140,10 +140,15 @@ public class Map : MonoBehaviour
         {
             GameObject ground;
             GameObject half_ground;
-            if (i == 0 || i == (mapsizeW-1))
+            if (i == 0 || i == (mapsizeW-1))//outline setting
             {
                 for(int j = 0; j < mapsizeH; j++)
                 {
+
+                    
+
+
+
                     if ((i + j) % 2 == 0)
                     {
                         ground = Instantiate(groundBlock_sky, new Vector3(i, -10, j), groundBlock_sky.transform.rotation) as GameObject;
@@ -201,17 +206,29 @@ public class Map : MonoBehaviour
                 
 
                 //0층 빌드
-                if(map[i,j] == 0 || map[i,j] > 6)// not cloud , cracked , broken (0 floor)
+                if(map[i,j] == 0 || map[i,j] > 6)// all floor block except cloud , cracked , broken
                 {
                     GameObject ground;
                     if ((i + j) % 2 == 0)
                     {
                         ground = Instantiate(groundBlock_sky, new Vector3(j, -10, i), groundBlock_sky.transform.rotation) as GameObject;
+                       
                     }
                     else
                     {
                         ground = Instantiate(groundBlock, new Vector3(j, -10, i), groundBlock.transform.rotation) as GameObject;
                     }
+
+                    if (map[i, j] == BlockNumber.normal || map[i, j] == BlockNumber.upperNormal)
+                    {
+                        ground.GetComponent<GroundBlock>().IsNormal(true);
+                    }
+                    else if(map[i,j] >= BlockNumber.parfaitA && map[i,j] <= BlockNumber.parfaitD)
+                    {
+                        ground.GetComponent<GroundBlock>().IsNormal(true);
+                    }
+
+                    //ground.GetComponent<GroundBlock>().IsNormal(true);
                     ground.transform.parent = groundParent;
                 }
                 else//cloud , cracked or broken (0 floor)
@@ -260,7 +277,7 @@ public class Map : MonoBehaviour
                 }
                 else if (map[i, j] == BlockNumber.upperObstacle)//second floor obstacle
                 {
-                    GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), groundBlock.transform.rotation) as GameObject;
+                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
                     second_ground.transform.parent = groundParent;
 
                     check[i, j] = true;
@@ -273,6 +290,7 @@ public class Map : MonoBehaviour
                     //generate second floor
                     
                     GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
+                    second_ground.GetComponent<GroundBlock>().IsNormal(true);
                     second_ground.transform.parent = groundParent;
                 }
                 else if (map[i, j] == BlockNumber.upperCharacter)//second floor with character?
@@ -384,9 +402,9 @@ public class Map : MonoBehaviour
                 }
                 else if (map[i, j] == BlockNumber.upperParfaitA)
                 {
-                    GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), groundBlock.transform.rotation) as GameObject;
+                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
                     second_ground.transform.parent = groundParent;
-
+                    second_ground.GetComponent<GroundBlock>().IsNormal(true);
 
                     parfaitBlock[0].gameObject.SetActive(true);
                     parfaitBlock[0].gameObject.transform.position = new Vector3(j, -8, i);
@@ -399,8 +417,9 @@ public class Map : MonoBehaviour
 
                 else if (map[i, j] == BlockNumber.upperParfaitB)
                 {
-                    GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), groundBlock.transform.rotation) as GameObject;
+                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
                     second_ground.transform.parent = groundParent;
+                    second_ground.GetComponent<GroundBlock>().IsNormal(true);
 
                     parfaitBlock[1].gameObject.SetActive(true);
                     parfaitBlock[1].gameObject.transform.position = new Vector3(j, -8, i);
@@ -410,8 +429,9 @@ public class Map : MonoBehaviour
 
                 else if (map[i, j] == BlockNumber.upperParfaitC)
                 {
-                    GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), groundBlock.transform.rotation) as GameObject;
+                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
                     second_ground.transform.parent = groundParent;
+                    second_ground.GetComponent<GroundBlock>().IsNormal(true);
 
                     parfaitBlock[2].gameObject.SetActive(true);
                     parfaitBlock[2].gameObject.transform.position = new Vector3(j, -8, i);
@@ -421,8 +441,9 @@ public class Map : MonoBehaviour
 
                 else if (map[i, j] == BlockNumber.upperParfaitD)
                 {
-                    GameObject second_ground = Instantiate(groundBlock, new Vector3(j, -9, i), groundBlock.transform.rotation) as GameObject;
+                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
                     second_ground.transform.parent = groundParent;
+                    second_ground.GetComponent<GroundBlock>().IsNormal(true);
 
                     parfaitBlock[3].gameObject.SetActive(true);
                     parfaitBlock[3].gameObject.transform.position = new Vector3(j, -8, i);
