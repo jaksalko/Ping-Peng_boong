@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 
 public class ButtonManager_Store : MonoBehaviour
 {
@@ -16,12 +18,15 @@ public class ButtonManager_Store : MonoBehaviour
 	public string skintype;
 	private int selectSkinType;
 	private int selectSkinNum;
+	private List<int> skinList = new List<int>();
 
 	public Dropdown _dropdown;
 
 	// Use this for initialization
 	public void Start()
 	{
+		StartCoroutine(SkinList());
+
 		GetContents("playerskin", "id");
 		skintype = "playerskin";
 		selectSkinType = 1;
@@ -79,8 +84,19 @@ public class ButtonManager_Store : MonoBehaviour
 				}
 
 				skinInfo.transform.GetChild(0).GetComponent<Text>().text = playerskin[index]["name"].ToString();
-				skinInfo.transform.GetChild(1).GetComponent<Text>().text = playerskin[index]["information"].ToString();
-				skinInfo.transform.GetChild(2).GetComponent<Text>().text = playerskin[index]["cost"].ToString();
+
+				int skinid = int.Parse(playerskin[index]["id"].ToString());
+				if (skinList.Exists(x => x == skinid))
+				{
+					skinInfo.transform.GetChild(1).GetComponent<Text>().text = "이미 보유하고있는 스킨입니다.";
+					skinInfo.transform.GetChild(2).GetComponent<Text>().text = "구매불가";
+				}
+				else
+				{
+					skinInfo.transform.GetChild(1).GetComponent<Text>().text = playerskin[index]["information"].ToString();
+					skinInfo.transform.GetChild(2).GetComponent<Text>().text = playerskin[index]["cost"].ToString();
+				}
+
 				string location = playerskin[index]["location"].ToString();
 				Material skinmat = Resources.Load<Material>(location);
 				skinPreview.GetComponent<SkinnedMeshRenderer>().material = skinmat;
@@ -179,6 +195,7 @@ public class ButtonManager_Store : MonoBehaviour
 			GameObject skinBtn = Instantiate(skinBtnObj, new Vector3(0, 0, 0), Quaternion.identity);
 			skinBtn.transform.SetParent(skinContents.transform);
 			skinBtn.transform.GetComponentInChildren<Text>().text = skin[i]["name"].ToString();
+
 			skinBtn.GetComponent<Button>().onClick.AddListener(() => PressSkinBtn());
 		}
 
@@ -202,5 +219,43 @@ public class ButtonManager_Store : MonoBehaviour
 		skinInfo.transform.GetChild(0).GetComponent<Text>().text = "";
 		skinInfo.transform.GetChild(1).GetComponent<Text>().text = "";
 		skinInfo.transform.GetChild(2).GetComponent<Text>().text = "";
+	}
+
+	public IEnumerator SkinList()
+	{
+		// UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/igloo/playerskin?userid=" + GoogleInstance.instance.id);
+		UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/igloo/playerskin?userid=test1");
+		yield return www.SendWebRequest();
+
+		if (www.isNetworkError || www.isHttpError)
+		{
+			Debug.Log(www.error);
+		}
+		else
+		{
+			string result = www.downloadHandler.text;
+
+			// Debug.Log(result);
+
+			string pattern = @"([\W]+(skinid)+_\d\W:)|(}])";
+			Regex regex = new Regex(pattern);
+			result = regex.Replace(result, "%");
+			// Debug.Log(result);
+
+			string[] results;
+
+			results = result.Split('%');
+			for (int i = 1; i < results.Length - 1; i++)
+			{
+				// Debug.Log(results[i]);
+				if (results[i] != "null")
+				{
+					int skin = int.Parse(results[i]);
+					skinList.Add(skin);
+					// Debug.Log(skin);
+				}
+			}
+		}
+		yield break;
 	}
 }

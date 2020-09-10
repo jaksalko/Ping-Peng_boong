@@ -87,6 +87,22 @@ public class UserData
     public int cash;
 }
 
+public class UserSkinData
+{
+	public int rid;
+	public string userid;
+	public int skinid_1;
+	public Time gettime_1;
+	public int skinid_2;
+	public Time gettime_2;
+	public int skinid_3;
+	public Time gettime_3;
+	public int skinid_4;
+	public Time gettime_4;
+	public int skinid_5;
+	public Time gettime_5;
+}
+
 public static class JsonHelper
 {
     public static T[] FromJson<T>(string json)

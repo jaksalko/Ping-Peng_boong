@@ -1,9 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.Networking;
 
 public class ButtonManager_MyInfo : MonoBehaviour
 {
@@ -13,13 +15,12 @@ public class ButtonManager_MyInfo : MonoBehaviour
 
 	public GameObject skinBtnObj;
 
-	private int selectSkinType;
 	private int selectSkinNum;
+	private List<int> skinList = new List<int>();
 
 	public void Start()
 	{
-		GetContents("playerskin");
-		selectSkinType = 1;
+		StartCoroutine(SkinList());
 	}
 
 	public void Update()
@@ -36,21 +37,12 @@ public class ButtonManager_MyInfo : MonoBehaviour
 	{
 		ResetContents(skinContents);
 		GetContents("playerskin");
-		selectSkinType = 1;
 	}
 
 	public void PressPlayer2Btn()
 	{
 		ResetContents(skinContents);
 		GetContents("playerskin");
-		selectSkinType = 2;
-	}
-
-	public void PressBlockBtn()
-	{
-		ResetContents(skinContents);
-		GetContents("blockskin");
-		selectSkinType = 3;
 	}
 
 	public void PressSkinBtn()
@@ -58,47 +50,17 @@ public class ButtonManager_MyInfo : MonoBehaviour
 		int index = EventSystem.current.currentSelectedGameObject.transform.GetSiblingIndex();
 		selectSkinNum = index;
 
-		switch(selectSkinType)
-		{
-			case 1:
-			case 2:
-				List<Dictionary<string, object>> playerskin = CSVReader.Read("playerskin");
-				skinInfo.transform.GetChild(0).GetComponent<Text>().text = playerskin[index]["name"].ToString();
-				skinInfo.transform.GetChild(1).GetComponent<Text>().text = playerskin[index]["information"].ToString();
-				string location = playerskin[index]["location"].ToString();
-				Debug.Log(location);
-				Material skinmat = Resources.Load<Material>(location);
-				skinPreview.GetComponent<SkinnedMeshRenderer>().material = skinmat;
-				break;
-			case 3:
-				List<Dictionary<string, object>> blockskin = CSVReader.Read("blockskin");
-				skinInfo.transform.GetChild(0).GetComponent<Text>().text = blockskin[index]["name"].ToString();
-				skinInfo.transform.GetChild(1).GetComponent<Text>().text = blockskin[index]["information"].ToString();
-				skinInfo.transform.GetChild(2).GetComponent<Text>().text = blockskin[index]["cost"].ToString();
-				break;
-			default:
-				Debug.Log("Non-set Skin Type Error");
-				break;
-		}
+		List<Dictionary<string, object>> playerskin = CSVReader.Read("playerskin");
+		skinInfo.transform.GetChild(0).GetComponent<Text>().text = playerskin[index]["name"].ToString();
+		skinInfo.transform.GetChild(1).GetComponent<Text>().text = playerskin[index]["information"].ToString();
+		string location = playerskin[index]["location"].ToString();
+		Debug.Log(location);
+		Material skinmat = Resources.Load<Material>(location);
+		skinPreview.GetComponent<SkinnedMeshRenderer>().material = skinmat;
 	}
 
 	public void PressApplyBtn()
 	{
-		switch (selectSkinType)
-		{
-			case 1:
-
-				break;
-			case 2:
-
-				break;
-			case 3:
-
-				break;
-			default:
-				Debug.Log("Non-set Skin Type Error");
-				break;
-		}
 
 		/*
 		List<Dictionary<string, object>> skin = CSVReader.Read("playerskin");
@@ -119,7 +81,16 @@ public class ButtonManager_MyInfo : MonoBehaviour
 			GameObject skinBtn = Instantiate(skinBtnObj, new Vector3(0, 0, 0), Quaternion.identity);
 			skinBtn.transform.SetParent(skinContents.transform);
 			skinBtn.transform.GetComponentInChildren<Text>().text = skin[i]["name"].ToString();
-			skinBtn.GetComponent<Button>().onClick.AddListener(() => PressSkinBtn());
+
+			int skinid = int.Parse(skin[i]["id"].ToString());
+			if (skinList.Exists(x => x==skinid))
+			{
+				skinBtn.GetComponent<Button>().onClick.AddListener(() => PressSkinBtn());
+			}
+			else
+			{
+				skinBtn.GetComponent<Button>().interactable = false;
+			}
 		}
 	}
 
@@ -134,5 +105,43 @@ public class ButtonManager_MyInfo : MonoBehaviour
 					Destroy(childList[i].gameObject);
 			}
 		}
+	}
+
+	public IEnumerator SkinList()
+	{
+		// UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/igloo/playerskin?userid=" + GoogleInstance.instance.id);
+		UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/igloo/playerskin?userid=test1");
+		yield return www.SendWebRequest();
+
+		if (www.isNetworkError || www.isHttpError)
+		{
+			Debug.Log(www.error);
+		}
+		else
+		{
+			string result = www.downloadHandler.text;
+
+			// Debug.Log(result);
+
+			string pattern = @"([\W]+(skinid)+_\d\W:)|(}])";
+			Regex regex = new Regex(pattern);
+			result = regex.Replace(result, "%");
+			// Debug.Log(result);
+
+			string[] results;
+
+			results = result.Split('%');
+			for (int i = 1; i < results.Length - 1; i++)
+			{
+				// Debug.Log(results[i]);
+				if(results[i] != "null")
+				{
+					int skin = int.Parse(results[i]);
+					skinList.Add(skin);
+					// Debug.Log(skin);
+				}
+			}
+		}
+		yield break;
 	}
 }
