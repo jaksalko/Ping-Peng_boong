@@ -13,6 +13,8 @@ public class GoogleInstance : MonoBehaviour
     public int infiniteLevel;
     public Vector2 maxSize;
 
+    public int nowLevel;
+
     private void Awake()
     {
         Debug.Log("Single Class Awake...");//Set instance

@@ -29,6 +29,7 @@ public class ButtonManager_Main : MonoBehaviour
 
 	public void PressPlayBtn()
 	{
+        GoogleInstance.instance.nowLevel = PlayerPrefs.GetInt("level", 0);
 		SceneManager.LoadScene("GameScene");
 	}
 

@@ -95,7 +95,7 @@ public class Player : MonoBehaviour
     private CheckAnimationState stateMachine;
     void AnimationEnd()
     {
-        Debug.Log("Animation End...");
+//        Debug.Log("Animation End...");
         animator.SetInteger("action", 0);
         actionnum = 0;
         
@@ -162,12 +162,15 @@ public class Player : MonoBehaviour
         //Reactive stream
 #if UNITY_EDITOR
         var mouseDownStream = this.UpdateAsObservable()
+            .Where(_ => !EventSystem.current.IsPointerOverGameObject())
+            .Where(_ => GameController.Playing)
             .Where(_ => !click)
             .Where(_ => Input.GetMouseButtonDown(0))
             .Select(_ => Input.mousePosition)
             .Subscribe(_ => { down = _; click = true; });
 
         var mouseUpStream = this.UpdateAsObservable()
+            .Where(_ => GameController.Playing)
             .Where(_ => click)
             .Where(_ => Input.GetMouseButtonUp(0))
             .Select(_ => Input.mousePosition)
@@ -175,7 +178,7 @@ public class Player : MonoBehaviour
 
 #elif UNITY_ANDROID || UNITY_IOS
         var touchDownStream = this.UpdateAsObservable()
-            
+            .Where(_ => GameController.Playing)
             .Where(_ => !click)
             .Where(_ => Input.touchCount > 0)
             .Where(_ => !EventSystem.current.IsPointerOverGameObject(0))
@@ -184,6 +187,7 @@ public class Player : MonoBehaviour
             .Subscribe(_ => { down = _.position; click = true; } );
 
         var touchUpStream = this.UpdateAsObservable()
+            .Where(_ => GameController.Playing)
             .Where(_ => click)
             .Where(_ => Input.touchCount > 0)
             .Where(_ => Input.GetTouch(0).phase == TouchPhase.Ended)
@@ -192,8 +196,8 @@ public class Player : MonoBehaviour
 #endif
 
     }
-  
-   
+
+
     void PlayerMove()
     {
         //Debug.Log("distance : " + Vector2.Distance(up, down));
@@ -237,7 +241,7 @@ public class Player : MonoBehaviour
     bool PlayerControl(int direction)//0 : u // 1 : r // 2 : d // 3 : l
     {
 
-        if (isActive && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        if (GameController.Playing &&isActive && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
 
             getDirection = direction;
@@ -249,11 +253,11 @@ public class Player : MonoBehaviour
                 other.state = State.Idle;
                 transform.SetParent(null);
 
-                if (other.upstair)
+                if(other.upstair)
                 {
-                    Debug.Log("thirdfloor mode");
-                    thirdFloor = true;//slave이고 master가 2층이면 나는 3층이다.
+                    thirdFloor = true;
                 }
+             
             }
 
             Debug.Log("move direction : " + getDirection);
@@ -339,19 +343,30 @@ public class Player : MonoBehaviour
             
             if (distance < 0.25f)//arrive condition
             {
-                if(state == State.Master)
+                /*if(state == State.Master)
                 {
                     other.posX = posX;
                     other.posZ = posZ;
-                }
+
+                    
+                }*/
                 temp = map[posZ, posX];
-                Debug.Log("temp : " + temp);
+               
                 if (upstair)
                     map[posZ, posX] = BlockNumber.upperCharacter;
                 else
                     map[posZ, posX] = BlockNumber.character;
 
-                Debug.Log(map[posZ, posX] + "," + other.map[posZ, posX]);
+                if (state == State.Master)
+                {
+                    other.posX = posX;
+                    other.posZ = posZ;
+
+                    other.temp = map[posZ, posX];
+                }
+                Debug.Log("arrive target position...temp : " + temp);
+                Debug.Log("other temp : " + other.temp);
+                Debug.Log(map[posZ, posX] + "," +other.posX + "," +other.posZ +":"+ other.map[other.posZ, other.posX]);
 
                 /*
                      if (other.upstair)
@@ -386,6 +401,8 @@ public class Player : MonoBehaviour
 
                 if (stateChange)//state == master !upstair 에서 (갈수없는 블럭을 제외한)2층의 블럭과 부딪히면 true
                 {
+                    Debug.Log("state change");
+
                     state = State.Idle;
                     other.state = State.Idle;
                     stateChange = false;
@@ -405,7 +422,7 @@ public class Player : MonoBehaviour
                 {
                     if(posX == other.posX && posZ == other.posZ)//위치가 같고 갈라질 상황이 아니다? 무조건 같이 붙어 있는 상태
                     {
-                        Debug.Log("slave master");
+//                        Debug.Log("slave master");
 
                         if(transform.position.y > other.transform.position.y)//움직인 놈이 더 위에 있다
                         {
@@ -413,10 +430,15 @@ public class Player : MonoBehaviour
                             other.state = State.Master;
                             transform.SetParent(other.transform);
 
-                            /*if (!simulating)
-                                GameController.instance.ui.MasterFocus(other);
+                            
+
+
+                            if (!simulating)
+                                GameController.instance.ui.ChangeCharacter();
                             else
-                                Simulator.instance.MasterFocus(other);*/
+                                Simulator.instance.ChangeCharacter();
+
+                         
 
                         }
                         else//움직인 놈이 더 아래에 있다.
@@ -425,14 +447,13 @@ public class Player : MonoBehaviour
                             other.state = State.Slave;
                             other.transform.SetParent(transform);
 
-                            /*if (!simulating)
-                                GameController.instance.ui.MasterFocus(this);
-                            else
-                                Simulator.instance.MasterFocus(this);*/
+                          
+                        
                         }
 
                        
                     }
+                  
 
                    
                 }
@@ -476,7 +497,7 @@ public class Player : MonoBehaviour
 				case 3:
 					if (!isPlayingParticle)
 					{
-						Debug.Log("play crash particle");
+//						Debug.Log("play crash particle");
 						// crashParticle.Play();
 						isPlayingParticle = true;
 					}
@@ -484,7 +505,7 @@ public class Player : MonoBehaviour
 				case 4:
 					if (!isPlayingParticle)
 					{
-						Debug.Log("play bump particle");
+//						Debug.Log("play bump particle");
 						bumpParticle.SetActive(true);
 						Invoke("BumpParticleControl", 4.5f);
 						//bumpParticle.Play();
@@ -607,6 +628,7 @@ public class Player : MonoBehaviour
     {
         SettingBlockLevel();
 
+        
         map[posZ, posX] = temp;//set initializedMap data
 
         CompareWithNextBlock();
@@ -616,6 +638,7 @@ public class Player : MonoBehaviour
     {
         float firstFloorY = -9.5f;//animation character modification.. 5/13
         float secondFloorY = -8.5f;//
+        float thirdFloorY = -7.5f;
         int[,] step = new int[4, 2] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
 
         int next = map[posZ + step[getDirection, 0], posX + step[getDirection, 1]];
@@ -671,8 +694,11 @@ public class Player : MonoBehaviour
            
         }
 
-
-        if (upstair)
+        if(thirdFloor)
+        {
+            targetPos = new Vector3(posX, thirdFloorY, posZ);
+        }
+        else if (upstair)
         {
             targetPos = new Vector3(posX, secondFloorY, posZ);
         }
@@ -742,6 +768,10 @@ public class Player : MonoBehaviour
         if (upstair && next >= BlockNumber.slopeUp && next <= BlockNumber.slopeLeft)
         {
             upstair = false;
+            if(state == State.Master)
+            {
+                other.thirdFloor = false;
+            }
             SettingBlockLevel();
 
             //if next block is slope block(can through)
@@ -752,6 +782,10 @@ public class Player : MonoBehaviour
             else//cant through slope block because next next block cannot position
             {
                 upstair = true;
+                if (state == State.Master)
+                {
+                    other.thirdFloor = true;
+                }
                 SettingBlockLevel();
                 //actionnum = 1;
                 return false;
@@ -762,6 +796,10 @@ public class Player : MonoBehaviour
         else if (!upstair && next >= BlockNumber.slopeUp && next <= BlockNumber.slopeLeft)
         {
             upstair = true;
+            if (state == State.Master)
+            {
+                other.thirdFloor = true;
+            }
             SettingBlockLevel();
 
             if (IsThrough(nextnext) || IsStop(nextnext))
@@ -771,6 +809,10 @@ public class Player : MonoBehaviour
             else
             {
                 upstair = false;
+                if (state == State.Master)
+                {
+                    other.thirdFloor = false;
+                }
                 SettingBlockLevel();
                 return false;
             }
@@ -785,9 +827,11 @@ public class Player : MonoBehaviour
     void StopCheckChangeState(int next)//cloud or ride or drop
     {
         //stop
+
+
         if (upstair && next == BlockNumber.character)
         {
-          
+
             actionnum = 2; //ride motion
             Debug.Log("master slave!");
         }
@@ -796,7 +840,17 @@ public class Player : MonoBehaviour
             || next == BlockNumber.parfaitA + parfaitOrder || (next >= BlockNumber.cloudUp && next <= BlockNumber.cloudLeft)))
         {
             upstair = false;
+            thirdFloor = false;
             actionnum = 5; // drop motion
+        }
+        else if (thirdFloor &&
+            (next == BlockNumber.upperNormal || next == BlockNumber.upperCracked ||
+            next == BlockNumber.upperParfaitA + parfaitOrder ||
+            (next >= BlockNumber.upperCloudUp && next <= BlockNumber.upperCloudLeft))
+            )
+        {
+            thirdFloor = false;
+            actionnum = 5;
         }
     }
     void SettingBlockLevel()//player state change callback method
@@ -851,6 +905,9 @@ public class Player : MonoBehaviour
             stop.AddRange(BlockNumber.secondLevel);
             stop.AddRange(BlockNumber.firstlevel);
 
+            stop.Add(BlockNumber.parfaitA + parfaitOrder);//first floor parfait
+            stop.Add(BlockNumber.upperParfaitA + parfaitOrder);//first floor parfait
+
             for (int i = 0; i <= 3; i++)
             {
                 if (Mathf.Abs(getDirection - i) != 2)
@@ -867,13 +924,16 @@ public class Player : MonoBehaviour
             if(onCloud)
             {
                 stop.AddRange(BlockNumber.secondLevel);
+                stop.Add(BlockNumber.upperParfaitA + parfaitOrder);
             }
+
             stop.AddRange(BlockNumber.firstlevel);//normal , cracked
             stop.Add(BlockNumber.parfaitA + parfaitOrder);//first floor parfait
 
 
 
             stop.Add(BlockNumber.character);
+            
             for (int i = 0; i <= 3; i++)
             {
                 if (Mathf.Abs(getDirection - i) != 2)

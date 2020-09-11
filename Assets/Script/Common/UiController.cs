@@ -13,7 +13,7 @@ public class UiController : MonoBehaviour
 {
     public GameObject inGame;
     public GameObject resultPopup;
-    public GameObject popup;
+    public GameObject pausePopup;
 
     public Text devtext;
 
@@ -39,7 +39,7 @@ public class UiController : MonoBehaviour
 
 		if (!now.Moving())
 		{
-			Debug.Log("change Character");
+//			Debug.Log("change Character");
 			GameController.instance.nowPlayer.isActive = false;
 
 			if (now == GameController.instance.player1)
@@ -52,8 +52,8 @@ public class UiController : MonoBehaviour
 			}
 			GameController.instance.nowPlayer.isActive = true;
 
-			Debug.Log("player 1 : " + GameController.instance.player1.isActive);
-			Debug.Log("player 2 : " + GameController.instance.player2.isActive);
+//			Debug.Log("player 1 : " + GameController.instance.player1.isActive);
+//			Debug.Log("player 2 : " + GameController.instance.player2.isActive);
 		}
 		else
 		{
@@ -69,18 +69,18 @@ public class UiController : MonoBehaviour
     }
     public void NextLevel()
     {
-
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void Pause()
     {
-
+        GameController.instance.SetPlaying(false);
+        pausePopup.SetActive(true);
     }
 
-    public void Resume()
+    public void Reset()
     {
-
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void GoLobby()
@@ -88,6 +88,11 @@ public class UiController : MonoBehaviour
         SceneManager.LoadScene("MainScene");
     }
 
+    public void Resume()
+    {
+        GameController.instance.SetPlaying(true);
+        pausePopup.SetActive(false);
+    }
 
     public void CloudInitializeCompleted()
     {
