@@ -70,7 +70,7 @@ public class Player : MonoBehaviour
 	
     CharacterController cc;
     Vector3[] dir = new Vector3[] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
-
+    int[,] step = new int[4, 2] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
     [SerializeField]
     Player other;
 
@@ -386,9 +386,9 @@ public class Player : MonoBehaviour
                 
                 animator.SetBool("move", false);
                 Debug.Log("Arrive... target position : " + targetPos + "  distance : " + distance);
-                isMoving = false;
-                /*if (onCloud)
-                    onCloud = false;*/
+               
+                //isMoving = false;
+
 				//이동 시 발생하는 particle control
 				moveParticle.loop = false;
 
@@ -463,15 +463,51 @@ public class Player : MonoBehaviour
                    
                 }
 
-              
 
-              
+                isMoving = false;
 
+                if(other.onCloud && other.temp == temp)
+                {
+                    if(upstair)
+                    {
+                        if (map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] == BlockNumber.upperCharacter)
+                        {
+                            Debug.Log(name + " connect Action with method");
+                            CloudBlock.Exit += CallBackOtherExitCloud;
+                        }
+                    }
+                    else
+                    {
+                        if(map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] == BlockNumber.character)
+                        {
+                            Debug.Log(name + " connect Action with method");
+                            CloudBlock.Exit += CallBackOtherExitCloud;
+                        }
+                    }
+                }
 
             }
         }
         
 
+    }
+    void CallBackOtherExitCloud(GameObject player)
+    {
+        Debug.Log(gameObject + "/" +player + " disconnect Action with method");
+        CloudBlock.Exit -= CallBackOtherExitCloud;
+
+        if (player == gameObject)
+        {
+            Debug.Log("same player");
+            //nothing
+        }
+        else
+        {
+            Debug.Log("different player");
+            onCloud = true;
+            MoveByCloud(temp);
+        }
+       
     }
     private void LateUpdate()
     {
@@ -575,10 +611,7 @@ public class Player : MonoBehaviour
 
     public void MoveByCloud(int block_num)
     {
-        /*while(isMoving)
-        {
-            yield return new WaitForSeconds(Time.deltaTime);
-        }*/
+        
         Debug.Log("Moved by Cloud");
         
         getDirection = (block_num % 10) - 1;
@@ -644,7 +677,7 @@ public class Player : MonoBehaviour
         float firstFloorY = -9.5f;//animation character modification.. 5/13
         float secondFloorY = -8.5f;//
         float thirdFloorY = -7.5f;
-        int[,] step = new int[4, 2] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
+     
 
         int next = map[posZ + step[getDirection, 0], posX + step[getDirection, 1]];
         
@@ -697,6 +730,8 @@ public class Player : MonoBehaviour
             }
 
            
+
+           
         }
 
         if(thirdFloor)
@@ -743,7 +778,7 @@ public class Player : MonoBehaviour
     bool ThroughCheckChangeState(int next)//next block is throughlevel and check if block is slopeBlock?
     {
 
-        int[,] step = new int[4, 2] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
+      
         int nextnext = map[posZ + (step[getDirection, 0] * 2), posX + (step[getDirection, 1] * 2)];
         //int next = map[posZ + step[getDirection, 0], posX + step[getDirection, 1]];
         //meet parfait block

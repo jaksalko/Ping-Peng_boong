@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class CloudBlock : Block
 {
     public int direction;
 
-   
+    public static event Action<GameObject> Exit;
 
     private void OnTriggerStay(Collider other)
     {
@@ -35,10 +35,12 @@ public class CloudBlock : Block
         if (other.gameObject.CompareTag("Player"))
         {
             Player onCloud_player = other.gameObject.GetComponent<Player>();
-            Debug.Log("exit");
-            onCloud_player.onCloud = false;
+            Debug.Log("exit cloud");
+            if(onCloud_player.isActive)
+                onCloud_player.onCloud = false;
 
             
+            Exit?.Invoke(onCloud_player.gameObject);
         }
     }
 }
