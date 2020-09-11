@@ -13,6 +13,7 @@ TagManager:
   - BaseCanvas
   - BackgroundSound
   - Indexer
+  - GoogleInstance
   layers:
   - Default
   - TransparentFX
