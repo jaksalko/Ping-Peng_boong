@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.45140082, g: 0.5008932, b: 0.5723176, a: 1}
+  m_IndirectSpecularColor: {r: 0.45140117, g: 0.5008937, b: 0.5723182, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -21546,12 +21546,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1121689339}
-  m_RootOrder: 1
+  m_Father: {fileID: 810421907}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -10, y: 1559}
+  m_AnchoredPosition: {x: -440, y: 860}
   m_SizeDelta: {x: 125, y: 130}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &586772159
@@ -41635,6 +41635,7 @@ RectTransform:
   - {fileID: 1121689339}
   - {fileID: 1026861115}
   - {fileID: 260367944}
+  - {fileID: 586772158}
   m_Father: {fileID: 32587635}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -42937,9 +42938,10 @@ GameObject:
   - component: {fileID: 1121689342}
   - component: {fileID: 1121689341}
   - component: {fileID: 1121689340}
+  - component: {fileID: 1121689343}
   m_Layer: 5
   m_Name: ChangePlayer
-  m_TagString: Untagged
+  m_TagString: ChangePlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42956,13 +42958,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 813785629}
-  - {fileID: 586772158}
   m_Father: {fileID: 810421907}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -480, y: -850}
+  m_AnchoredPosition: {x: -440, y: -760}
   m_SizeDelta: {x: 201, y: 201}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1121689340
@@ -43056,6 +43057,22 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1121689338}
   m_CullTransparentMesh: 0
+--- !u!114 &1121689343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1121689338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a43a5616b4b37847881ad82e79f535a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lastMousePosition: {x: 0, y: 0}
+  duration: 2
+  isHolding: 0
+  gameController: {fileID: 0}
 --- !u!4 &1125559333 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6329718635250819506, guid: f0fc8b3157cd6459eb987a53b4b0b420,
