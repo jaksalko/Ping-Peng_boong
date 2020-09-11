@@ -157,28 +157,26 @@ public class Player : MonoBehaviour
         .Subscribe(_ => Debug.Log("change other position :" + other.posZ + "," + other.posX + " : " + _));
         */
 
-
-
-        //Reactive stream
+      
 #if UNITY_EDITOR
-        var mouseDownStream = this.UpdateAsObservable()
-            .Where(_ => !EventSystem.current.IsPointerOverGameObject())
-            .Where(_ => GameController.Playing)
-            .Where(_ => !click)
-            .Where(_ => Input.GetMouseButtonDown(0))
-            .Select(_ => Input.mousePosition)
-            .Subscribe(_ => { down = _; click = true; });
+            var mouseDownStream = this.UpdateAsObservable()
+                .Where(_ => !EventSystem.current.IsPointerOverGameObject())
+               
+                .Where(_ => !click)
+                .Where(_ => Input.GetMouseButtonDown(0))
+                .Select(_ => Input.mousePosition)
+                .Subscribe(_ => { down = _; click = true; });
 
-        var mouseUpStream = this.UpdateAsObservable()
-            .Where(_ => GameController.Playing)
-            .Where(_ => click)
-            .Where(_ => Input.GetMouseButtonUp(0))
-            .Select(_ => Input.mousePosition)
-            .Subscribe(_ => { up = _; PlayerMove(); click = false; });
+            var mouseUpStream = this.UpdateAsObservable()
+               
+                .Where(_ => click)
+                .Where(_ => Input.GetMouseButtonUp(0))
+                .Select(_ => Input.mousePosition)
+                .Subscribe(_ => { up = _; PlayerMove(); click = false; });
 
 #elif UNITY_ANDROID || UNITY_IOS
         var touchDownStream = this.UpdateAsObservable()
-            .Where(_ => GameController.Playing)
+          
             .Where(_ => !click)
             .Where(_ => Input.touchCount > 0)
             .Where(_ => !EventSystem.current.IsPointerOverGameObject(0))
@@ -187,13 +185,18 @@ public class Player : MonoBehaviour
             .Subscribe(_ => { down = _.position; click = true; } );
 
         var touchUpStream = this.UpdateAsObservable()
-            .Where(_ => GameController.Playing)
+         
             .Where(_ => click)
             .Where(_ => Input.touchCount > 0)
             .Where(_ => Input.GetTouch(0).phase == TouchPhase.Ended)
             .Select(_ => Input.mousePosition)
             .Subscribe(_ => { up = _; PlayerMove(); click = false; });
 #endif
+    
+        
+
+        //Reactive stream
+
 
     }
 
@@ -240,8 +243,10 @@ public class Player : MonoBehaviour
     }
     bool PlayerControl(int direction)//0 : u // 1 : r // 2 : d // 3 : l
     {
+        if (!simulating && !GameController.Playing)
+            return false;
 
-        if (GameController.Playing &&isActive && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        if (isActive && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
         {
 
             getDirection = direction;
