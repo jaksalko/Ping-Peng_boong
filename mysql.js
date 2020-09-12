@@ -171,8 +171,8 @@ app.post('/account/add',function(req,res){
 //Account Cash
 app.post('/account/cash' , function(req,res)
 {
-	var id = req.query.id;
-	var change = req.query.change;
+	var id = req.body.id;
+	var change = req.body.change;
 
 	var sql = 'update user set cash = cash + ? where id = ?';
 	connection.query(sql,[change,id],function(error, results, fields)
