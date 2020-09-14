@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 170076734}
-  m_IndirectSpecularColor: {r: 0.45140117, g: 0.5008937, b: 0.5723182, a: 1}
+  m_IndirectSpecularColor: {r: 0.45140082, g: 0.5008932, b: 0.5723176, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -15756,24 +15756,20 @@ MonoBehaviour:
   mapsizeW: 0
   parfait: 0
   checkparfait: 0
-  groundBlock: {fileID: 3038474782244975178, guid: a746e8a5c2af6d448b55ddfb899c4108,
+  groundBlock: {fileID: 3038474782244975178, guid: bdf7b45aa9c6f477a98fc71f08206494,
     type: 3}
-  groundBlock_sky: {fileID: 3038474782244975178, guid: 6a3fef66501f24440a060543016d855c,
+  ground_half: {fileID: 4468862542011246566, guid: 0e2c75f8510b64c94b35433874bbb35c,
     type: 3}
-  ground_half_sky: {fileID: 1632279707734364776, guid: 08cb2c3a0ab634d128bfa5a0bb80c7d1,
+  secondfloor_block: {fileID: 4809144009187686176, guid: 4fb85fbb763ac4dcab2aa2fa54835c6f,
     type: 3}
-  ground_half: {fileID: 4468862542011246566, guid: 58b1c210b370f4fb2b359179b5a20fe6,
-    type: 3}
-  obstacleBlock: {fileID: 1479013432931312234, guid: f5581386679d0477ba16faa42a514ca6,
-    type: 3}
-  secondfloor_block: {fileID: 4809144009187686176, guid: 44d56a1cd05bf4381bad1ed6919ea017,
+  obstacleBlock: {fileID: 1479013432931312234, guid: fb0d89b9b9d1d4efd936b532c834fbdf,
     type: 3}
   parfaitBlock:
   - {fileID: 1104117630}
   - {fileID: 165484112}
   - {fileID: 1597872651}
   - {fileID: 2064501842}
-  slope: {fileID: 2050238028536186470, guid: 1b1e86c311ee54097acc9d3a0ba8f043, type: 3}
+  slope: {fileID: 2050238028536186470, guid: 24b7bbbe8428a47d78f687c3d745a4ed, type: 3}
   cloud: {fileID: 333511007018041794, guid: 4489c8d4507ec4b5fae6a06a72adae1c, type: 3}
   cracked: {fileID: 6599472883783285907, guid: ffa41f881f6844a5db668b59ee495fd8, type: 3}
   broken: {fileID: 6599472883783285907, guid: 99ff9ea0f2d454b0196ad21f7c7b6516, type: 3}
