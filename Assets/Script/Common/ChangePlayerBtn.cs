@@ -125,8 +125,10 @@ public class ChangePlayerBtn : MonoBehaviour, IDragHandler, IEndDragHandler, IPo
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
-		PlayerPrefs.SetFloat("ChangePlayerBtnX", lastMousePosition.x);
-		PlayerPrefs.SetFloat("ChangePlayerBtnY", lastMousePosition.y);
+		RectTransform rect = GetComponent<RectTransform>();
+
+		PlayerPrefs.SetFloat("ChangePlayerBtnX", rect.position.x);
+		PlayerPrefs.SetFloat("ChangePlayerBtnY", rect.position.y);
 		Debug.Log("End Drag");
 
 		timer = 0;

@@ -27,7 +27,7 @@ public class BaseCanvas : MonoBehaviour
 
 	private void Update()
 	{
-		if (SceneManager.GetActiveScene().name == "GameScene")
+		if (SceneManager.GetActiveScene().name == "Beach_Island" || SceneManager.GetActiveScene().name == "Tutorial_Island")
 		{
 			changePlayerBtn = GameObject.FindGameObjectWithTag("ChangePlayer");
 		}
@@ -40,7 +40,8 @@ public class BaseCanvas : MonoBehaviour
 
 		if(changePlayerBtn != null)
 		{
-			changePlayerBtn.GetComponent<RectTransform>().position = new Vector2(btnlocX, btnlocY);
+			RectTransform rect = changePlayerBtn.GetComponent<RectTransform>();
+			rect.position = new Vector2(btnlocX, btnlocY);
 		}
 	}
 
