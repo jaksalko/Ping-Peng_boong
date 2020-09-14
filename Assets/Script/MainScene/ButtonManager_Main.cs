@@ -10,6 +10,26 @@ public class ButtonManager_Main : UIScript
     public GameObject EditorPlayPopup;
     public GameObject EditorSettingPopup;
 
+	public GameObject[] islandList;
+
+	private void Start()
+	{
+		int highLevel = PlayerPrefs.GetInt("level", 0);
+		if (Island_Name(highLevel) == "Tutorial")
+		{
+			islandList[0].SetActive(true);
+		}
+		else if (Island_Name(highLevel) == "Icecream")
+		{
+			islandList[1].SetActive(true);
+		}
+		else
+		{
+			// default
+			islandList[0].SetActive(true);
+		}
+	}
+
 	public void PressIslandBtn()
 	{
 		SceneManager.LoadScene("LevelScene");

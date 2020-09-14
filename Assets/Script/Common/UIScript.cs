@@ -32,4 +32,20 @@ public class UIScript : MonoBehaviour
             SceneManager.LoadScene("Beach_Island");
         }
     }
+
+	public string Island_Name(int stage)
+	{
+		if (stage < IslandData.tutorial)
+		{
+			return "Tutorial";
+		}
+		else if (stage < IslandData.iceCream)
+		{
+			return "Icecream";
+		}
+		else
+		{
+			return "";
+		}
+	}
 }

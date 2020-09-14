@@ -50,22 +50,23 @@ public class ChangePlayerBtn : MonoBehaviour, IDragHandler, IEndDragHandler, IPo
 					{
 						Vector2 currentMousePosition = touch.position;
 						Vector2 diff = currentMousePosition - lastMousePosition;
-						RectTransform rect = GetComponent<RectTransform>();
+						RectTransform rect1 = GetComponent<RectTransform>();
 
-						Vector3 newPosition = rect.position + new Vector3(diff.x, diff.y, transform.position.z);
-						Vector3 oldPos = rect.position;
-						rect.position = newPosition;
-						if (!IsRectTransformInsideSreen(rect))
+						Vector3 newPosition = rect1.position + new Vector3(diff.x, diff.y, transform.position.z);
+						Vector3 oldPos = rect1.position;
+						rect1.position = newPosition;
+						if (!IsRectTransformInsideSreen(rect1))
 						{
-							rect.position = oldPos;
+							rect1.position = oldPos;
 						}
 						lastMousePosition = currentMousePosition;
 					}
 					break;
 
 				case TouchPhase.Ended:
-					PlayerPrefs.SetFloat("ChangePlayerBtnX", lastMousePosition.x);
-					PlayerPrefs.SetFloat("ChangePlayerBtnY", lastMousePosition.y);
+					RectTransform rect2 = GetComponent<RectTransform>();
+					PlayerPrefs.SetFloat("ChangePlayerBtnX", rect2.position.x);
+					PlayerPrefs.SetFloat("ChangePlayerBtnY", rect2.position.y);
 					Debug.Log("End Drag");
 
 					timer = 0;
