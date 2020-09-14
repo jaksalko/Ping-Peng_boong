@@ -37,6 +37,9 @@ public class GameController : MonoBehaviour
 	GameObject backgroundSound;
 	SoundManager soundManagerScript;
 
+    JsonAdapter jsonAdapter = new JsonAdapter();
+    UserData user = new UserData();
+
 	private void Awake()
     {
         //PlayerPrefs.DeleteAll();
@@ -109,6 +112,14 @@ public class GameController : MonoBehaviour
         ui.inGame.SetActive(true);
         
     }
+    public void CashUpdate(int cash)
+    {
+        user.id = Cloud.PlayerDisplayName;
+        user.change = cash;
+
+        var json = JsonUtility.ToJson(user);
+        StartCoroutine(jsonAdapter.API_POST("account/cash", json));
+    }
 
     public void GameEnd(bool isSuccess)
     {
@@ -127,7 +138,10 @@ public class GameController : MonoBehaviour
 
 		if (isSuccess)
         {
-            FirstClear();
+            //FirstClear();
+
+
+
 
 
             int level = PlayerPrefs.GetInt("level", 0);
@@ -136,6 +150,7 @@ public class GameController : MonoBehaviour
             
             if (nowLevel == level)
             {
+                CashUpdate(30);
                 GoogleInstance.instance.nowLevel++;
                 PlayerPrefs.SetInt("level", GoogleInstance.instance.nowLevel);                
             }

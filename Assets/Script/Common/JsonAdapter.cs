@@ -25,12 +25,12 @@ public class JsonAdapter : MonoBehaviour
             if(www.responseCode != 200)
             {
                 Debug.Log("already exist");
-                GET.Invoke(false);
+                GET?.Invoke(false);
             }
             else
             {
                 Debug.Log("add account");
-                GET.Invoke(true);
+                GET?.Invoke(true);
             }
             //GET.Invoke(JsonHelper.fixJson(www.downloadHandler.text));
 
@@ -48,7 +48,7 @@ public class JsonAdapter : MonoBehaviour
            
         }
     }
-
+    
     public IEnumerator API_POST(string url , string bodyJsonString)
     {
         Debug.Log(bodyJsonString);
@@ -63,16 +63,16 @@ public class JsonAdapter : MonoBehaviour
         if(req.isHttpError || req.isNetworkError )
         {
             Debug.Log(req.error);
-            POST.Invoke(false);
+            POST?.Invoke(false);
         }
         else if(req.responseCode != 200)
         {
            
-            POST.Invoke(false);
+            POST?.Invoke(false);
         }
         else
         {
-            POST.Invoke(true);
+            POST?.Invoke(true);
         }
        
         Debug.Log("Status Code: " + req.responseCode);
@@ -85,6 +85,7 @@ public class UserData
     public string id; 
     public string nickname;
     public int cash;
+    public int change;
 }
 
 public class UserSkinData

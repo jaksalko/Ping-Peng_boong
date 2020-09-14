@@ -504,7 +504,7 @@ public class Player : MonoBehaviour
         else
         {
             Debug.Log("different player");
-            onCloud = true;
+            onCloud = true;//블록 설정을 위한 input (stay 에서 호출하지 않으므로 설정)
             MoveByCloud(temp);
         }
        

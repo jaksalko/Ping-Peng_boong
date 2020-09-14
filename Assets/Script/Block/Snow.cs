@@ -9,7 +9,8 @@ public class Snow : MonoBehaviour
     {
         if(other.gameObject.CompareTag("Leg"))
         {
-            //particle.Play();
+            if(particle != null)
+                particle.Play();
             Destroy(gameObject);
         }
     }

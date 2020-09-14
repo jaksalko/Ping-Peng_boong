@@ -38,8 +38,8 @@ public class LoadingScene : MonoBehaviour
     }
     public void IsNew(bool add)
     {
-        
-        if(add)
+        JsonAdapter.GET -= IsNew;
+        if (add)
         {
             //Debug.Log("add account");
             addAccountPanel.SetActive(true);
@@ -48,12 +48,13 @@ public class LoadingScene : MonoBehaviour
         {
             Debug.Log("already exist");
             GoogleInstance.instance.id = Cloud.PlayerDisplayName;
-
+            JsonAdapter.POST -= IsUnique;
             SceneManager.LoadScene("MainScene");
 
             //Load Lobby Scene
         }
-        JsonAdapter.GET -= IsNew;
+        
+        
     }
     public void IsUnique(bool unique)
     {
@@ -61,7 +62,7 @@ public class LoadingScene : MonoBehaviour
         {
             addAccountText.text = "created successfully";
             GoogleInstance.instance.id = Cloud.PlayerDisplayName;
-
+            JsonAdapter.POST -= IsUnique;
             SceneManager.LoadScene("MainScene");
         }
         else

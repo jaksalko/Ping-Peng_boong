@@ -9,7 +9,7 @@ using CloudOnce;
 
 
 
-public class UiController : MonoBehaviour
+public class UiController : UIScript
 {
     public GameObject inGame;
     public GameObject resultPopup;
@@ -69,7 +69,9 @@ public class UiController : MonoBehaviour
     }
     public void NextLevel()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        //GameController googleinstance level++....
+        Load_Island(GoogleInstance.instance.nowLevel);
+        
     }
 
     public void Pause()

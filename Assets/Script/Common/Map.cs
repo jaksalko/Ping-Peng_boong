@@ -1,12 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
-using System.IO;
-using System.Net;
-using System;
-using UnityEngine.UI;
 using UnityEngine.Networking;
 
 [System.Serializable]
@@ -54,13 +48,16 @@ public class Map : MonoBehaviour
     public int[,] map;
     public bool[,] check;
     public bool checkparfait;
+
+    
+
     public GameObject groundBlock;
-    public GameObject groundBlock_sky;
-    public GameObject ground_half_sky;
     public GameObject ground_half;
+    public GameObject secondfloor_block;
+
     public GameObject obstacleBlock;
 
-    public GameObject secondfloor_block;
+   
 
     public ParfaitObject[] parfaitBlock;
     public GameObject slope;
@@ -84,82 +81,62 @@ public class Map : MonoBehaviour
 
     public Transform waterQuad;
 
-    /*public void InfiniteMap()
-    {
-        StartCoroutine(GET());
-    }*/
+  
 
-    public void GenerateMap(int index)
+   
+    void MakeMap()
     {
-        Debug.Log(index);
-        sample[index].init();
-        sampleMap = sample[index];
         mapsizeH = sampleMap.mapsizeH;
         mapsizeW = sampleMap.mapsizeW;
         parfait = sampleMap.parfait;
 
-
-        
-        //Debug.Log("map index : " + PlayerPrefs.GetInt("level", 0) + " , " + index);
-
-        map = new int[mapsizeH, mapsizeW];
-        //Debug.Log("map : " + mapsizeH + " , " + mapsizeW + "parfait? ");
+        map = new int[mapsizeH, mapsizeW];     
         check = new bool[mapsizeH, mapsizeW];
 
-        centerOfMap = new Vector3((float)(mapsizeW-1)/2, -10 , (float)(mapsizeH-1)/2);
+        centerOfMap = new Vector3((float)(mapsizeW - 1) / 2, -10, (float)(mapsizeH - 1) / 2);
         minimapTarget.position = centerOfMap;
         waterQuad.position = centerOfMap;
         waterQuad.localScale = new Vector3(mapsizeW, mapsizeH, 1);
-        
+
         design[0].position = centerOfMap + new Vector3(0, -0.5f, 0);
         design[1].localPosition = design[1].localPosition + new Vector3(0, 0, centerOfMap.z + 8);
         design[2].localPosition = design[2].localPosition + new Vector3(0, 0, -(centerOfMap.z + 8));
         checkparfait = false;
-        for(int i = 0; i < mapsizeH; i++)
+        for (int i = 0; i < mapsizeH; i++)
         {
-            for(int j = 0; j < mapsizeW; j++)
+            for (int j = 0; j < mapsizeW; j++)
             {
-//                Debug.Log(mapsizeH - 1 - i);
-                map[i,j] = sampleMap.map[i,j];
-                
+                //                Debug.Log(mapsizeH - 1 - i);
+                map[i, j] = sampleMap.map[i, j];
+
             }
         }
 
         MakeGround();
         Debug.Log("parfait? : " + parfait);
-        if(parfait)
+        if (parfait)
         {
             MakeParfait();
         }
-
     }
 
-    void MakeGround()
+    void SetOutlineBlock()
     {
-        for(int i = 0; i < mapsizeW; i++)
+        for (int i = 0; i < mapsizeW; i++)
         {
             GameObject ground;
             GameObject half_ground;
-            if (i == 0 || i == (mapsizeW-1))//outline setting
+            if (i == 0 || i == (mapsizeW - 1))//outline setting
             {
-                for(int j = 0; j < mapsizeH; j++)
+                for (int j = 0; j < mapsizeH; j++)
                 {
 
+                    ground = Instantiate(groundBlock, new Vector3(i, -10, j), groundBlock.transform.rotation) as GameObject;
+                    half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), ground_half.transform.rotation) as GameObject;
                     
-
-
-
-                    if ((i + j) % 2 == 0)
-                    {
-                        ground = Instantiate(groundBlock_sky, new Vector3(i, -10, j), groundBlock_sky.transform.rotation) as GameObject;
-                        half_ground = Instantiate(ground_half_sky, new Vector3(i, -9.25f, j), ground_half_sky.transform.rotation) as GameObject;
-                    }
-                    else
-                    {
-                        ground = Instantiate(groundBlock, new Vector3(i, -10, j), groundBlock.transform.rotation) as GameObject;
-                        half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), ground_half.transform.rotation) as GameObject;
-                    }
-                    check[j,i] = true;
+                      
+                    
+                    check[j, i] = true;
                     ground.transform.parent = groundParent;
                     half_ground.transform.parent = groundParent;
                 }
@@ -168,36 +145,31 @@ public class Map : MonoBehaviour
             {
                 int j = 0;
                 check[j, i] = true;
-                if ((i + j) % 2 == 0)
-                {
-                    ground = Instantiate(groundBlock_sky, new Vector3(i, -10, j), groundBlock_sky.transform.rotation) as GameObject;
-                    half_ground = Instantiate(ground_half_sky, new Vector3(i, -9.25f, j), ground_half_sky.transform.rotation) as GameObject;
-                }
-                else
-                {
+                
                     ground = Instantiate(groundBlock, new Vector3(i, -10, j), groundBlock.transform.rotation) as GameObject;
                     half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), ground_half.transform.rotation) as GameObject;
-                }
+                
                 ground.transform.parent = groundParent;
                 half_ground.transform.parent = groundParent;
-                j = mapsizeH-1;
+
+                j = mapsizeH - 1;
                 check[j, i] = true;
-                if ((i + j) % 2 == 0)
-                {
-                    ground = Instantiate(groundBlock_sky, new Vector3(i, -10, j), groundBlock_sky.transform.rotation) as GameObject;
-                    half_ground = Instantiate(ground_half_sky, new Vector3(i, -9.25f, j), ground_half_sky.transform.rotation) as GameObject;
-                }
-                else
-                {
+                
                     ground = Instantiate(groundBlock, new Vector3(i, -10, j), groundBlock.transform.rotation) as GameObject;
                     half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), ground_half.transform.rotation) as GameObject;
-                }
+                
                 ground.transform.parent = groundParent;
                 half_ground.transform.parent = groundParent;
             }
         }
 
 
+    }
+    void MakeGround()
+    {
+
+        SetOutlineBlock();
+        
         for (int i = 1; i < mapsizeH-1; i++)
         {
             for (int j = 1; j < mapsizeW-1; j++)
@@ -209,15 +181,9 @@ public class Map : MonoBehaviour
                 if(map[i,j] == 0 || map[i,j] > 6)// all floor block except cloud , cracked , broken
                 {
                     GameObject ground;
-                    if ((i + j) % 2 == 0)
-                    {
-                        ground = Instantiate(groundBlock_sky, new Vector3(j, -10, i), groundBlock_sky.transform.rotation) as GameObject;
-                       
-                    }
-                    else
-                    {
-                        ground = Instantiate(groundBlock, new Vector3(j, -10, i), groundBlock.transform.rotation) as GameObject;
-                    }
+                   
+                    ground = Instantiate(groundBlock, new Vector3(j, -10, i), groundBlock.transform.rotation) as GameObject;
+                    
 
                     if (map[i, j] == BlockNumber.normal || map[i, j] == BlockNumber.upperNormal)
                     {
@@ -337,21 +303,7 @@ public class Map : MonoBehaviour
                     upperCloudBlock.transform.parent = groundParent;
                     upperCloudBlock.GetComponent<CloudBlock>().num = map[i, j];
                 }
-                /*else if (map[i, j] >= BlockNumber.parfaitA && map[i, j] <= BlockNumber.parfaitD)
-                {
-                    
-                    GameObject parfait = Instantiate(cloud, new Vector3(j, -9, i), Quaternion.Euler(new Vector3(0, 90 * (map[i, j] - BlockNumber.upperCloudUp), 0)));
-                    parfait.transform.parent = groundParent;
-                    //parfait.GetComponent<CloudBlock>().num = map[i, j];
-                }
-                else if (map[i, j] >= BlockNumber.upperParfaitA && map[i, j] <= BlockNumber.upperParfaitD)
-                {
-                    
-                    GameObject upperParfait = Instantiate(cloud, new Vector3(j, -7.7f, i), Quaternion.Euler(new Vector3(0, 90 * (map[i, j] - BlockNumber.upperCloudUp), 0)));
-                    upperParfait.transform.parent = groundParent;
-                    //upperCloudBlock.GetComponent<CloudBlock>().num = map[i, j];
-                }*/
-                //추가해야할 것 : 구름길 (0층 1층 ) , 부서지는 블럭(0층 1층) , 
+               
             }
         }
     }
@@ -458,7 +410,14 @@ public class Map : MonoBehaviour
         }
     }
 
+    public void GenerateMap(int index)
+    {
+        Debug.Log(index);
+        sample[index].init();
+        sampleMap = sample[index];
 
+        MakeMap();
+    }
     public IEnumerator InfiniteMAP(int level)
     {
         UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/map/difficulty?difficulty="+level+"&nickname="+GoogleInstance.instance.id);
@@ -481,68 +440,15 @@ public class Map : MonoBehaviour
             
             string fixdata = JsonHelper.fixJson(www.downloadHandler.text);
             JsonData[] datas = JsonHelper.FromJson<JsonData>(fixdata);
-            Debug.Log(datas.Length);
+           
             JsonData selectedData = datas[UnityEngine.Random.Range(0, datas.Length)];
             sampleMap = selectedData.MakeSampleMap();
             selectedData.DataToString();
 
 
-            /*foreach (var data in datas)
-            {
-                data.DataToString();
-            }*/
 
-
-            mapsizeH = sampleMap.mapsizeH;
-            mapsizeW = sampleMap.mapsizeW;
-            parfait = sampleMap.parfait;
-
-            //Debug.Log("map index : " + PlayerPrefs.GetInt("level", 0) + " , " + index);
-
-            map = new int[mapsizeH, mapsizeW];
-            //Debug.Log("map : " + mapsizeH + " , " + mapsizeW + "parfait? ");
-            check = new bool[mapsizeH, mapsizeW];
-
-            centerOfMap = new Vector3((float)(mapsizeW - 1) / 2, -10, (float)(mapsizeH - 1) / 2);
-            minimapTarget.position = centerOfMap;
-
-            design[0].position = centerOfMap + new Vector3(0, -0.5f, 0);
-            design[1].localPosition = design[1].localPosition + new Vector3(0, 0, centerOfMap.z + 8);
-            design[2].localPosition = design[2].localPosition + new Vector3(0, 0, -(centerOfMap.z + 8));
-            checkparfait = false;
-
-            //bool aSet = false;
-            for (int i = 0; i < mapsizeH; i++)
-            {
-                for (int j = 0; j < mapsizeW; j++)
-                {
-
-                    map[i, j] = sampleMap.map[i, j];
-
-                    //                Debug.Log(mapsizeH - 1 - i);
-                    /*if (map[i,j] ==5 && !aSet)
-                    {
-                        Debug.Log("hihihi");
-                        sampleMap.startPositionA = new Vector3(j, -9f, i);
-                        aSet = true;
-                    }
-                    else if(map[i, j] == 5 && aSet)
-                    {
-                        sampleMap.startPositionB = new Vector3(j, -9f, i);
-                    }*/
-
-
-                    
-
-                }
-            }
-
-            MakeGround();
-            Debug.Log("parfait? : " + parfait);
-            if (parfait)
-            {
-                MakeParfait();
-            }
+            MakeMap();
+           
         }
 
         yield break;

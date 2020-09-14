@@ -4,23 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class ButtonManager_Main : MonoBehaviour
+public class ButtonManager_Main : UIScript
 {
 
     public GameObject EditorPlayPopup;
     public GameObject EditorSettingPopup;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
 	public void PressIslandBtn()
 	{
@@ -30,7 +18,7 @@ public class ButtonManager_Main : MonoBehaviour
 	public void PressPlayBtn()
 	{
         GoogleInstance.instance.nowLevel = PlayerPrefs.GetInt("level", 0);
-		SceneManager.LoadScene("GameScene");
+		Load_Island(GoogleInstance.instance.nowLevel);
 	}
 
 	public void PressEglooBtn()
