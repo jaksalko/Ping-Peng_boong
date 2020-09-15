@@ -17,8 +17,6 @@ using UnityEngine.UI;
 
     }
 
-
-
 public class UIScript : MonoBehaviour
 {
     public void Load_Island(int stage)

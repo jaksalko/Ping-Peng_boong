@@ -1053,14 +1053,12 @@ public class Player : MonoBehaviour
             ParfaitObject parfait = collider.GetComponent<ParfaitObject>();
             if (parfait.state == ParfaitObject.State.active)
             {
-                //parfaitOrder++;
-                //other.parfaitOrder++;
-                //ThroughSetting();
+
+                GameController.instance.ui.ParfaitDone();
                 if (parfait.GetParfait(stage))//if true end game
                 {
                     Debug.Log("end parfait mode.");
-                    //targetPos = stage.parfaitEndPoint;
-                    //stage.checkparfait = true;
+                   
                 }
 
             }

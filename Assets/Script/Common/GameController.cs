@@ -112,6 +112,15 @@ public class GameController : MonoBehaviour
         isRunning = true;
         isPlaying = true;
         startTime = Time.time;
+
+        if(map.parfait)
+        {
+            ui.mission_parfait.SetActive(true);
+        }
+        else
+        {
+            ui.mission_default.SetActive(true);
+        }
         ui.inGame.SetActive(true);
         
     }
@@ -143,7 +152,7 @@ public class GameController : MonoBehaviour
         {
             //FirstClear();
 
-
+            ui.SetMoveCountText(player1.moveCount + player2.moveCount);
 
 
 

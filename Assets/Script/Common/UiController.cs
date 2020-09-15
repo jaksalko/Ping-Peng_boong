@@ -17,8 +17,15 @@ public class UiController : UIScript
 
     public Text devtext;
     public Text remainText;
-
+    public Text moveText;
     bool mini = false;
+
+    int order = 0;
+    public GameObject[] parfaitOrder;
+    public GameObject[] parfaitOrder_done;
+
+    public GameObject mission_default;
+    public GameObject mission_parfait;
 
     private void Awake()
     {
@@ -26,6 +33,17 @@ public class UiController : UIScript
        
     }
 
+    public void ParfaitDone()
+    {
+        parfaitOrder[order].SetActive(false);
+        parfaitOrder_done[order].SetActive(true);
+        order++;
+    }
+
+    public void SetMoveCountText(int count)
+    {
+        moveText.text = count.ToString();
+    }
     public void SetRemainText(int remain , int total)
     {
         remainText.text = remain + "/" + total;
