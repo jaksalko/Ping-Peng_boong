@@ -912,6 +912,7 @@ public class Player : MonoBehaviour
         {
             upstair = false;
             thirdFloor = false;
+            other.thirdFloor = false;
             actionnum = 5; // drop motion
         }
         else if (thirdFloor &&
@@ -921,6 +922,7 @@ public class Player : MonoBehaviour
             )
         {
             thirdFloor = false;
+            other.thirdFloor = false;
             actionnum = 5;
         }
     }
