@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class BaseCanvas : MonoBehaviour
 {
+	public GameObject userState;
 	public static BaseCanvas Instance;
 	public float btnlocX;
 	public float btnlocY;
@@ -30,6 +31,11 @@ public class BaseCanvas : MonoBehaviour
 		if (SceneManager.GetActiveScene().name == "Beach_Island" || SceneManager.GetActiveScene().name == "Tutorial_Island")
 		{
 			changePlayerBtn = GameObject.FindGameObjectWithTag("ChangePlayer");
+			userState.SetActive(false);
+		}
+		else
+		{
+			userState.SetActive(true);
 		}
 	}
 

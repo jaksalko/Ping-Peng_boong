@@ -46,7 +46,7 @@ public class UiController : UIScript
     }
     public void SetRemainText(int remain , int total)
     {
-        remainText.text = remain + "/" + total;
+        remainText.text = "<size=60>" + remain + "</size>/<size=40>" + total + "</size>";
     }
 
     public void MiniMapButton()

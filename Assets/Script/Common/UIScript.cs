@@ -33,7 +33,7 @@ public class UIScript : MonoBehaviour
 
 	public string Island_Name(int stage)
 	{
-		if (stage < IslandData.tutorial)
+		if (stage <= IslandData.tutorial)
 		{
 			return "Tutorial";
 		}
