@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
     public List<int> stop;
     [SerializeField]
     int temp;
- 
+    int total = 0;
 
 
     [Header("Character State")]
@@ -147,7 +147,8 @@ public class Player : MonoBehaviour
             stateMachine.ActionEnd += AnimationEnd;
         }
 
-
+        total = RemainCheck();
+       
 
         /*
         map.ObserveEveryValueChanged(data => map[posZ, posX])
@@ -157,9 +158,9 @@ public class Player : MonoBehaviour
         .Subscribe(_ => Debug.Log("change other position :" + other.posZ + "," + other.posX + " : " + _));
         */
 
-      
+
 #if UNITY_EDITOR
-            var mouseDownStream = this.UpdateAsObservable()
+        var mouseDownStream = this.UpdateAsObservable()
                 .Where(_ => !EventSystem.current.IsPointerOverGameObject())
                
                 .Where(_ => !click)
@@ -311,7 +312,8 @@ public class Player : MonoBehaviour
     
 
         check[posZ, posX] = true;
-//        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);
+        GameController.instance.ui.SetRemainText(RemainCheck(), total);
+        //        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);
     }
 
 
@@ -394,15 +396,25 @@ public class Player : MonoBehaviour
 
 				transform.position = new Vector3(targetPos.x, targetPos.y, targetPos.z);
 
-
-                
-                if (CheckStageClear())
+                if(RemainCheck() == 0)
                 {
                     if (!simulating)
                         GameController.instance.GameEnd(true);
                     else
                         Simulator.instance.SimulatingSuccess();
                 }
+                else
+                {
+                    GameController.instance.ui.SetRemainText(RemainCheck(), total);
+                }
+                
+                /*if (CheckStageClear())
+                {
+                    if (!simulating)
+                        GameController.instance.GameEnd(true);
+                    else
+                        Simulator.instance.SimulatingSuccess();
+                }*/
 
                 if (stateChange)//state == master !upstair 에서 (갈수없는 블럭을 제외한)2층의 블럭과 부딪히면 true
                 {
@@ -412,6 +424,8 @@ public class Player : MonoBehaviour
                     other.state = State.Idle;
                     stateChange = false;
                     other.transform.SetParent(null);
+
+                    isMoving = false;
 
                     if (!simulating)
                         GameController.instance.ui.ChangeCharacter();
@@ -435,7 +449,7 @@ public class Player : MonoBehaviour
                             other.state = State.Master;
                             transform.SetParent(other.transform);
 
-                            
+                            isMoving = false;
 
 
                             if (!simulating)
@@ -560,6 +574,23 @@ public class Player : MonoBehaviour
 		}
 
 
+    }
+
+    int RemainCheck()
+    {
+        int remain = 0;
+        for (int i = 0; i < mapsizeH; i++)
+        {
+            for (int j = 0; j < mapsizeW; j++)
+            {
+                if(!check[i,j])
+                {
+                    remain++;
+                }
+            }
+        }
+
+        return remain;
     }
 
     bool CheckStageClear()
@@ -717,7 +748,7 @@ public class Player : MonoBehaviour
             {
                 actionnum = 4;//캐릭터//bump
             }
-            else if (!upstair && state == State.Master)
+            else if (!upstair && state == State.Master/* && (next >= BlockNumber.upperNormal && next <= BlockNumber.upperParfaitD)*/ )
             {
                 stateChange = true;
                 actionnum = 3;//crash

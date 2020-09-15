@@ -16,6 +16,7 @@ public class UiController : UIScript
     public GameObject pausePopup;
 
     public Text devtext;
+    public Text remainText;
 
     bool mini = false;
 
@@ -25,7 +26,10 @@ public class UiController : UIScript
        
     }
 
-
+    public void SetRemainText(int remain , int total)
+    {
+        remainText.text = remain + "/" + total;
+    }
 
     public void MiniMapButton()
     {

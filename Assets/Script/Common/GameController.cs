@@ -18,6 +18,7 @@ public class GameController : MonoBehaviour
     public bool infiniteMode;
     //public int infiniteLevel;
 
+
 	private bool isRunning;
     public static bool Running
     {
@@ -102,6 +103,8 @@ public class GameController : MonoBehaviour
     {
         player1.FindPlayer();
         player2.FindPlayer();
+
+
 
         nowPlayer = player1;
         nowPlayer.isActive = true;
