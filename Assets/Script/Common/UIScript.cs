@@ -8,7 +8,7 @@ using UnityEngine.UI;
     public static class IslandData
     {
         public const int
-            tutorial = 4,
+            tutorial = 4,//0-4
             iceCream = 15;
         public const string
             stage1 = "Tutorial_Island",
@@ -21,7 +21,7 @@ public class UIScript : MonoBehaviour
 {
     public void Load_Island(int stage)
     {
-        if(stage < IslandData.tutorial)
+        if(stage <= IslandData.tutorial)
         {
             SceneManager.LoadScene("Tutorial_Island");
         }
