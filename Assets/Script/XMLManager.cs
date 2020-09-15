@@ -100,10 +100,7 @@ public class StageStep
 
    
 
-    public void Initialize()
-    {
-
-    }
+    
 
     public void SetStep(int current)
     {
@@ -133,7 +130,7 @@ public class ItemDatabase
         {
             StageStep stageStep = new StageStep();
             stageStep.stage = i;
-            stageStep.step = -1;
+            stageStep.step = 9999;
             stepList.Add(stageStep);
         }
     }

@@ -24,6 +24,8 @@ public class LoadingScene : MonoBehaviour
 
     private void Awake()
     {
+        xMLManager = XMLManager.ins;
+
         JsonAdapter.GET += IsNew;
         JsonAdapter.POST += IsUnique;
         StartCoroutine(Interpolation());
@@ -38,20 +40,25 @@ public class LoadingScene : MonoBehaviour
         //Cloud.Initialize();
         
     }
-    public void IsNew(bool add)
+    public void IsNew(bool add)// call by loading
     {
         JsonAdapter.GET -= IsNew;
         if (add)
         {
-            //Debug.Log("add account");
+            // create new account
             addAccountPanel.SetActive(true);
         }
         else
         {
-            //xMLManager = XMLManager.ins;
+            //alreay have user data
 
-            //xMLManager.SaveItems();
-            //xMLManager.itemDB.Initialize();
+            if (xMLManager == null)
+            {
+                Debug.Log("xml instance is null");
+                xMLManager = XMLManager.ins;
+                xMLManager.LoadItems(); // already have xml , so load item to itemDB instance
+            }
+            
 
             Debug.Log("already exist");
             GoogleInstance.instance.id = Cloud.PlayerDisplayName;
@@ -63,7 +70,7 @@ public class LoadingScene : MonoBehaviour
         
         
     }
-    public void IsUnique(bool unique)
+    public void IsUnique(bool unique)//call by add account button
     {
         if(unique)
         {
@@ -71,8 +78,17 @@ public class LoadingScene : MonoBehaviour
             GoogleInstance.instance.id = Cloud.PlayerDisplayName;
             JsonAdapter.POST -= IsUnique;
 
-            //xMLManager = XMLManager.ins;
+            if (xMLManager == null)
+            {
+                Debug.Log("xml instance is null");
+                xMLManager = XMLManager.ins;
+            }
+                
+
             //xMLManager.SaveItems();
+            //xMLManager.LoadItems();
+            xMLManager.itemDB.Initialize();
+            xMLManager.SaveItems();
 
             SceneManager.LoadScene("MainScene");
         }

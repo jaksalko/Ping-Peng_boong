@@ -6,7 +6,7 @@ using CloudOnce;
 public class GameController : MonoBehaviour
 {
     public static GameController instance;
-
+    XMLManager xMLManager;
     public CameraController cameraController;
     
     public UiController ui;
@@ -151,15 +151,23 @@ public class GameController : MonoBehaviour
 		if (isSuccess)
         {
             //FirstClear();
+            int moveCount = player1.moveCount + player2.moveCount;
+            ui.SetMoveCountText(moveCount);
 
-            ui.SetMoveCountText(player1.moveCount + player2.moveCount);
-
+            
 
 
             int level = PlayerPrefs.GetInt("level", 0);
             int nowLevel = GoogleInstance.instance.nowLevel;
 
-            
+            xMLManager = XMLManager.ins;
+            if(xMLManager.itemDB.stepList[nowLevel].step > moveCount)
+            {
+                xMLManager.itemDB.stepList[nowLevel].step = moveCount;
+                xMLManager.SaveItems();
+            }
+
+
             if (nowLevel == level)
             {
                 CashUpdate(30);
