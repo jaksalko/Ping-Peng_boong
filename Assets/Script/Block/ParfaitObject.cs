@@ -6,6 +6,9 @@ public class ParfaitObject : MonoBehaviour
 {
     //public GameObject iceBox;
     public Animator iceBox;
+
+    public ParticleSystem[] activeParticle;
+
     public enum State
     {
         inactive,
@@ -39,6 +42,11 @@ public class ParfaitObject : MonoBehaviour
         Debug.Log("activate");
         state = State.active;
         iceBox.SetBool("melt", true);
+
+        for(int i = 0; i < activeParticle.Length; i++)
+        {
+            activeParticle[i].Play();
+        }
         //iceBox.SetActive(false);
         //renderer.material.color = Color.white;// reveal real color
 
