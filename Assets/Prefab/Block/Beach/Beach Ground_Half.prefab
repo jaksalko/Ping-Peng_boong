@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4468862542011246563}
   - component: {fileID: 4468862542011246564}
   m_Layer: 0
-  m_Name: Icecream Ground_Half
+  m_Name: Beach Ground_Half
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60,7 +60,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 705ef6ffed6cf4d0082e238b55aa5a8a, type: 2}
+  - {fileID: 2100000, guid: 3723636f0af484da0a5111e37aebb1fe, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -14,7 +14,7 @@ using UnityEngine.UI;
             stage1 = "Tutorial_Island",
             stage2 = "Beach_Island";
 
-
+        public const int lastLevel = 15;
     }
 
 public class UIScript : MonoBehaviour

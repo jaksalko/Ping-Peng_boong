@@ -39,7 +39,7 @@ public class GameController : MonoBehaviour
 	SoundManager soundManagerScript;
 
     JsonAdapter jsonAdapter = new JsonAdapter();
-    UserData user = new UserData();
+    UserChange user = new UserChange();
 
 	private void Awake()
     {

@@ -19,6 +19,8 @@ public class LoadingScene : MonoBehaviour
     public Text addAccountText;
     public GameObject addAccountPanel;
 
+    XMLManager xMLManager;
+
 
     private void Awake()
     {
@@ -46,6 +48,11 @@ public class LoadingScene : MonoBehaviour
         }
         else
         {
+            //xMLManager = XMLManager.ins;
+
+            //xMLManager.SaveItems();
+            //xMLManager.itemDB.Initialize();
+
             Debug.Log("already exist");
             GoogleInstance.instance.id = Cloud.PlayerDisplayName;
             JsonAdapter.POST -= IsUnique;
@@ -63,6 +70,10 @@ public class LoadingScene : MonoBehaviour
             addAccountText.text = "created successfully";
             GoogleInstance.instance.id = Cloud.PlayerDisplayName;
             JsonAdapter.POST -= IsUnique;
+
+            //xMLManager = XMLManager.ins;
+            //xMLManager.SaveItems();
+
             SceneManager.LoadScene("MainScene");
         }
         else

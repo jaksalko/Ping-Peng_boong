@@ -85,6 +85,14 @@ public class UserData
     public string id; 
     public string nickname;
     public int cash;
+    //public int change;
+}
+
+public class UserChange
+{
+    public string id;
+    public string nickname;
+    public int cash;
     public int change;
 }
 
