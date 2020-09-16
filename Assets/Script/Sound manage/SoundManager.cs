@@ -8,7 +8,8 @@ using UnityEngine.SceneManagement;
 public class SoundManager : MonoBehaviour
 {
 	public AudioClip mainBGSound;
-	public AudioClip gameBGSound;
+	public AudioClip tutorialBGSound;
+	public AudioClip parfaitBGSound;
 	public AudioClip popupSound;
 
 	public Slider bgmVolumnSlider;
@@ -43,14 +44,24 @@ public class SoundManager : MonoBehaviour
 
 	void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 	{
-		if (scene.name == "GameScene")
+		if (scene.name == "Tutorial_Island")
 		{
 			gameSceneOn = true;
 
 			audioSource.loop = true;
-			audioSource.clip = gameBGSound;
+			audioSource.clip = tutorialBGSound;
 
 			audioSource.Play();			
+		}
+
+		if (scene.name == "Beach_Island")
+		{
+			gameSceneOn = true;
+
+			audioSource.loop = true;
+			audioSource.clip = parfaitBGSound;
+
+			audioSource.Play();
 		}
 
 		if (scene.name == "MainScene" && gameSceneOn)
