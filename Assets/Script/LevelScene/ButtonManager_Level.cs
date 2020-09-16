@@ -16,7 +16,7 @@ public class ButtonManager_Level : UIScript
 	private GoogleInstance googleInstance;
 	private int highLevel;
 	private int selectLevel;
-
+    
 	public Text[] levelStep;
 
 	XMLManager xMLManager;

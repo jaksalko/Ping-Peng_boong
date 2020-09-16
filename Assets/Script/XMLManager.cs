@@ -37,11 +37,30 @@ public class XMLManager : MonoBehaviour
         //open new xml file
         string path;
         XmlSerializer serializer = new XmlSerializer(typeof(ItemDatabase));
-        if (Application.platform == RuntimePlatform.Android)
-        {
 
-            path = Application.persistentDataPath;
-            path = path.Substring(0, path.LastIndexOf('/'));
+
+
+#if UNITY_EDITOR
+        using (FileStream stream = new FileStream(
+            Application.dataPath + "/XML/item_data.xml", FileMode.Create))
+        {
+            StreamWriter sw = new StreamWriter(stream, Encoding.UTF8);
+            serializer.Serialize(sw, itemDB); // put into sml files)
+            sw.Close();//important :)
+        }
+
+
+#elif UNITY_IOS || UNITY_ANDROID
+           //path = Application.dataPath;
+        path = Application.persistentDataPath;
+        //path += "datas";
+
+
+        if(!Directory.Exists(Path.GetDirectoryName(path)))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+        }
+
             using (FileStream stream = new FileStream(
             path + "/item_data.xml", FileMode.Create))
             {
@@ -49,17 +68,7 @@ public class XMLManager : MonoBehaviour
                 serializer.Serialize(sw, itemDB); // put into sml files)
                 sw.Close();//important :)
             }
-        }
-        else
-        {
-            using (FileStream stream = new FileStream(
-             Application.dataPath + "/XML/item_data.xml", FileMode.Create))
-            {
-                StreamWriter sw = new StreamWriter(stream, Encoding.UTF8);
-                serializer.Serialize(sw, itemDB); // put into sml files)
-                sw.Close();//important :)
-            }
-        }
+#endif
 
 
     }
@@ -68,23 +77,29 @@ public class XMLManager : MonoBehaviour
     {
         string path;
         XmlSerializer serializer = new XmlSerializer(typeof(ItemDatabase));
-        if (Application.platform == RuntimePlatform.Android)
-        {
 
-            path = Application.persistentDataPath;
-            path = path.Substring(0, path.LastIndexOf('/'));
-            FileStream stream = new FileStream(
-          path + "/item_data.xml", FileMode.Open);
+
+
+
+#if UNITY_EDITOR
+        FileStream stream = new FileStream(
+         Application.dataPath + "/XML/item_data.xml", FileMode.Open);
+        itemDB = serializer.Deserialize(stream) as ItemDatabase;
+        stream.Close();
+
+
+
+
+#elif UNITY_IOS || UNITY_ANDROID
+        path = Application.persistentDataPath;
+        //path += "datas";
+        FileStream stream = new FileStream(
+            path + "/item_data.xml", FileMode.Open);
             itemDB = serializer.Deserialize(stream) as ItemDatabase;
             stream.Close();
-        }
-        else
-        {
-            FileStream stream = new FileStream(
-          Application.dataPath + "/XML/item_data.xml", FileMode.Open);
-            itemDB = serializer.Deserialize(stream) as ItemDatabase;
-            stream.Close();
-        }
+
+#endif
+
 
 
     }

@@ -874,10 +874,10 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  cloudProjectId: bb1e9d7d-4e51-4b57-a558-e280bb631670
+  cloudProjectId: 
   framebufferDepthMemorylessMode: 0
-  projectName: PingPengBooong
-  organizationId: ansrud9504
+  projectName: 
+  organizationId: 
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
