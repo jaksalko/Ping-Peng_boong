@@ -15,6 +15,7 @@ TagManager:
   - Indexer
   - GoogleInstance
   - ChangePlayer
+  - SFXSlider
   layers:
   - Default
   - TransparentFX

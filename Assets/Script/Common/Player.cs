@@ -50,7 +50,15 @@ public class Player : MonoBehaviour
     [SerializeField]
     public bool isActive = false;
 
-    public enum State
+	[Header("Character Sound")]
+	public AudioClip crashSound;
+	public AudioClip departureSound;
+	public AudioClip fallSound;
+	public AudioClip slideSound;
+	private AudioSource playerAudio;
+	private bool isSlideSoundPlaying;
+
+	public enum State
     {
         Idle,//no interaction
         Master,//in interaction and state is master
@@ -98,8 +106,8 @@ public class Player : MonoBehaviour
 //        Debug.Log("Animation End...");
         animator.SetInteger("action", 0);
         actionnum = 0;
-        
-    }
+
+	}
   
     public void SetSimulatorData()
     {
@@ -148,9 +156,10 @@ public class Player : MonoBehaviour
         }
 
         total = RemainCheck();
-       
 
-        /*
+		playerAudio = GetComponent<AudioSource>();
+
+		/*
         map.ObserveEveryValueChanged(data => map[posZ, posX])
             .Subscribe(_ => Debug.Log("change my position :" + posZ + "," + posX +" : " + _));
 
@@ -160,7 +169,7 @@ public class Player : MonoBehaviour
 
 
 #if UNITY_EDITOR
-        var mouseDownStream = this.UpdateAsObservable()
+		var mouseDownStream = this.UpdateAsObservable()
                 .Where(_ => !EventSystem.current.IsPointerOverGameObject())
                
                 .Where(_ => !click)
@@ -263,8 +272,10 @@ public class Player : MonoBehaviour
                 {
                     thirdFloor = true;
                 }
-             
-            }
+
+				playerAudio.Stop();
+
+			}
 
             Debug.Log("move direction : " + getDirection);
             transform.rotation = Quaternion.Euler(new Vector3(0f, getDirection * 90 , 0f));
@@ -528,22 +539,58 @@ public class Player : MonoBehaviour
         animator.SetBool("move", isMoving);
         if (isMoving)
         {
-            
-			isPlayingParticle = false;
-            if (actionnum == 5)//drop
+			if (actionnum == 5)//drop
             {
-                float distance = Vector3.Distance(transform.position, targetPos + new Vector3(0, 1, 0));
+				if (!playerAudio.isPlaying)
+				{
+					playerAudio.loop = true;
+					playerAudio.clip = slideSound;
+
+					playerAudio.Play();
+					isSlideSoundPlaying = true;
+				}
+
+				float distance = Vector3.Distance(transform.position, targetPos + new Vector3(0, 1, 0));
                 if (distance < 1f)//거리가 1일때부터 드랍 애니메이션 실행 , 움직이고 있던상태에서 애니메이션 실행
                 {
                     animator.SetInteger("action", actionnum);
-                }
+
+					if (isSlideSoundPlaying)
+					{
+						playerAudio.Stop();
+						isSlideSoundPlaying = false;
+					}
+					if (!playerAudio.isPlaying)
+					{
+						playerAudio.loop = false;
+						playerAudio.clip = fallSound;
+
+						playerAudio.Play();
+					}
+				}
             }
+			else
+			{
+				if (!playerAudio.isPlaying)
+				{
+					playerAudio.loop = true;
+					playerAudio.clip = slideSound;
+
+					playerAudio.Play();
+					isSlideSoundPlaying = true;
+				}
+			}
             
         }
         else
         {
-			
-            if(actionnum !=5)//이미 전에 실행해서 드랍만 예외처리
+			if(isSlideSoundPlaying)
+			{
+				playerAudio.Stop();
+				isSlideSoundPlaying = false;
+			}
+
+			if (actionnum !=5)//이미 전에 실행해서 드랍만 예외처리
 			    animator.SetInteger("action", actionnum);
             
 			//이동 시 발생하는 particle control
@@ -556,6 +603,7 @@ public class Player : MonoBehaviour
 						// crashParticle.Play();
 						isPlayingParticle = true;
 					}
+
 					break;
 				case 4:
 					if (!isPlayingParticle)
@@ -565,6 +613,14 @@ public class Player : MonoBehaviour
 						Invoke("BumpParticleControl", 4.5f);
 						//bumpParticle.Play();
 						isPlayingParticle = true;
+					}
+
+					if (!playerAudio.isPlaying)
+					{
+						playerAudio.loop = false;
+						playerAudio.clip = crashSound;
+
+						playerAudio.Play();
 					}
 					break;
 				default:

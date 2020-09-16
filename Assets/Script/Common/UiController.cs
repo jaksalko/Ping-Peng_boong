@@ -74,8 +74,16 @@ public class UiController : UIScript
 			}
 			GameController.instance.nowPlayer.isActive = true;
 
-//			Debug.Log("player 1 : " + GameController.instance.player1.isActive);
-//			Debug.Log("player 2 : " + GameController.instance.player2.isActive);
+			if (!GameController.instance.nowPlayer.GetComponent<AudioSource>().isPlaying)
+			{
+				GameController.instance.nowPlayer.GetComponent<AudioSource>().loop = false;
+				GameController.instance.nowPlayer.GetComponent<AudioSource>().clip = GameController.instance.nowPlayer.GetComponent<Player>().departureSound;
+
+				GameController.instance.nowPlayer.GetComponent<AudioSource>().Play();
+			}
+
+			//			Debug.Log("player 1 : " + GameController.instance.player1.isActive);
+			//			Debug.Log("player 2 : " + GameController.instance.player2.isActive);
 		}
 		else
 		{

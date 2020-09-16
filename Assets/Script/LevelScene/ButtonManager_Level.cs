@@ -41,19 +41,16 @@ public class ButtonManager_Level : UIScript
 		{
 			Debug.Log("tutorial");
 			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 0;
-			islandListContents.transform.GetChild(0).GetComponent<Toggle>().isOn = true;
 		}
 		else if (Island_Name(highLevel) == "Icecream")
 		{
 			Debug.Log("icecream");
 			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 0.5f ;
-			islandListContents.transform.GetChild(1).GetComponent<Toggle>().isOn = true;
 		}
 		else
 		{
 			Debug.Log("default");
 			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 0;
-			islandListContents.transform.GetChild(0).GetComponent<Toggle>().isOn = true;
 		}
 
 		Color clearcolor;

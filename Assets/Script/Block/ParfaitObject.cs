@@ -18,14 +18,16 @@ public class ParfaitObject : MonoBehaviour
     }
     public int sequence;
     public State state;
-    // Start is called before the first frame update
-    void Awake()
+
+	public AudioClip meltSound;
+
+	// Start is called before the first frame update
+	void Awake()
     {
         Debug.Log("parfait initialize...");
-        //state = State.inactive;
-        //renderer = this.gameObject.GetComponent<Renderer>();
-        //renderer.material.color = Color.black;
-
+		//state = State.inactive;
+		//renderer = this.gameObject.GetComponent<Renderer>();
+		//renderer.material.color = Color.black;
     }
     /*private void FixedUpdate()
     {
@@ -43,19 +45,27 @@ public class ParfaitObject : MonoBehaviour
         state = State.active;
         iceBox.SetBool("melt", true);
 
-        for(int i = 0; i < activeParticle.Length; i++)
+		if (!GetComponent<AudioSource>().isPlaying)
+		{
+			GetComponent<AudioSource>().clip = meltSound;
+			GetComponent<AudioSource>().Play();
+		}
+
+		for (int i = 0; i < activeParticle.Length; i++)
         {
             activeParticle[i].Play();
         }
         //iceBox.SetActive(false);
         //renderer.material.color = Color.white;// reveal real color
 
+
     }
 
     public bool GetParfait(Map map)
     {
         state = State.clear;
-        if (sequence < 3)
+
+		if (sequence < 3)
         {
             map.parfaitBlock[sequence + 1].Activate();
             Destroy(this.gameObject);

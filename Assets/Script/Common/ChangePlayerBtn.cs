@@ -16,8 +16,8 @@ public class ChangePlayerBtn : MonoBehaviour, IDragHandler, IEndDragHandler, IPo
 
 	private void Start()
 	{
-		float positionX = PlayerPrefs.GetFloat("ChangePlayerBtnX");
-		float positionY = PlayerPrefs.GetFloat("ChangePlayerBtnY");
+		float positionX = PlayerPrefs.GetFloat("ChangePlayerBtnX", 540);
+		float positionY = PlayerPrefs.GetFloat("ChangePlayerBtnY", 260);
 		GetComponent<RectTransform>().position = new Vector2(positionX, positionY);
 	}
 
