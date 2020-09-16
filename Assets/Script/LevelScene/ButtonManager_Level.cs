@@ -16,13 +16,26 @@ public class ButtonManager_Level : UIScript
 	private GoogleInstance googleInstance;
 	private int highLevel;
 	private int selectLevel;
-	
+
+	public Text[] levelStep;
+
+	XMLManager xMLManager;
 
     // Start is called before the first frame update
     void Start()
     {
+		xMLManager = XMLManager.ins;
 		googleInstance = GameObject.FindGameObjectWithTag("GoogleInstance").GetComponent<GoogleInstance>();
 		highLevel =  PlayerPrefs.GetInt("level", 0);
+
+        for(int j = 0; j < highLevel; j++)
+        {
+			int step = xMLManager.itemDB.stepList[j].step;
+			if (step > 99) step = 99;
+			levelStep[j].text = string.Format("{0:D2}", step);
+        }
+
+
 
 		if (Island_Name(highLevel) == "Tutorial")
 		{
