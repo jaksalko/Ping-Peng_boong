@@ -1356,7 +1356,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -5382,7 +5382,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startingPage: 0
   fastSwipeThresholdTime: 0.3
-  fastSwipeThresholdDistance: 100
+  fastSwipeThresholdDistance: 25
   decelerationRate: 10
   prevButton: {fileID: 0}
   nextButton: {fileID: 0}
