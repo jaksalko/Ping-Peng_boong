@@ -51,11 +51,9 @@ public class XMLManager : MonoBehaviour
 
 
 #elif UNITY_IOS || UNITY_ANDROID
-           //path = Application.dataPath;
+          
         path = Application.persistentDataPath;
-        //path += "datas";
-
-
+        
         if(!Directory.Exists(Path.GetDirectoryName(path)))
         {
             Directory.CreateDirectory(Path.GetDirectoryName(path));
@@ -93,6 +91,7 @@ public class XMLManager : MonoBehaviour
         }
         catch(System.Exception e)
         {
+            Debug.LogWarning(e.ToString());
             itemDB.Initialize();
             SaveItems();
         }
@@ -114,6 +113,7 @@ public class XMLManager : MonoBehaviour
         }
         catch(System.Exception e)
         {
+            GoogleInstance.instance.SetText(e.ToString());
             itemDB.Initialize();
             SaveItems();
         }

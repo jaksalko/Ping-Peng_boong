@@ -15,6 +15,7 @@ public class GoogleInstance : MonoBehaviour
 
     public int nowLevel;
 
+    public GameObject canvas;
     private void Awake()
     {
         // PlayerPrefs.SetInt("level", IslandData.lastLevel);
