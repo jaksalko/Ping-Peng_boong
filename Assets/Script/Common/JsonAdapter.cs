@@ -80,11 +80,13 @@ public class JsonAdapter : MonoBehaviour
 
 }
 
+[Serializable]
 public class UserData
 {
-    public string id; 
-    public string nickname;
+    public string id;
     public int cash;
+    public string nickname;
+    
     //public int change;
 }
 
@@ -117,6 +119,7 @@ public static class JsonHelper
     public static T[] FromJson<T>(string json)
     {
         Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(json);
+        Debug.Log(wrapper.Items.Length);
         return wrapper.Items;
     }
 

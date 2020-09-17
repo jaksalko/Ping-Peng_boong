@@ -26,7 +26,7 @@ public class ButtonManager_Level : UIScript
     {
 		xMLManager = XMLManager.ins;
 		googleInstance = GameObject.FindGameObjectWithTag("GoogleInstance").GetComponent<GoogleInstance>();
-		highLevel =  PlayerPrefs.GetInt("level", 0);
+		highLevel = xMLManager.itemDB.level;
 
         for(int j = 0; j < highLevel; j++)
         {

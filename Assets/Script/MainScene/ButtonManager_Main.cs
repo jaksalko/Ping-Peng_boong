@@ -11,10 +11,15 @@ public class ButtonManager_Main : UIScript
     public GameObject EditorSettingPopup;
 
 	public GameObject[] islandList;
+	XMLManager xMLManager;
 
 	private void Start()
 	{
-		int highLevel = PlayerPrefs.GetInt("level", 0);
+        if(xMLManager == null)
+        {
+			xMLManager = XMLManager.ins;
+        }
+		int highLevel = xMLManager.itemDB.level;
 		if (Island_Name(highLevel) == "Tutorial")
 		{
 			islandList[0].SetActive(true);
@@ -37,7 +42,15 @@ public class ButtonManager_Main : UIScript
 
 	public void PressPlayBtn()
 	{
-        GoogleInstance.instance.nowLevel = PlayerPrefs.GetInt("level", 0);
+		if (xMLManager == null)
+		{
+			xMLManager = XMLManager.ins;
+		}
+
+		int high_level = xMLManager.itemDB.level;
+
+		GoogleInstance.instance.nowLevel = high_level;
+
 		Load_Island(GoogleInstance.instance.nowLevel);
 	}
 

@@ -155,12 +155,15 @@ public class ItemDatabase
     [XmlArray("StageStepList")]
     public List<StageStep> stepList = new List<StageStep>();
 
+    [XmlElement("level")]
+    public int level;
 
     
     public void Initialize()//NewGame
     {
         //data = CSVReader.Read("makemoneydatasheet3");
         Debug.Log("initialize");
+        level = 0;
         for(int i = 0; i <= IslandData.lastLevel; i++)
         {
             StageStep stageStep = new StageStep();
@@ -168,6 +171,12 @@ public class ItemDatabase
             stageStep.step = 9999;
             stepList.Add(stageStep);
         }
+    }
+
+    public void LevelUp()
+    {
+        level++;
+        
     }
  
          

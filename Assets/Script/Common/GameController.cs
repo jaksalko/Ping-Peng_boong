@@ -154,13 +154,14 @@ public class GameController : MonoBehaviour
             int moveCount = player1.moveCount + player2.moveCount;
             ui.SetMoveCountText(moveCount);
 
-            
-
-
-            int level = PlayerPrefs.GetInt("level", 0);
-            int nowLevel = GoogleInstance.instance.nowLevel;
 
             xMLManager = XMLManager.ins;
+
+            int level = xMLManager.itemDB.level;
+
+            int nowLevel = GoogleInstance.instance.nowLevel;
+
+            
             if(xMLManager.itemDB.stepList[nowLevel].step > moveCount)
             {
                 xMLManager.itemDB.stepList[nowLevel].step = moveCount;
@@ -172,7 +173,8 @@ public class GameController : MonoBehaviour
             {
                 CashUpdate(30);
                 GoogleInstance.instance.nowLevel++;
-                PlayerPrefs.SetInt("level", GoogleInstance.instance.nowLevel);                
+                xMLManager.itemDB.LevelUp();
+                xMLManager.SaveItems();
             }
             else
             {
