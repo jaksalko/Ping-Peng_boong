@@ -44203,6 +44203,8 @@ MonoBehaviour:
   map: {fileID: 434298039}
   nowPlayer: {fileID: 1095636603}
   infiniteMode: 0
+  maxLevel: 15
+  isMaxLevel: 0
   startTime: 0
   endTime: 0
   backgroundSound: {fileID: 0}
@@ -56250,6 +56252,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inGame: {fileID: 810421906}
   resultPopup: {fileID: 357295267}
+  nextLevelBtn: {fileID: 1100998314}
   pausePopup: {fileID: 859071587}
   devtext: {fileID: 685309555}
   remainText: {fileID: 881968735}

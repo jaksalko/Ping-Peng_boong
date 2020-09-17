@@ -13,6 +13,7 @@ public class UiController : UIScript
 {
     public GameObject inGame;
     public GameObject resultPopup;
+	public Button nextLevelBtn;
     public GameObject pausePopup;
 
     public Text devtext;

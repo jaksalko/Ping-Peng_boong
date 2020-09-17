@@ -11,6 +11,7 @@ public class ButtonManager_Main : UIScript
     public GameObject EditorSettingPopup;
 
 	public GameObject[] islandList;
+	public int maxLevel;
 	XMLManager xMLManager;
 
 	private void Start()
@@ -49,9 +50,18 @@ public class ButtonManager_Main : UIScript
 
 		int high_level = xMLManager.itemDB.level;
 
-		GoogleInstance.instance.nowLevel = high_level;
+		if(maxLevel < high_level)
+		{
+			GoogleInstance.instance.nowLevel = high_level - 1;
 
-		Load_Island(GoogleInstance.instance.nowLevel);
+			Load_Island(GoogleInstance.instance.nowLevel);
+		}
+		else
+		{
+			GoogleInstance.instance.nowLevel = high_level;
+
+			Load_Island(GoogleInstance.instance.nowLevel);
+		}
 	}
 
 	public void PressEglooBtn()

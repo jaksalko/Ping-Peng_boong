@@ -10109,7 +10109,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 0, y: -7.177353, z: 4.55e-43, w: 0}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -43417,6 +43417,8 @@ MonoBehaviour:
   map: {fileID: 434298039}
   nowPlayer: {fileID: 1095636603}
   infiniteMode: 0
+  maxLevel: 15
+  isMaxLevel: 0
   startTime: 0
   endTime: 0
   backgroundSound: {fileID: 0}
@@ -55228,6 +55230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inGame: {fileID: 810421906}
   resultPopup: {fileID: 357295267}
+  nextLevelBtn: {fileID: 1100998314}
   pausePopup: {fileID: 859071587}
   devtext: {fileID: 685309555}
   remainText: {fileID: 1340193193}

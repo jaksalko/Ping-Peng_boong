@@ -16,8 +16,9 @@ public class GameController : MonoBehaviour
 
     public Player nowPlayer;
     public bool infiniteMode;
-    //public int infiniteLevel;
+	//public int infiniteLevel;
 
+	public int maxLevel;
 
 	private bool isRunning;
     public static bool Running
@@ -181,7 +182,10 @@ public class GameController : MonoBehaviour
                 GoogleInstance.instance.nowLevel++;
             }
            
-            
+            if(nowLevel == maxLevel)
+			{
+				ui.nextLevelBtn.interactable = false;
+			}
             
           
         }
