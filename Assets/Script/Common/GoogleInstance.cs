@@ -17,7 +17,7 @@ public class GoogleInstance : MonoBehaviour
 
     private void Awake()
     {
-        //PlayerPrefs.SetInt("level", IslandData.lastLevel);
+        // PlayerPrefs.SetInt("level", IslandData.lastLevel);
         Debug.Log("Single Class Awake...");//Set instance
         if (instance == null)
         {

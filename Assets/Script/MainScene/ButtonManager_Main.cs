@@ -25,8 +25,8 @@ public class ButtonManager_Main : UIScript
 		}
 		else
 		{
-			// default
-			islandList[0].SetActive(true);
+			// default : last island
+			islandList[1].SetActive(true);
 		}
 	}
 

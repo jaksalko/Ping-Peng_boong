@@ -8,8 +8,8 @@ using UnityEngine.UI;
     public static class IslandData
     {
         public const int
-            tutorial = 4,//0-4
-            iceCream = 15;
+            tutorial = 4,	// 0 - 4
+            iceCream = 15;	// 5 - 15
         public const string
             stage1 = "Tutorial_Island",
             stage2 = "Beach_Island";
@@ -25,7 +25,7 @@ public class UIScript : MonoBehaviour
         {
             SceneManager.LoadScene("Tutorial_Island");
         }
-        else if(stage < IslandData.iceCream)
+        else if(stage <= IslandData.iceCream)
         {
             SceneManager.LoadScene("Beach_Island");
         }
@@ -37,7 +37,7 @@ public class UIScript : MonoBehaviour
 		{
 			return "Tutorial";
 		}
-		else if (stage < IslandData.iceCream)
+		else if (stage <= IslandData.iceCream)
 		{
 			return "Icecream";
 		}

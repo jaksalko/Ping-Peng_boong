@@ -49,8 +49,8 @@ public class ButtonManager_Level : UIScript
 		}
 		else
 		{
-			Debug.Log("default");
-			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 0;
+			Debug.Log("default : last island");
+			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 0.5f;
 		}
 
 		Color clearcolor;
@@ -66,11 +66,20 @@ public class ButtonManager_Level : UIScript
 			levelList[i].transform.GetChild(1).GetComponent<Text>().color = clearcolor;
 			levelList[i].GetComponent<Toggle>().interactable = true;
 		}
-		levelList[i].transform.GetChild(0).GetComponent<Image>().sprite = nonclearBtn;
-		levelList[i].transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().sprite = nonclearSelect;
-		levelList[i].transform.GetChild(1).GetComponent<Text>().color = nonclearcolor;
-		levelList[i].GetComponent<Toggle>().interactable = true;
-		levelList[i].GetComponent<Toggle>().isOn = true;
+
+		if (i < levelList.Length)
+		{
+			levelList[i].transform.GetChild(0).GetComponent<Image>().sprite = nonclearBtn;
+			levelList[i].transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().sprite = nonclearSelect;
+			levelList[i].transform.GetChild(1).GetComponent<Text>().color = nonclearcolor;
+			levelList[i].GetComponent<Toggle>().interactable = true;
+			levelList[i].GetComponent<Toggle>().isOn = true;
+		}
+		else
+		{
+			levelList[i - 1].GetComponent<Toggle>().isOn = true;
+		}
+
 	}
 
 	
