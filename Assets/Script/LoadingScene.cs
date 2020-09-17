@@ -58,10 +58,17 @@ public class LoadingScene : MonoBehaviour
                 xMLManager = XMLManager.ins;
                 xMLManager.LoadItems(); // already have xml , so load item to itemDB instance
             }
-            
+            else
+            {
+                xMLManager.LoadItems();
+            }
 
             Debug.Log("already exist");
             GoogleInstance.instance.id = Cloud.PlayerDisplayName;
+            if(GoogleInstance.instance.id == "develop_jeong")
+            {
+                GoogleInstance.instance.canvas.SetActive(true);
+            }
             JsonAdapter.POST -= IsUnique;
             SceneManager.LoadScene("MainScene");
 

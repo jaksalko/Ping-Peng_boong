@@ -2662,6 +2662,7 @@ MonoBehaviour:
   infiniteLevel: 0
   maxSize: {x: 0, y: 0}
   nowLevel: 0
+  canvas: {fileID: 1662206833}
 --- !u!4 &1269724851
 Transform:
   m_ObjectHideFlags: 0
