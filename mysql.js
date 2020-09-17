@@ -190,6 +190,25 @@ app.post('/account/cash' , function(req,res)
 	});
 })
 
+app.get('/account/info' , function(req,res)
+{
+	var id = req.query.id;
+	var sql = 'select * from user where id = ?';
+	console.log("get info... ID : " + id);
+	connection.query(sql,id , function(error,result, fields)
+	{
+		if(error)
+		{
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else
+		{
+			console.log(result);
+			res.status(200).send(JSON.stringify(result));
+		}
+	})
+})
 
 //Store API
 app.get('/igloo/playerskin', function(req,res){
