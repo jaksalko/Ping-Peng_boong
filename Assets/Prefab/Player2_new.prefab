@@ -48588,6 +48588,10 @@ MonoBehaviour:
   thirdFloor: 0
   onCloud: 0
   isActive: 0
+  crashSound: {fileID: 0}
+  departureSound: {fileID: 0}
+  fallSound: {fileID: 0}
+  slideSound: {fileID: 0}
   moveParticle: {fileID: 1077155175552347149}
   crashParticle: {fileID: 1077155174167966368}
   bumpParticle: {fileID: 1077155174441258702}
@@ -48624,7 +48628,7 @@ CharacterController:
   m_Height: 0.7
   m_Radius: 0.3
   m_SlopeLimit: 90
-  m_StepOffset: 0.1
+  m_StepOffset: 0.25
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.55, z: 0}

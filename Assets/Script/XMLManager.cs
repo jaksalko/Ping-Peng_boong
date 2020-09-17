@@ -82,21 +82,41 @@ public class XMLManager : MonoBehaviour
 
 
 #if UNITY_EDITOR
-        FileStream stream = new FileStream(
-         Application.dataPath + "/XML/item_data.xml", FileMode.Open);
-        itemDB = serializer.Deserialize(stream) as ItemDatabase;
-        stream.Close();
+
+        try
+        {
+            FileStream stream = new FileStream(
+           Application.dataPath + "/XML/item_data.xml", FileMode.Open);
+            itemDB = serializer.Deserialize(stream) as ItemDatabase;
+            stream.Close();
+
+        }
+        catch(System.Exception e)
+        {
+            itemDB.Initialize();
+            SaveItems();
+        }
 
 
 
 
 #elif UNITY_IOS || UNITY_ANDROID
+
+        
+        try
+        {
         path = Application.persistentDataPath;
         //path += "datas";
         FileStream stream = new FileStream(
             path + "/item_data.xml", FileMode.Open);
             itemDB = serializer.Deserialize(stream) as ItemDatabase;
             stream.Close();
+        }
+        catch(System.Exception e)
+        {
+            itemDB.Initialize();
+            SaveItems();
+        }
 
 #endif
 

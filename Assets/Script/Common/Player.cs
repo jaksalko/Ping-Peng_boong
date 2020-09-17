@@ -970,6 +970,13 @@ public class Player : MonoBehaviour
             thirdFloor = false;
             other.thirdFloor = false;
             actionnum = 5; // drop motion
+
+            if(next == BlockNumber.parfaitA + parfaitOrder)
+            {
+                map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] = BlockNumber.normal;
+                parfaitOrder++;
+                other.parfaitOrder++;
+            }
         }
         else if (thirdFloor &&
             (next == BlockNumber.upperNormal || next == BlockNumber.upperCracked ||
@@ -977,6 +984,14 @@ public class Player : MonoBehaviour
             (next >= BlockNumber.upperCloudUp && next <= BlockNumber.upperCloudLeft))
             )
         {
+            if (next == BlockNumber.upperParfaitA + parfaitOrder)
+            {
+                map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] = BlockNumber.upperNormal;
+                parfaitOrder++;
+                other.parfaitOrder++;
+            }
+
+
             thirdFloor = false;
             other.thirdFloor = false;
             actionnum = 5;
