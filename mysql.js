@@ -210,6 +210,47 @@ app.get('/account/info' , function(req,res)
 	})
 })
 
+//Stage manage
+app.post('/stage/clear',function(req,res)
+{
+	var id = req.body.id;
+	var stage_num = req.body.stage_num;
+	var stage_step = req.body.stage_step;
+
+	var sql = 'update stage set stage_step = ? where stage_num = ? and stage_step > ?';
+	connection.query(sql,[stage_num,stage_step,stage_num],function(error,result,fields){
+
+		if(error)
+		{
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else
+		{
+			console.log(result);
+			res.status(200).send("update step");
+		}
+	})
+
+	var sql = 'update user set stage = ? where id = ? and stage < ?';
+	connection.query(sql,[stage_num,id,stage_num],function(error,result,fields){
+
+		if(error)
+		{
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else
+		{
+			console.log(result);
+			res.status(200).send("update user stage");
+		}
+	})
+
+})
+
+
+
 //Store API
 app.get('/igloo/playerskin', function(req,res){
 	var userid = req.query.userid;
