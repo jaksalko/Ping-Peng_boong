@@ -210,6 +210,26 @@ app.get('/account/info' , function(req,res)
 	})
 })
 
+app.post('/account/stage' , function(req,res)
+{
+	var id = req.body.id;
+	var stage = req.body.stage;
+
+	var sql = 'update user set stage = ? where id = ?';
+	connection.query(sql,[stage,id],function(error,result,fields){
+		if(error)
+		{
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else
+		{
+			console.log(result);
+			res.status(200).send(result);
+		}
+	})
+})
+
 //Stage manage
 app.post('/stage/clear',function(req,res)
 {
@@ -217,8 +237,8 @@ app.post('/stage/clear',function(req,res)
 	var stage_num = req.body.stage_num;
 	var stage_step = req.body.stage_step;
 
-	var sql = 'update stage set stage_step = ? where stage_num = ? and stage_step > ?';
-	connection.query(sql,[stage_num,stage_step,stage_num],function(error,result,fields){
+	var sql = 'update stage set stage_step = ? where id = ? and stage_num = ? and stage_step > ?';
+	connection.query(sql,[stage_step,id,stage_num,stage_step],function(error,result,fields){
 
 		if(error)
 		{
@@ -232,9 +252,15 @@ app.post('/stage/clear',function(req,res)
 		}
 	})
 
-	var sql = 'update user set stage = ? where id = ? and stage < ?';
-	connection.query(sql,[stage_num,id,stage_num],function(error,result,fields){
 
+})
+app.post('/stage/insert' , function(req,res){
+
+	var postData = req.body;//id stage_num stage_step
+
+	var sql = 'insert into stage set ?';
+
+	connection.query(sql,postData,function(error,result,fields){
 		if(error)
 		{
 			console.log(error);
@@ -243,12 +269,11 @@ app.post('/stage/clear',function(req,res)
 		else
 		{
 			console.log(result);
-			res.status(200).send("update user stage");
+			res.status(200).send(result);
 		}
 	})
 
 })
-
 
 
 //Store API
