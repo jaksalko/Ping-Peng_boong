@@ -287,7 +287,7 @@ app.get('/stage/info',function(req,res){
 		else
 		{
 			console.log(results);
-			res.stauts(200).send(JSON.stringify(results));
+			res.status(200).send(JSON.stringify(results));
 		}
 	})
 })
