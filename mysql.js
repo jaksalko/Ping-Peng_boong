@@ -258,7 +258,7 @@ app.post('/stage/insert' , function(req,res){
 
 	var postData = req.body;//id stage_num stage_step
 
-	var sql = 'insert into stage set ?';
+	var sql = 'INSERT INTO stage SET ?';
 
 	connection.query(sql,postData,function(error,result,fields){
 		if(error)
@@ -273,6 +273,23 @@ app.post('/stage/insert' , function(req,res){
 		}
 	})
 
+})
+
+app.get('stage/info',function(req,res){
+	var id = req.body.id;
+	var sql = 'select * from stage where id =?';
+	connection.query(sql,id,function(error,results,fields){
+		if(error)
+		{
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else
+		{
+			console.log(results);
+			res.stauts(200).send(JSON.stringify(results));
+		}
+	})
 })
 
 
