@@ -275,7 +275,7 @@ app.post('/stage/insert' , function(req,res){
 
 })
 
-app.get('stage/info',function(req,res){
+app.get('/stage/info',function(req,res){
 	var id = req.body.id;
 	var sql = 'select * from stage where id =?';
 	connection.query(sql,id,function(error,results,fields){
