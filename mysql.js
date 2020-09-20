@@ -168,14 +168,14 @@ app.post('/account/add',function(req,res){
 	
 });
 
-//Account Cash
-app.post('/account/cash' , function(req,res)
+//Account update
+app.post('/account/update' , function(req,res)
 {
 	var id = req.body.id;
-	var change = req.body.change;
-
-	var sql = 'update user set cash = cash + ? where id = ?';
-	connection.query(sql,[change,id],function(error, results, fields)
+	var change = req.body.cash;
+	var stage = req.body.stage;
+	var sql = 'update user set cash = cash + ?, stage = ? where id = ?';
+	connection.query(sql,[change,stage,id],function(error, results, fields)
 	{	
 		if(error){
 			console.log(error);
@@ -231,7 +231,7 @@ app.post('/account/stage' , function(req,res)
 })
 
 //Stage manage
-app.post('/stage/clear',function(req,res)
+app.post('/stage/update',function(req,res)
 {
 	var id = req.body.id;
 	var stage_num = req.body.stage_num;
