@@ -40,7 +40,7 @@ public class GameController : MonoBehaviour
 	SoundManager soundManagerScript;
 
     JsonAdapter jsonAdapter = new JsonAdapter();
-    UserChange user = new UserChange();
+    UserData user = new UserData();
 
 	private void Awake()
     {
@@ -125,15 +125,33 @@ public class GameController : MonoBehaviour
         ui.inGame.SetActive(true);
         
     }
-    public void CashUpdate(int cash)
+    public void UserUpdate(int cash , int stage)
     {
         user.id = Cloud.PlayerDisplayName;
-        user.change = cash;
-
+        user.cash = cash;
+        user.stage = stage;
         var json = JsonUtility.ToJson(user);
-        StartCoroutine(jsonAdapter.API_POST("account/cash", json));
+        StartCoroutine(jsonAdapter.API_POST("account/update", json));
+    }
+    public void StageClear(int stage_num , int step)//max update
+    {
+        StageData stage = new StageData(Cloud.PlayerDisplayName , stage_num);
+       
+        stage.stage_step = step;
+
+        var json = JsonUtility.ToJson(stage);
+        StartCoroutine(jsonAdapter.API_POST("stage/insert", json));
     }
 
+    public void StageClear(int step)//update step
+    {
+        StageData stage = new StageData(Cloud.PlayerDisplayName, GoogleInstance.instance.nowLevel);
+       
+        stage.stage_step = step;
+
+        var json = JsonUtility.ToJson(stage);
+        StartCoroutine(jsonAdapter.API_POST("stage/update", json));
+    }
     public void GameEnd(bool isSuccess)
     {
 
@@ -158,9 +176,9 @@ public class GameController : MonoBehaviour
 
             xMLManager = XMLManager.ins;
 
-            int level = xMLManager.itemDB.level;
+            int level = GoogleInstance.instance.user.stage;
 
-            int nowLevel = GoogleInstance.instance.nowLevel;
+            int nowLevel = GoogleInstance.instance.nowLevel;//input level (select stage or play btn)
 
             
             if(xMLManager.itemDB.stepList[nowLevel].step > moveCount)
@@ -172,13 +190,19 @@ public class GameController : MonoBehaviour
 
             if (nowLevel == level)
             {
-                CashUpdate(30);
+                StageClear(GoogleInstance.instance.nowLevel, moveCount);
                 GoogleInstance.instance.nowLevel++;
-                xMLManager.itemDB.LevelUp();
+
+                UserUpdate(30, GoogleInstance.instance.nowLevel);
+                
+
+
+
                 xMLManager.SaveItems();
             }
             else
             {
+                StageClear(moveCount);
                 GoogleInstance.instance.nowLevel++;
             }
            

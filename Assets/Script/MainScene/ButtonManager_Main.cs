@@ -16,11 +16,13 @@ public class ButtonManager_Main : UIScript
 
 	private void Start()
 	{
-        if(xMLManager == null)
+        /*if(xMLManager == null)
         {
 			xMLManager = XMLManager.ins;
-        }
-		int highLevel = xMLManager.itemDB.level;
+        }*/
+
+		int highLevel = GoogleInstance.instance.user.stage;
+
 		if (Island_Name(highLevel) == "Tutorial")
 		{
 			islandList[0].SetActive(true);
@@ -43,12 +45,12 @@ public class ButtonManager_Main : UIScript
 
 	public void PressPlayBtn()
 	{
-		if (xMLManager == null)
+		/*if (xMLManager == null)
 		{
 			xMLManager = XMLManager.ins;
-		}
+		}*/
 
-		int high_level = xMLManager.itemDB.level;
+		int high_level = GoogleInstance.instance.user.stage;
 
 		if(maxLevel < high_level)
 		{

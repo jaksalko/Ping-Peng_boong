@@ -8,17 +8,20 @@ public class GoogleInstance : MonoBehaviour
     public Text debugTxt;
 
     public static GoogleInstance instance = null;
-    public string id;
+    public string id; // id == user.id
 
     public int infiniteLevel;
     public Vector2 maxSize;
 
     public int nowLevel;
 
+    public UserData user;
+    public List<StageData> stages;
+
     public GameObject canvas;
     private void Awake()
     {
-        // PlayerPrefs.SetInt("level", IslandData.lastLevel);
+        
         Debug.Log("Single Class Awake...");//Set instance
         if (instance == null)
         {
@@ -31,6 +34,12 @@ public class GoogleInstance : MonoBehaviour
             Destroy(gameObject);
         }
         DontDestroyOnLoad(gameObject);//Dont destroy this singleton gameobject :(
+
+        for(int i = 0; i < IslandData.lastLevel; i++)
+        {
+            stages.Add(new StageData(user.id , i));
+        }
+        
     }
 
     public void SetText(string txt)

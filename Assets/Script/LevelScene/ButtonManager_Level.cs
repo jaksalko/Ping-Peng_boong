@@ -24,13 +24,13 @@ public class ButtonManager_Level : UIScript
     // Start is called before the first frame update
     void Start()
     {
-		xMLManager = XMLManager.ins;
+		//xMLManager = XMLManager.ins;
 		googleInstance = GameObject.FindGameObjectWithTag("GoogleInstance").GetComponent<GoogleInstance>();
-		highLevel = xMLManager.itemDB.level;
+		highLevel = GoogleInstance.instance.user.stage;
 
         for(int j = 0; j < highLevel; j++)
         {
-			int step = xMLManager.itemDB.stepList[j].step;
+			int step = GoogleInstance.instance.stages[j].stage_step;
 			if (step > 99) step = 99;
 			levelStep[j].text = string.Format("{0:D2}", step);
         }

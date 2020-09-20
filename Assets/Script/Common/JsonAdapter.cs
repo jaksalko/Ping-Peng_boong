@@ -86,17 +86,26 @@ public class UserData
     public string id;
     public int cash;
     public string nickname;
-    
+    public int stage;
     //public int change;
 }
-
-public class UserChange
+[Serializable]
+public class StageData
 {
     public string id;
-    public string nickname;
-    public int cash;
-    public int change;
+    public int stage_num;
+    public int stage_step;
+
+    public StageData(string i , int num)
+    {
+        id = i;
+        stage_num = num;
+        stage_step = 99;
+    }
 }
+
+
+
 
 public class UserSkinData
 {

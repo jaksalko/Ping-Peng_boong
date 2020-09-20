@@ -65,7 +65,7 @@ public class LoadingScene : MonoBehaviour
 
             Debug.Log("already exist");
             GoogleInstance.instance.id = Cloud.PlayerDisplayName;
-            if(GoogleInstance.instance.id == "develop_jeong")
+            if(GoogleInstance.instance.id == "game_develop")
             {
                 GoogleInstance.instance.canvas.SetActive(true);
             }
@@ -111,7 +111,7 @@ public class LoadingScene : MonoBehaviour
         newAccount.id = Cloud.PlayerDisplayName;
         newAccount.nickname = nickname.text;
         newAccount.cash = 0;
-
+        newAccount.stage = 0;
         var json = JsonUtility.ToJson(newAccount);
 
         
