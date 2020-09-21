@@ -312,10 +312,10 @@ app.post('/friend/send', function(req,res){
 })
 
 app.get('/friend/request', function(req,res){
-	var id = req.body.id;
+	var friend_id = req.query.id;
 
 	sql = 'select * from friendrequest where friend_id = ?';
-	connection.query(sql,id,function(error,results,fields){
+	connection.query(sql,friend_id,function(error,results,fields){
 		if(error)
 		{
 			console.log(error);
@@ -330,7 +330,7 @@ app.get('/friend/request', function(req,res){
 })
 
 app.get('/friend/list', function(req,res){
-	var id = req.body.id;
+	var id = req.query.id;
 
 	sql = 'select * from friend where friend_id = ? or id = ?';
 	connection.query(sql,[id,id],function(error,results,fields){
