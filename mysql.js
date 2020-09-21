@@ -347,6 +347,45 @@ app.get('/friend/list', function(req,res){
 	})
 })
 
+app.post('/friend/accept',function(req,res){
+	var postData = req.body;
+	var id = req.body.id;
+	var friend_id = req.body.friend_id;
+
+	//insert
+	var insert_sql = 'insert into friend set ?'
+	//delete
+	var delete_sql = 'delete from friendrequest where id = ? and friend_id =?'
+
+	connection.query(insert_sql,postData,function(error,results,fields){
+		if(error)
+		{
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else
+		{
+			console.log(results);
+			res.status(200).send(results);
+		}
+	})
+
+	connection.query(delete_sql,[id,friend_id],function(error,results,fields){
+		if(error)
+		{
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else
+		{
+			console.log(results);
+			res.status(200).send(results);
+		}
+	})
+})
+//app.post('/friend/decline')
+//app.post('/friend/delete')
+
 
 //Store API
 app.get('/igloo/playerskin', function(req,res){
