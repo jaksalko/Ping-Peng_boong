@@ -292,6 +292,61 @@ app.get('/stage/info',function(req,res){
 	})
 })
 
+//Friend Manage
+app.post('/friend/send', function(req,res){
+	var postData = req.body;
+
+	sql = 'insert into friendrequest set ?';
+	connection.query(sql,postData,function(error,results,fields){
+		if(error)
+		{
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else
+		{
+			console.log(results);
+			res.status(200).send(results);
+		}
+	})
+})
+
+app.get('/friend/request', function(req,res){
+	var id = req.body.id;
+
+	sql = 'select * from friendrequest where friend_id = ?';
+	connection.query(sql,id,function(error,results,fields){
+		if(error)
+		{
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else
+		{
+			console.log(results);
+			res.status(200).send(JSON.stringify(results));
+		}
+	})
+})
+
+app.get('/friend/list', function(req,res){
+	var id = req.body.id;
+
+	sql = 'select * from friend where friend_id = ? or id = ?';
+	connection.query(sql,[id,id],function(error,results,fields){
+		if(error)
+		{
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else
+		{
+			console.log(results);
+			res.status(200).send(JSON.stringify(results));
+		}
+	})
+})
+
 
 //Store API
 app.get('/igloo/playerskin', function(req,res){
