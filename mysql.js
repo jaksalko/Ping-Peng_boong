@@ -389,6 +389,59 @@ app.post('/friend/accept',function(req,res){
 //app.post('/friend/decline')
 //app.post('/friend/delete')
 
+//chat
+app.post('/chat/post',function(req,res){
+	var postData = req.body;
+	var id_1 = req.body.id_1;
+	var id_2 = req.body.id_2;
+
+	var sql = 'insert into chat set ?';
+	connection.query(sql,postData,function(error,result,fields){
+		if(error)
+		{
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else
+		{
+			/*var sql_select = 'select * from chat where (id_1 = ? and id_2 = ?) or (id_1 = ? and id_2 = ?)';
+			connection.query(sql_select,[id_1,id_2,id_2,id_1],function(error,results,fields){
+				if(error)
+				{
+					console.log(error);
+					res.status(400).send(error);
+				}
+				else
+				{
+					console.log(results);
+					res.status(200).send(JSON.stringify(results));
+				}
+			})
+			*/
+			console.log(error);
+			res.status(200).send('success');
+		}
+	})
+})
+
+app.get('/chat/get',function(req,res){
+	var id_1 = req.query.id_1;
+	var id_2 = req.query.id_2;
+
+	var sql_select = 'select * from chat where (id_1 = ? and id_2 = ?) or (id_1 = ? and id_2 = ?)';
+			connection.query(sql_select,[id_1,id_2,id_2,id_1],function(error,results,fields){
+				if(error)
+				{
+					console.log(error);
+					res.status(400).send(error);
+				}
+				else
+				{
+					console.log(results);
+					res.status(200).send(JSON.stringify(results));
+				}
+			})
+})
 
 //Store API
 app.get('/igloo/playerskin', function(req,res){
