@@ -46,4 +46,9 @@ public class UIScript : MonoBehaviour
 			return "";
 		}
 	}
+
+    public void ExitButton()
+    {
+        gameObject.SetActive(false);
+    }
 }

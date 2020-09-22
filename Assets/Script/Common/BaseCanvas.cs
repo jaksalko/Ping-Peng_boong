@@ -22,6 +22,7 @@ public class BaseCanvas : MonoBehaviour
 	public Text cash;
 	public Text star;
 
+	public GameObject friendManage;
 
 	void Awake()
     {
@@ -144,4 +145,8 @@ public class BaseCanvas : MonoBehaviour
 		PlayerPrefs.SetFloat("sfxVolumn", sfxSlider.value);
 	}
 
+    public void FriendManageOpen()
+    {
+		friendManage.SetActive(true);
+    }
 }

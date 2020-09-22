@@ -45,7 +45,8 @@ public class JsonAdapter : MonoBehaviour
             JsonData[] datas = JsonHelper.FromJson<JsonData>(fixdata);
            
             Debug.Log(datas.Length);*/
-           
+            yield break;
+
         }
     }
     
@@ -76,10 +77,39 @@ public class JsonAdapter : MonoBehaviour
         }
        
         Debug.Log("Status Code: " + req.responseCode);
+
+        yield break;
     }
 
 }
+[Serializable]
+public class Chat
+{
+    public string id_1;
+    public string id_2;
+    public string text;
+    public DateTime time;
 
+    public Chat(string i1,string i2,string txt)
+    {
+        id_1 = i1;
+        id_2 = i2;
+        text = txt;
+        time = DateTime.Now;
+    }
+}
+[Serializable]
+public class FriendRequest
+{
+    public string id;
+    public string friend_id;
+
+    public FriendRequest(string i, string f)
+    {
+        id = i;
+        friend_id = f;
+    }
+}
 [Serializable]
 public class UserData
 {
