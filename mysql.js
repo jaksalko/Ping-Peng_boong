@@ -366,7 +366,7 @@ app.post('/friend/accept',function(req,res){
 		else
 		{
 			console.log(results);
-			res.status(200).send(results).end();
+			//res.status(200).send(results).end();
 
 			connection.query(delete_sql,[id,friend_id],function(error,results,fields){
 				if(error)
