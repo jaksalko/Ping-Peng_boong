@@ -17,6 +17,7 @@ public class FriendManage : UIScript
 
 	public ChatRoom chatroom;
 
+	int friend_count = 0;
     private void Awake()
     {
 		StartCoroutine(GetFriendList());
@@ -47,7 +48,9 @@ public class FriendManage : UIScript
 	}
     public IEnumerator GetFriendRequest()
     {
-       
+
+		while (true)
+		{
 			UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/friend/request?id=" + GoogleInstance.instance.id);
 			yield return www.SendWebRequest();
 
@@ -66,6 +69,7 @@ public class FriendManage : UIScript
 				Debug.Log(fixdata);
 
 				FriendRequest[] datas = JsonHelper.FromJson<FriendRequest>(fixdata);
+
 				Debug.Log("request count : " + datas.Length);
 
 				foreach (Transform child in requestContent)
@@ -82,7 +86,10 @@ public class FriendManage : UIScript
 				}
 
 
-			
+
+			}
+
+			yield return new WaitForSeconds(3f);
 		}
 
 		
@@ -113,28 +120,40 @@ public class FriendManage : UIScript
 			    FriendRequest[] datas = JsonHelper.FromJson<FriendRequest>(fixdata);
 			    Debug.Log("friend count : " + datas.Length);
 
-			    foreach (Transform child in friendContent)
-			    {
-				    Destroy(child.gameObject);
-			    }
 
-			    for (int i = 0; i < datas.Length; i++)
-			    {
-				    var item = Instantiate(friendItem, default, Quaternion.identity);
-                    if(datas[i].id == GoogleInstance.instance.id)
-                    {
-					    item.friend_name.text = datas[i].friend_id;
-				    }
-                    else
-                    {
-					    item.friend_name.text = datas[i].id;
-				    }
-				
-				    item.transform.SetParent(friendContent);
-			    }
-		    }
 
-		
+			if (friend_count == datas.Length)
+			{
+				//do nothing
+			}
+            else
+            {
+				friend_count = datas.Length;
+				foreach (Transform child in friendContent)
+				{
+					Destroy(child.gameObject);
+				}
+
+				for (int i = 0; i < datas.Length; i++)
+				{
+					var item = Instantiate(friendItem, default, Quaternion.identity);
+					if (datas[i].id == GoogleInstance.instance.id)
+					{
+						item.friend_name.text = datas[i].friend_id;
+					}
+					else
+					{
+						item.friend_name.text = datas[i].id;
+					}
+
+					item.transform.SetParent(friendContent);
+				}
+			}
+
+
+		}
+
+
 	}
 
     public void OpenChatRoom(FriendList list)

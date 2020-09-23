@@ -18,6 +18,9 @@ public class ChatRoom : UIScript
 	public ChatList friendchat;
 
 	public Transform content;
+
+	float waittime = 1f;
+	int chat_count = 0;
     public void OpenChatRoom(string id_1 , string id_2)
     {
 		this.id_1 = id_1;
@@ -28,57 +31,70 @@ public class ChatRoom : UIScript
 	public IEnumerator ChatList(string id_1 ,string id_2)
 	{
 
-
-		UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/chat/get?id_1=" + id_1+"&id_2="+id_2);
-		yield return www.SendWebRequest();
-
-		if (www.isNetworkError || www.isHttpError)
+		while (true)
 		{
-			Debug.Log(www.error);
-		}
-		else
-		{
-			// Show results as text
-			Debug.Log(www.downloadHandler.text);
 
 
 
-			string fixdata = JsonHelper.fixJson(www.downloadHandler.text);
-			Debug.Log(fixdata);
+			UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/chat/get?id_1=" + id_1 + "&id_2=" + id_2);
+			yield return www.SendWebRequest();
 
-			Chat[] datas = JsonHelper.FromJson<Chat>(fixdata);
-			Debug.Log("chat count : " + datas.Length);
-
-
-			foreach (Transform child in content)
+			if (www.isNetworkError || www.isHttpError)
 			{
-				Destroy(child.gameObject);
+				Debug.Log(www.error);
 			}
+			else
+			{
+				// Show results as text
+				Debug.Log(www.downloadHandler.text);
 
-			for (int i = 0; i < datas.Length; i++)
-            {
-				Debug.Log(datas[i].text);
 
-                if(datas[i].id_1 == id_1)//mychat
+
+				string fixdata = JsonHelper.fixJson(www.downloadHandler.text);
+				Debug.Log(fixdata);
+
+				Chat[] datas = JsonHelper.FromJson<Chat>(fixdata);
+				Debug.Log("chat count : " + datas.Length);
+
+                if(chat_count == datas.Length)
                 {
-					var my = Instantiate(mychat, default, Quaternion.identity);
-					my.txt.text = datas[i].text;
-					my.transform.SetParent(content);
+					//do nothing
                 }
                 else
                 {
-					var friend = Instantiate(friendchat, default, Quaternion.identity);
-					friend.txt.text = datas[i].text;
-					friend.transform.SetParent(content);
+					chat_count = datas.Length;
+					foreach (Transform child in content)
+					{
+						Destroy(child.gameObject);
+					}
+
+					for (int i = 0; i < datas.Length; i++)
+					{
+						Debug.Log(datas[i].text);
+
+						if (datas[i].id_1 == id_1)//mychat
+						{
+							var my = Instantiate(mychat, default, Quaternion.identity);
+							my.txt.text = datas[i].text;
+							my.transform.SetParent(content);
+						}
+						else
+						{
+							var friend = Instantiate(friendchat, default, Quaternion.identity);
+							friend.txt.text = datas[i].text;
+							friend.transform.SetParent(content);
+						}
+					}
+
+
 				}
-            }
-			
-            
-			
+
+
+
+			}
+
+			yield return new WaitForSeconds(waittime);
 		}
-
-		yield break;
-
 
 	}
 
@@ -93,7 +109,9 @@ public class ChatRoom : UIScript
 		var json = JsonUtility.ToJson(chat);
 		
 		yield return StartCoroutine(jsonAdapter.API_POST("chat/post", json));
-        yield return StartCoroutine(ChatList(id_1, id_2));
+		txt.text = "";
+        
+        //yield return StartCoroutine(ChatList(id_1, id_2));
 		yield break;
 	}
 }
