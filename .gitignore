@@ -61,3 +61,4 @@ crashlytics-build.properties
 Assets/Plugins
 Assets/XML/item_data.xml
 Assets/XML/item_data.xml.meta
+Assets/Script/Private

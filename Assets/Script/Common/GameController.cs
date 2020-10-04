@@ -192,7 +192,7 @@ public class GameController : MonoBehaviour
             {
                 StageClear(GoogleInstance.instance.nowLevel, moveCount);
                 GoogleInstance.instance.nowLevel++;
-
+                Leaderboards.LeaderBoard.SubmitScore(GoogleInstance.instance.nowLevel);
                 UserUpdate(30, GoogleInstance.instance.nowLevel);
                 
 

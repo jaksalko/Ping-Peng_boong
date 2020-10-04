@@ -239,7 +239,7 @@ public class Simulator : MonoBehaviour
     }
     IEnumerator INSERTMAP()
     {
-        UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/count");
+        UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2+ "count");
         yield return www.SendWebRequest();
 
         if (www.isNetworkError || www.isHttpError)
@@ -299,7 +299,7 @@ public class Simulator : MonoBehaviour
             jsonData.value = arrayToString;
             var json = JsonUtility.ToJson(jsonData);
 
-            yield return StartCoroutine(POST("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/test/", json));
+            yield return StartCoroutine(POST(PrivateData.ec2+"test/", json));
 
             SceneManager.LoadScene("MainScene");
             //successPopup.SetActive(true);

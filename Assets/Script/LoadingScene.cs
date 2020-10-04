@@ -36,6 +36,7 @@ public class LoadingScene : MonoBehaviour
 
         Cloud.OnSignedInChanged += SignChanged;
 
+        
         Cloud.Initialize(false, true);
         //Cloud.Initialize();
         
@@ -108,7 +109,7 @@ public class LoadingScene : MonoBehaviour
     {
         JsonAdapter jsonAdapter = new JsonAdapter();
         UserData newAccount = new UserData();
-        newAccount.id = Cloud.PlayerDisplayName;
+        newAccount.id = Cloud.PlayerID;
         newAccount.nickname = nickname.text;
         newAccount.cash = 0;
         newAccount.stage = 0;

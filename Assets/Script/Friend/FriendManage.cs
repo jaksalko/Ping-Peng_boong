@@ -51,7 +51,7 @@ public class FriendManage : UIScript
 
 		while (true)
 		{
-			UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/friend/request?id=" + GoogleInstance.instance.id);
+			UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2+ "friend/request?id=" + GoogleInstance.instance.id);
 			yield return www.SendWebRequest();
 
 			if (www.isNetworkError || www.isHttpError)
@@ -100,7 +100,7 @@ public class FriendManage : UIScript
 	{
 		
 
-			UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/friend/list?id=" + GoogleInstance.instance.id);
+			UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2 + "friend/list?id=" + GoogleInstance.instance.id);
 		    yield return www.SendWebRequest();
 
 		    if (www.isNetworkError || www.isHttpError)

@@ -36,7 +36,7 @@ public class ChatRoom : UIScript
 
 
 
-			UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/chat/get?id_1=" + id_1 + "&id_2=" + id_2);
+			UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2+"chat/get?id_1=" + id_1 + "&id_2=" + id_2);
 			yield return www.SendWebRequest();
 
 			if (www.isNetworkError || www.isHttpError)

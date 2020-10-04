@@ -6,12 +6,12 @@ using UnityEngine.Networking;
 
 public class JsonAdapter : MonoBehaviour
 {
-    string ec2 = "http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/";
+    
     public static event Action<bool> GET;
     public static event Action<bool> POST;
     public IEnumerator API_GET(string url)
     {
-        UnityWebRequest www = UnityWebRequest.Get(ec2+url);
+        UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2+url);
         yield return www.SendWebRequest();
 
         if(www.isNetworkError || www.isHttpError)
@@ -53,7 +53,7 @@ public class JsonAdapter : MonoBehaviour
     public IEnumerator API_POST(string url , string bodyJsonString)
     {
         Debug.Log(bodyJsonString);
-        var req = new UnityWebRequest(ec2 + url, "POST");
+        var req = new UnityWebRequest(PrivateData.ec2 + url, "POST");
         byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(bodyJsonString);
         req.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
         req.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
