@@ -1,28 +1,38 @@
+const {parsed, error} = require('dotenv').config();
+
+if (error) {
+  console.log('dotenv error', error)
+  throw error
+} else {
+  console.log('Loaded env variables')
+  Object.keys(parsed).forEach(k => {
+    console.log(`${k}: ${parsed[k]}`)
+  })
+  console.log('\nMachine-specific env variables')
+  Object.keys(parsed).forEach(k => {
+    console.log(`${k}: ${process.env[k]}`)
+  })
+  console.log('\nOverride ALREADY_SET_VAR with loaded variable')
+  process.env.ALREADY_SET_VAR = parsed.ALREADY_SET_VAR
+  console.log(`process.env.ALREADY_SET_VAR=${process.env.ALREADY_SET_VAR}`)
+}
+
 var http = require("http");
 var express = require('express');
 var app = express();
 
 var mysql = require('mysql');
-/*var Mysql = require('mysql-json');
-var mysql = new Mysql({
-	host : '15.164.219.253',
-	user : 'admin',
-	password : 'admin0425',
-	dataabase : 'map'
-});*/
 
 var bodyParser = require('body-parser');
 
 
 var connection = mysql.createConnection(
 {
-	host : '15.164.219.253',
-	user : 'admin',
-	password : 'admin0425',
-	database : 'maplist'
+        host : process.env.DB_HOST,
+        user : process.env.DB_USER,
+        password : process.env.DB_PASSWORD,
+        database : 'maplist'
 });
-
-
 
 connection.connect(function(err){
 	if(err) throw err
