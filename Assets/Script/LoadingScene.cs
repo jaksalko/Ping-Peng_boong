@@ -68,7 +68,7 @@ public class LoadingScene : MonoBehaviour
             GoogleInstance.instance.id = Cloud.PlayerDisplayName;
             if(GoogleInstance.instance.id == "game_develop")
             {
-                GoogleInstance.instance.canvas.SetActive(true);
+                //GoogleInstance.instance.canvas.SetActive(true);
             }
             JsonAdapter.POST -= IsUnique;
             SceneManager.LoadScene("MainScene");

@@ -5026,6 +5026,7 @@ MonoBehaviour:
   - {fileID: 155875040520160109}
   sequence: 0
   state: 0
+  meltSound: {fileID: 0}
 --- !u!1 &8075288628507109680
 GameObject:
   m_ObjectHideFlags: 0

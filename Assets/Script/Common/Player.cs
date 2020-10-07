@@ -323,7 +323,9 @@ public class Player : MonoBehaviour
     
 
         check[posZ, posX] = true;
-        GameController.instance.ui.SetRemainText(RemainCheck(), total);
+        if(!simulating)
+            GameController.instance.ui.SetRemainText(RemainCheck(), total);
+
         //        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);
     }
 
@@ -416,7 +418,8 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
-                    GameController.instance.ui.SetRemainText(RemainCheck(), total);
+                    if (!simulating)
+                        GameController.instance.ui.SetRemainText(RemainCheck(), total);
                 }
                 
                 /*if (CheckStageClear())
@@ -1126,8 +1129,8 @@ public class Player : MonoBehaviour
             ParfaitObject parfait = collider.GetComponent<ParfaitObject>();
             if (parfait.state == ParfaitObject.State.active)
             {
-
-                GameController.instance.ui.ParfaitDone();
+                if (!simulating)
+                    GameController.instance.ui.ParfaitDone();
                 if (parfait.GetParfait(stage))//if true end game
                 {
                     Debug.Log("end parfait mode.");
