@@ -48588,10 +48588,10 @@ MonoBehaviour:
   thirdFloor: 0
   onCloud: 0
   isActive: 0
-  crashSound: {fileID: 0}
-  departureSound: {fileID: 0}
-  fallSound: {fileID: 0}
-  slideSound: {fileID: 0}
+  crashSound: {fileID: 8300000, guid: 5d98dd73d21270c4eba7592d2eed25c9, type: 3}
+  departureSound: {fileID: 8300000, guid: e944fc3d978505048b1f43b5a30cb027, type: 3}
+  fallSound: {fileID: 8300000, guid: 20c5c711efc098044beb379b4c5a34f5, type: 3}
+  slideSound: {fileID: 8300000, guid: ea577a4ccb4633146b5cc7d55466ee2e, type: 3}
   moveParticle: {fileID: 1077155175552347149}
   crashParticle: {fileID: 1077155174167966368}
   bumpParticle: {fileID: 1077155174441258702}

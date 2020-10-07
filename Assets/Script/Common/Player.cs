@@ -135,7 +135,11 @@ public class Player : MonoBehaviour
         Debug.Log(mapsizeH + "," + mapsizeW + " (MAP :" + stage.map.Length);
         check = stage.check;
     }
-
+    public void SetTotal()
+    {
+        total = RemainCheck();
+        Debug.Log("check total start : " + total);
+    }
     void Start()
     {
         state = State.Idle;
@@ -155,9 +159,8 @@ public class Player : MonoBehaviour
             stateMachine.ActionEnd += AnimationEnd;
         }
 
-        total = RemainCheck();
-
-		playerAudio = GetComponent<AudioSource>();
+        
+        playerAudio = GetComponent<AudioSource>();
 
 		/*
         map.ObserveEveryValueChanged(data => map[posZ, posX])
@@ -324,7 +327,11 @@ public class Player : MonoBehaviour
 
         check[posZ, posX] = true;
         if(!simulating)
+        {
+            Debug.Log("check remain : " + RemainCheck());
             GameController.instance.ui.SetRemainText(RemainCheck(), total);
+
+        }
 
         //        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);
     }

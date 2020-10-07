@@ -61,6 +61,9 @@ public class GameController : MonoBehaviour
            
             player1.SetPosition(map.sampleMap.startPositionA + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairA); //position correction fix .. 5/13
             player2.SetPosition(map.sampleMap.startPositionB + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairB);
+
+            player1.SetTotal();
+            player2.SetTotal();
         }
             
         else
@@ -77,13 +80,14 @@ public class GameController : MonoBehaviour
     IEnumerator InfiniteModeSetting()
     {
         yield return StartCoroutine(map.InfiniteMAP(GoogleInstance.instance.infiniteLevel));
-
-
+        
         //Debug.Log("set position" + map.sampleMap.startPositionA);
         player1.SetMap();
         player2.SetMap();
         player1.SetPosition(map.sampleMap.startPositionA + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairA); //position correction fix .. 5/13
         player2.SetPosition(map.sampleMap.startPositionB + new Vector3(0, -0.5f, 0), map.sampleMap.startUpstairB);
+        player1.SetTotal();
+        player2.SetTotal();
 
         cameraController.gameObject.SetActive(true);
         yield break;
@@ -165,13 +169,15 @@ public class GameController : MonoBehaviour
 		if(backgroundSound != null)
 		{
 			soundManagerScript.GameResultPopup();
-		}		
+		}
 
-		if (isSuccess)
+        int moveCount = player1.moveCount + player2.moveCount;
+        ui.SetMoveCountText(moveCount);
+
+        if (isSuccess && !infiniteMode)
         {
             //FirstClear();
-            int moveCount = player1.moveCount + player2.moveCount;
-            ui.SetMoveCountText(moveCount);
+            
 
 
             xMLManager = XMLManager.ins;

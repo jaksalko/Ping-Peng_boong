@@ -101,7 +101,10 @@ public class UiController : UIScript
     public void NextLevel()
     {
         //GameController googleinstance level++....
-        Load_Island(GoogleInstance.instance.nowLevel);
+        if(GameController.instance.infiniteMode)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        else
+            Load_Island(GoogleInstance.instance.nowLevel);
         
     }
 

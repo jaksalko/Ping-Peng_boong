@@ -134,12 +134,16 @@ public class Map : MonoBehaviour
                     ground = Instantiate(groundBlock, new Vector3(i, -10, j), groundBlock.transform.rotation) as GameObject;
                     half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), ground_half.transform.rotation) as GameObject;
 
-
-                    if(GoogleInstance.instance.nowLevel > IslandData.tutorial)
+                    if(GameController.instance != null)
                     {
-                        ground.SetActive(false);
-                        half_ground.SetActive(false);
+                        if (!GameController.instance.infiniteMode && GoogleInstance.instance.nowLevel > IslandData.tutorial)
+                        {
+                            ground.SetActive(false);
+                            half_ground.SetActive(false);
+                        }
                     }
+                    
+                   
 
 
                     check[j, i] = true;
@@ -155,11 +159,16 @@ public class Map : MonoBehaviour
                     ground = Instantiate(groundBlock, new Vector3(i, -10, j), groundBlock.transform.rotation) as GameObject;
                     half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), ground_half.transform.rotation) as GameObject;
 
-                if (GoogleInstance.instance.nowLevel > IslandData.tutorial)
+
+                if (GameController.instance != null)
                 {
-                    ground.SetActive(false);
-                    half_ground.SetActive(false);
+                    if (!GameController.instance.infiniteMode && GoogleInstance.instance.nowLevel > IslandData.tutorial)
+                    {
+                        ground.SetActive(false);
+                        half_ground.SetActive(false);
+                    }
                 }
+               
                 //ground.SetActive(false);
                 //half_ground.SetActive(false);
 
@@ -173,11 +182,16 @@ public class Map : MonoBehaviour
                     half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), ground_half.transform.rotation) as GameObject;
 
 
-                if (GoogleInstance.instance.nowLevel > IslandData.tutorial)
+
+                if (GameController.instance != null)
                 {
-                    ground.SetActive(false);
-                    half_ground.SetActive(false);
+                    if (!GameController.instance.infiniteMode && GoogleInstance.instance.nowLevel > IslandData.tutorial)
+                    {
+                        ground.SetActive(false);
+                        half_ground.SetActive(false);
+                    }
                 }
+
                 //ground.SetActive(false);
                 //half_ground.SetActive(false);
 
