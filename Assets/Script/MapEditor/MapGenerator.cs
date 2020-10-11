@@ -90,6 +90,31 @@ public class MapGenerator : MonoBehaviour
         TopView();
        
     }
+
+    //Reset Button
+    public void ResetMapEditorButtonClicked()
+    {
+        BlockPositionEditor();
+        parfait_id = 0;
+
+        firstFloorHolder.ClearHolder();
+        secondFloorHolder.ClearHolder();
+        thirdFloorHolder.ClearHolder();
+
+        
+
+        blockPrefab[BlockNumber.characterA].SetActive(false);//character
+        blockPrefab[BlockNumber.characterA].transform.position = default;
+
+
+        blockPrefab[BlockNumber.characterB].SetActive(false);//character
+        blockPrefab[BlockNumber.characterB].transform.position = default;
+
+
+       
+    }
+
+
     void EraseBlock(Ray ray)
     {
         if (Physics.Raycast(ray, out hit, 1000))
@@ -122,6 +147,10 @@ public class MapGenerator : MonoBehaviour
                                 Transform secondFloorObject = secondFloorHolder.transform.GetChild(i);
                                 if (secondFloorObject.localPosition.x == indexer.X && secondFloorObject.localPosition.z == indexer.Z)
                                 {
+                                    if(indexer.data >= BlockNumber.parfaitA && indexer.data <= BlockNumber.parfaitD)
+                                    {
+                                        Debug.LogWarning("Parfait erase");
+                                    }
                                     Destroy(secondFloorObject.gameObject);
                                     indexer.Floor = 1;
                                     indexer.data = BlockNumber.normal;
@@ -137,6 +166,10 @@ public class MapGenerator : MonoBehaviour
                                 Transform thirdFloorObject = thirdFloorHolder.transform.GetChild(i);
                                 if (thirdFloorObject.localPosition.x == indexer.X && thirdFloorObject.localPosition.z == indexer.Z)
                                 {
+                                    if (indexer.data >= BlockNumber.upperParfaitA && indexer.data <= BlockNumber.upperParfaitD)
+                                    {
+                                        Debug.LogWarning("Parfait erase");
+                                    }
                                     Destroy(thirdFloorObject.gameObject);
                                     indexer.Floor = 2;
                                     indexer.data = BlockNumber.upperNormal;
@@ -515,30 +548,5 @@ public class MapGenerator : MonoBehaviour
         simulator.StartSimulator();
     }
 
-    //Reset Button
-    public void ResetMapEditorButtonClicked()
-    {
-        firstFloorHolder.ClearHolder();
-        secondFloorHolder.ClearHolder();
-        thirdFloorHolder.ClearHolder();
-
-        positionHolder.ClearHolder();
-
-        blockPrefab[4].SetActive(false);
-        blockPrefab[4].transform.position = default;
-
-
-        blockPrefab[5].SetActive(false);
-        blockPrefab[5].transform.position = default;
-        for (int i = 0; i < maxSize.x; i++)
-        {
-            for (int j = 0; j < maxSize.y; j++)
-            {
-                Indexer newPositionBlock = Instantiate(blockPositionPrefab, new Vector3(j, 0, i), blockPositionPrefab.transform.rotation);
-                newPositionBlock.SetXZ(j, i);
-                newPositionBlock.name = "Quad(" + j + "," + i + ")";
-                positionHolder.SetParent(newPositionBlock.gameObject);
-            }
-        }
-    }
+   
 }
