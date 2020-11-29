@@ -1,504 +1,509 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
+using System;
 
-[System.Serializable]
-static class BlockNumber
+
+
+
+[Serializable]
+public class Map : MonoBehaviour, IMap
 {
-
-    public const int
-        //0층 블럭
-        normal = 0,
-        cloudUp = 1, cloudRight = 2, cloudDown = 3, cloudLeft = 4,
-        cracked = 5,
-        broken = 6,
-
-        //1층 블럭
-        upperNormal = 10,
-        upperCloudUp = 11, upperCloudRight = 12, upperCloudDown = 13, upperCloudLeft = 14,
-        upperCracked = 15,
-        upperBroken = 16,
-        slopeUp = 17, slopeRight = 18, slopeDown = 19, slopeLeft = 20,
-        parfaitA = 21, parfaitB = 22, parfaitC = 23, parfaitD = 24,
-        obstacle = 26,
-
-        //** character
-        characterA = 28, characterB = 29, character = 27,
-
-        //2층 블럭
-        upperCharacter = 38,
-        upperParfaitA = 31, upperParfaitB = 32, upperParfaitC = 33, upperParfaitD = 34,
-        upperObstacle = 36;
-
-    public static int[] firstlevel = new int[2] { normal, cracked };
-    public static int[] secondLevel = new int[2] { upperNormal, upperCracked };
-    public static int[] slopeLevel = new int[4] { slopeUp, slopeRight, slopeDown, slopeLeft };
-
-
-}
-
-
-public class Map : MonoBehaviour
-{
+    int[,] step;
     public int mapsizeH;
     public int mapsizeW;
-    public bool parfait;
-    //public ParfaitObject[] parfaitList;
-    public int[,] map;
-    public bool[,] check;
-    public bool checkparfait;
 
-    
+    public bool parfait = false;
 
-    public GameObject groundBlock;
-    public GameObject ground_half;
-    public GameObject secondfloor_block;
 
-    public GameObject obstacleBlock;
+    public Vector3 startPositionA;//    y축 -9 : 1 층 , -8 : 2층 
+    public Vector3 startPositionB;
 
-   
+    public bool startUpstairA = false;
+    public bool startUpstairB = false;
 
-    public ParfaitObject[] parfaitBlock;
-    public GameObject slope;
-
-    public GameObject cloud;
-    public GameObject cracked;
-    public GameObject broken;
-
-    public Transform groundParent;
-    public Transform obstacleParent;
-
-    public SampleMap[] sample;
-
-    public Vector3 parfaitEndPoint;
-    public Vector3 centerOfMap;
-    public Transform minimapTarget;
-
-    public Transform[] design;
-
-    public SampleMap sampleMap;
-
-    public Transform waterQuad;
-
-  
-
-   
-    void MakeMap()
+    [Serializable]
+    public class Line
     {
-        mapsizeH = sampleMap.mapsizeH;
-        mapsizeW = sampleMap.mapsizeW;
-        parfait = sampleMap.parfait;
+        public List<int> line = new List<int>();
+    }
 
-        map = new int[mapsizeH, mapsizeW];     
-        check = new bool[mapsizeH, mapsizeW];
+    public List<Line> lines = new List<Line>();
 
-        centerOfMap = new Vector3((float)(mapsizeW - 1) / 2, -10, (float)(mapsizeH - 1) / 2);
-        minimapTarget.position = centerOfMap;
-        waterQuad.position = centerOfMap;
-        waterQuad.localScale = new Vector3(mapsizeW, mapsizeH, 1);
+    public int[,] map;//not use this variable
+    public bool[,] check;
 
-        design[0].position = centerOfMap + new Vector3(0, -0.5f, 0);
-        design[1].localPosition = design[1].localPosition + new Vector3(0, 0, centerOfMap.z + 8);
-        design[2].localPosition = design[2].localPosition + new Vector3(0, 0, -(centerOfMap.z + 8));
-        checkparfait = false;
+    Block[,] blocks;
+
+    public List<Vector2> snowList;
+    public List<KeyValuePair<Vector2, int>> crackerList;
+
+    private void Awake()
+    {
+        Debug.Log("Activate");
+        step = new int[4, 2] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
+
+        blocks = new Block[mapsizeH, mapsizeW];//로더의 MakeGround에서 채워짐
+        check = new bool[mapsizeH, mapsizeW];//마찬가지
+
+        snowList = new List<Vector2>();
+        crackerList = new List<KeyValuePair<Vector2, int>>();
+    }
+
+    public Map(Vector2 size, bool isParfait, Vector3 posA, Vector3 posB, int[,] datas)//로더에서 생성
+    {
+        mapsizeH = (int)size.x;
+        mapsizeW = (int)size.y;
+        parfait = isParfait;
+        startPositionA = posA;
+        startPositionB = posB;
+
+        startUpstairA = startPositionA.y > -9 ? true : false;//안쓸거임
+        startUpstairB = startPositionB.y > -9 ? true : false;//안쓸거임
+
+
+        map = datas;//안쓸거임
+
+        //blocks = new Block[mapsizeH, mapsizeW];//로더의 MakeGround에서 채워짐
+        //check = new bool[mapsizeH, mapsizeW];//마찬가지
+        //check?
+
+    }
+
+
+
+
+
+
+    public void LineToMap()
+    {
+        map = new int[mapsizeH, mapsizeW];
         for (int i = 0; i < mapsizeH; i++)
         {
             for (int j = 0; j < mapsizeW; j++)
             {
-                //                Debug.Log(mapsizeH - 1 - i);
-                map[i, j] = sampleMap.map[i, j];
-
+                map[i, j] = lines[i].line[j];
             }
         }
 
-        MakeGround();
-        Debug.Log("parfait? : " + parfait);
-        if (parfait)
+    }
+
+    public void MapToLine()
+    {
+        int dataCount = mapsizeH * mapsizeW;
+        for (int i = 0; i < mapsizeH; i++)
         {
-            MakeParfait();
+            Line newLine = new Line();
+
+            lines.Add(newLine);
+            for (int j = 0; j < mapsizeW; j++)
+            {
+                lines[i].line.Add(map[i, j]);
+            }
         }
     }
 
-    void SetOutlineBlock()
+
+
+    public virtual void init()
     {
-        for (int i = 0; i < mapsizeW; i++)
+        LineToMap();
+    }
+
+
+    bool isEndGame()
+    {
+        for (int i = 0; i < mapsizeH; i++)
         {
-            GameObject ground;
-            GameObject half_ground;
-            if (i == 0 || i == (mapsizeW - 1))//outline setting
+            for (int j = 0; j < mapsizeW; j++)
             {
-                for (int j = 0; j < mapsizeH; j++)
+                if (!check[i, j])
                 {
-
-                    ground = Instantiate(groundBlock, new Vector3(i, -10, j), groundBlock.transform.rotation) as GameObject;
-                    half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), ground_half.transform.rotation) as GameObject;
-
-                    if(GameController.instance != null)
-                    {
-                        if (!GameController.instance.infiniteMode && GoogleInstance.instance.nowLevel > IslandData.tutorial)
-                        {
-                            ground.SetActive(false);
-                            half_ground.SetActive(false);
-                        }
-                    }
-                    
-                   
-
-
-                    check[j, i] = true;
-                    ground.transform.parent = groundParent;
-                    half_ground.transform.parent = groundParent;
+                    Debug.Log("is false : " + i + "," + j);
+                    return false;
                 }
-            }
-            else
-            {
-                int j = 0;
-                check[j, i] = true;
-                
-                    ground = Instantiate(groundBlock, new Vector3(i, -10, j), groundBlock.transform.rotation) as GameObject;
-                    half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), ground_half.transform.rotation) as GameObject;
-
-
-                if (GameController.instance != null)
-                {
-                    if (!GameController.instance.infiniteMode && GoogleInstance.instance.nowLevel > IslandData.tutorial)
-                    {
-                        ground.SetActive(false);
-                        half_ground.SetActive(false);
-                    }
-                }
-               
-                //ground.SetActive(false);
-                //half_ground.SetActive(false);
-
-                ground.transform.parent = groundParent;
-                half_ground.transform.parent = groundParent;
-
-                j = mapsizeH - 1;
-                check[j, i] = true;
-                
-                    ground = Instantiate(groundBlock, new Vector3(i, -10, j), groundBlock.transform.rotation) as GameObject;
-                    half_ground = Instantiate(ground_half, new Vector3(i, -9.25f, j), ground_half.transform.rotation) as GameObject;
-
-
-
-                if (GameController.instance != null)
-                {
-                    if (!GameController.instance.infiniteMode && GoogleInstance.instance.nowLevel > IslandData.tutorial)
-                    {
-                        ground.SetActive(false);
-                        half_ground.SetActive(false);
-                    }
-                }
-
-                //ground.SetActive(false);
-                //half_ground.SetActive(false);
-
-
-
-                ground.transform.parent = groundParent;
-                half_ground.transform.parent = groundParent;
             }
         }
-
-
+        Debug.Log("end game");
+        return true;
     }
-    void MakeGround()
-    {
 
-        SetOutlineBlock();
-        
-        for (int i = 1; i < mapsizeH-1; i++)
+    List<int> GetThroughBlockList(int floor, int getDirection, bool onCloud)
+    {
+        switch (floor)
         {
-            for (int j = 1; j < mapsizeW-1; j++)
-            {
-                //instantiate ground object at all of area . parent is spawnGround object
+            case 0:
+                return BlockNumber.GetDownstairThroughBlock(getDirection, onCloud);
+            case 1:
+                return BlockNumber.GetUpstairThroughBlock(getDirection, onCloud);
+            case 2:
+                return BlockNumber.GetThirdFloorThroughBlock(getDirection, onCloud);
                 
 
-                //0층 빌드
-                if(map[i,j] == 0 || map[i,j] > 6)// all floor block except cloud , cracked , broken
+        }
+
+        return new List<int>();
+    }
+
+
+
+    List<int> GetStopBlockList(int floor, int getDirection, bool onCloud)
+    {
+        switch (floor)
+        {
+            case 0:
+                return BlockNumber.GetDownstairStopBlock(getDirection, onCloud);
+            case 1:
+                return BlockNumber.GetUpstairStopBlock(getDirection, onCloud);
+            case 2:
+                return BlockNumber.GetThirdFloorStopBlock(getDirection, onCloud);
+
+        }
+
+        return new List<int>();
+    }
+
+    bool CheckNextBlock(List<int> checkList, int data)
+    {
+        for (int i = 0; i < checkList.Count; i++)
+        {
+            if (checkList[i] == data)
+                return true;
+        }
+        return false;
+    }
+
+    bool ChangeState(int next, int nextnext, Player player, ref Vector3 pos)
+    {
+
+        int floor = (int)pos.y;
+        int direction = player.getDirection;
+        int posX = (int)pos.x;
+        int posZ = (int)pos.z;
+
+        switch (floor)
+        {
+            case 0:
+                if (next >= BlockNumber.parfaitA && next <= BlockNumber.parfaitD)
                 {
-                    GameObject ground;
-                   
-                    ground = Instantiate(groundBlock, new Vector3(j, -10, i), groundBlock.transform.rotation) as GameObject;
-                    
+                    //change block data parfait to normal
+                    blocks[posZ + step[direction, 0], posX + step[direction, 1]].Data = BlockNumber.normal; //pos 위치가 아닌 한칸 이동한 위치ㄹ
+                    //parfaitorder++;
+                    GameController.ParfaitOrder++;
 
-                    if (map[i, j] == BlockNumber.normal || map[i, j] == BlockNumber.upperNormal)
-                    {
-                        ground.GetComponent<GroundBlock>().IsNormal(true);
-                    }
-                    else if(map[i,j] >= BlockNumber.parfaitA && map[i,j] <= BlockNumber.parfaitD)
-                    {
-                        ground.GetComponent<GroundBlock>().IsNormal(true);
-                    }
 
-                    //ground.GetComponent<GroundBlock>().IsNormal(true);
-                    ground.transform.parent = groundParent;
+                    return true;
                 }
-                else//cloud , cracked or broken (0 floor)
+                else if(next >= BlockNumber.cloudUp && next <= BlockNumber.cloudLeft)
                 {
-                    GameObject ground;
+                    player.getDirection = (next % 10) - 1; // cloud direction...
+                    player.onCloud = true;
 
-                    if(map[i,j] == BlockNumber.cracked)
+                    return true;
+                }
+                else if (next >= BlockNumber.slopeUp && next <= BlockNumber.slopeLeft)
+                {
+                    int nextFloor = floor + 1;
+                    if (CheckNextBlock(GetThroughBlockList(nextFloor, player.getDirection, player.onCloud), nextnext) || CheckNextBlock(GetStopBlockList(nextFloor, player.getDirection, player.onCloud), nextnext))//다음은 지나갈 수 있는 블럭
                     {
-                        ground = Instantiate(cracked, new Vector3(j, -10, i), Quaternion.identity) as GameObject;
-                        ground.transform.parent = groundParent;
-                        check[i, j] = true;
-                        CrackedBlock crackedBlock = ground.GetComponent<CrackedBlock>();
-                        crackedBlock.x = j;
-                        crackedBlock.z = i;
-                        crackedBlock.num = map[i, j];
+                        Debug.Log("floor : 1");
+                        //다음 블럭은 올라갈 수 있다
+                        pos.y += 1;
+                        return true;
 
-                    }
-                    else if(map[i,j] == BlockNumber.broken)
-                    {
-                        ground = Instantiate(broken, new Vector3(j, -10, i), Quaternion.identity) as GameObject;
-                        check[i, j] = true;
-                        ground.transform.parent = obstacleParent;
+
                     }
                     else
                     {
-                        //cloud
-                        ground = Instantiate(cloud, new Vector3(j, -10, i), Quaternion.Euler(new Vector3(0, 90 * (map[i,j] - BlockNumber.cloudUp), 0))) as GameObject;
-                        ground.transform.parent = groundParent;
-                        check[i, j] = true;
-
-                        ground.GetComponent<CloudBlock>().num = map[i, j];
+                        Debug.Log("cant climb slope...");
+                        //올라갈 수 없다 --> 슬로프를 올라가서는 안되므로 false 를 반환.
+                        return false;
                     }
-                    
-                }
-               
-                
-                
-                //1층,2층 빌드
-                if (map[i, j] == BlockNumber.obstacle)
-                {
-                    //generate obstacle
-                    check[i, j] = true;
-                    GameObject obstacle = Instantiate(obstacleBlock, new Vector3(j, -8.7f, i), obstacleBlock.transform.rotation) as GameObject;
-                    obstacle.transform.parent = obstacleParent;
+                    //player upstair --> true (floor = 1)
+                    //if state==master --> other.floor = 2
+                    //블럭 리스트 업데이트
 
+                    //슬로프 앞에가 막혀있다면
+                    //리턴 false
+                    //upstair --> false (floor = 0)
+                    //if state==master --> other.floor = 1
+                    //다시 블럭리스트 업데이트 
                 }
-                else if (map[i, j] == BlockNumber.upperObstacle)//second floor obstacle
+                else
                 {
-                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
-                    second_ground.transform.parent = groundParent;
+                    return true;
+                }
 
-                    check[i, j] = true;
-                    GameObject obstacle = Instantiate(obstacleBlock, new Vector3(j, -7.7f, i), obstacleBlock.transform.rotation) as GameObject;
-                    obstacle.transform.parent = obstacleParent;
-                }
-              
-                else if(map[i,j] == BlockNumber.upperNormal)//second floor
+            case 1:
+                if (next >= BlockNumber.upperParfaitA && next <= BlockNumber.upperParfaitD)
                 {
-                    //generate second floor
-                    
-                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
-                    second_ground.GetComponent<GroundBlock>().IsNormal(true);
-                    second_ground.transform.parent = groundParent;
+                    blocks[posZ + step[direction, 0], posX + step[direction, 1]].Data = BlockNumber.upperNormal;
+                    GameController.ParfaitOrder++;
+
+                    return true;
                 }
-                else if (map[i, j] == BlockNumber.upperCharacter)//second floor with character?
+                else if (next >= BlockNumber.cloudUp && next <= BlockNumber.cloudLeft)
                 {
-                    if (sampleMap.startPositionA.z == i && sampleMap.startPositionA.x == j && sampleMap.startUpstairA)
+                    player.getDirection = (next % 10) - 1; // cloud direction...
+                    player.onCloud = true;
+                    pos.y -= 1;
+
+                    return true;
+                }
+                else if (next >= BlockNumber.upperCloudUp && next <= BlockNumber.upperCloudLeft)
+                {
+                    player.getDirection = (next % 10) - 1; // cloud direction...
+                    player.onCloud = true;
+
+                    return true;
+                }
+                else if (next >= BlockNumber.slopeUp && next <= BlockNumber.slopeLeft)
+                {
+                    int nextFloor = floor - 1;
+                    if (CheckNextBlock(GetThroughBlockList(nextFloor, player.getDirection, player.onCloud), nextnext) || CheckNextBlock(GetStopBlockList(nextFloor, player.getDirection, player.onCloud), nextnext))//다음은 지나갈 수 있는 블럭
                     {
-                        Debug.Log("char A : " + i + "," + j);
-                        GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
-                        second_ground.transform.parent = groundParent;
+                        //다음 블럭은 내려갈 수 있다
+                        pos.y -= 1;
+                        return true;
+
                     }
-                    if (sampleMap.startPositionB.z == i && sampleMap.startPositionB.x == j && sampleMap.startUpstairB)
+                    else
                     {
-                        Debug.Log("char B : " + i + "," + j);
-                        GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
-                        second_ground.transform.parent = groundParent;
+                        //내려갈 수 없다 --> 슬로프를 내력가서는 안되므로 false 를 반환.
+                        return false;
                     }
                 }
-                else if(map[i,j] >= BlockNumber.slopeUp && map[i, j] <= BlockNumber.slopeLeft)
+                else
                 {
-                    check[i, j] = true;
-                    GameObject slopeBlock = Instantiate(slope, new Vector3(j, -9, i), Quaternion.Euler(new Vector3(0, 90 * (map[i,j] - BlockNumber.slopeUp) , 0)));
-                    slopeBlock.transform.parent = groundParent;
+                    return true;
                 }
-                else if(map[i,j] == BlockNumber.upperCracked)
+
+            case 2://2층에서는 through 로 들어올 수 없음.?
+                if (next >= BlockNumber.cloudUp && next <= BlockNumber.cloudLeft)
                 {
-                    GameObject crackedBlock = Instantiate(cracked, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
-                    crackedBlock.transform.parent = groundParent;
-                    check[i, j] = true;
-                    CrackedBlock c = crackedBlock.GetComponent<CrackedBlock>();
-                    c.x = j;
-                    c.z = i;
-                    c.num = map[i, j];
+                    player.getDirection = (next % 10) - 1; // cloud direction...
+                    player.onCloud = true;
+                    pos.y -= 2;
+
+                    return true;
                 }
-                else if (map[i, j] == BlockNumber.upperBroken)
+                else if (next >= BlockNumber.upperCloudUp && next <= BlockNumber.upperCloudLeft)
                 {
-                    check[i, j] = true;
-                    GameObject brokenBlock = Instantiate(broken, new Vector3(j, -9, i), Quaternion.identity) as GameObject;
-                    brokenBlock.transform.parent = obstacleParent;
+                    player.getDirection = (next % 10) - 1; // cloud direction...
+                    player.onCloud = true;
+                    pos.y -= 1;
+                    return true;
                 }
-                else if (map[i, j] >= BlockNumber.upperCloudUp && map[i, j] <= BlockNumber.upperCloudLeft)
-                {
-                    check[i, j] = true;
-                    GameObject upperCloudBlock = Instantiate(cloud, new Vector3(j, -9, i), Quaternion.Euler(new Vector3(0, 90 * (map[i, j] - BlockNumber.upperCloudUp), 0)));
-                    upperCloudBlock.transform.parent = groundParent;
-                    upperCloudBlock.GetComponent<CloudBlock>().num = map[i, j];
-                }
-               
-            }
+                return false;
+
         }
+
+        return false;//error
     }
 
-
-    void MakeParfait()
+    
+    public Vector3 GetDestination(Player player, Vector3 pos)
     {
-        for (int i = 0; i < mapsizeH; i++)
+        Debug.Log("player name : " + player.name + " position : " + pos + " player dir : " + player.getDirection);
+        int direction = player.getDirection;
+       
+        int floor = (int)pos.y;
+        int posX = (int)pos.x;
+        int posZ = (int)pos.z;
+
+        //blocks[posZ, posX].Data = player.temp;//이거 문제임 한번만 불려야 하는데... player.cs 151 line
+        Debug.Log((posZ + step[direction, 0]) + "," + (posX + step[direction, 1]) + " DATA : " + GetBlockData(x: posX + step[direction, 1], z: posZ + step[direction, 0]));
+        int next = GetBlockData(x: posX + step[direction, 1], z: posZ+ step[direction, 0]);
+        int nextnext = GetBlockData(x: posX + step[direction, 1] * 2, z: posZ + step[direction, 0] * 2);
+
+        if(CheckNextBlock(GetThroughBlockList(floor, direction, player.onCloud), next) && ChangeState(next, nextnext, player , ref pos))//다음은 지나갈 수 있는 블럭
         {
-            for (int j = 0; j < mapsizeW; j++)
+            //지나갈 수 있는 블럭
+            
+            posX += step[direction, 1];
+            posZ += step[direction, 0];
+            UpdateCheckTrue(width: posX, height: posZ);
+
+            pos = new Vector3(posX, pos.y, posZ);
+            //if not endpoint recursive next point
+            if (!isEndGame())
+                return GetDestination(player, pos);
+            
+            
+        }
+        else if (CheckNextBlock(GetStopBlockList(floor, direction, player.onCloud), next))//다음은 멈춰야하는 블럭
+        {
+            player.onCloud = false; // stop 이면 무조건 oncloud 에서 벗어남.
+
+            posX += step[direction, 1];
+            posZ += step[direction, 0];
+
+            switch (floor)
             {
-                
-                if (map[i, j] == BlockNumber.parfaitA)
-                {
-                    parfaitBlock[0].gameObject.SetActive(true);
-                    parfaitBlock[0].gameObject.transform.position = new Vector3(j, -9, i);
-                    parfaitBlock[0].sequence = 0;
-                    parfaitBlock[0].Activate();
-                 
-                }
+                case 0://솜사탕 위였으면 1단계 블럭 또는 열려있는 파르페  솜사탕 위가 아니면 솜사탕에서 멈춤 충돌 모션은
+                    //actionnum = 3; //
                     
-                else if (map[i, j] == BlockNumber.parfaitB)
-                {
-                    parfaitBlock[1].gameObject.SetActive(true);
-                    parfaitBlock[1].gameObject.transform.position = new Vector3(j, -9, i);
-                    parfaitBlock[1].sequence = 1;
-                  
-                }
+                    if (next >= BlockNumber.parfaitA && next <= BlockNumber.parfaitD)
+                    {
+                        player.actionnum = 3;//crash : 3
+                        blocks[posZ, posX].Data = BlockNumber.normal;
+                        GameController.ParfaitOrder++;
+                    }
+                    else
+                    {
+                        player.actionnum = 3;//crash : 3
+                    }
+                    break;
+                case 1://drop 1-> 0 or ride character
+                    if(next == BlockNumber.character)
+                    {
+                        //ride motion
+                        player.actionnum = 2;//ride : 2
 
-                    
-                else if (map[i, j] == BlockNumber.parfaitC)
-                {
-                    parfaitBlock[2].gameObject.SetActive(true);
-                    parfaitBlock[2].gameObject.transform.position = new Vector3(j, -9, i);
-                    parfaitBlock[2].sequence = 2;
-                    
-                   
-                }
-                    
-                else if (map[i, j] == BlockNumber.parfaitD)
-                {
-                    parfaitBlock[3].gameObject.SetActive(true);
-                    parfaitBlock[3].gameObject.transform.position = new Vector3(j, -9, i);
-                    parfaitBlock[3].sequence = 3;
-                    parfaitEndPoint = parfaitBlock[3].transform.position + new Vector3(0,-0.5f,0);
-                    
-                    
-                }
-                else if (map[i, j] == BlockNumber.upperParfaitA)
-                {
-                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
-                    second_ground.transform.parent = groundParent;
-                    second_ground.GetComponent<GroundBlock>().IsNormal(true);
+                        //player state          Idle --> Slave
+                        //other player state    Idle --> Master
+                    }
+                    else if(next >= BlockNumber.normal && next <= BlockNumber.cracked)
+                    {
+                        pos.y -= 1;
+                        player.actionnum = 5;//drop : 5
+                    }
+                    else if (next >= BlockNumber.parfaitA && next <= BlockNumber.parfaitD)
+                    {
+                        pos.y -= 1;
+                        player.actionnum = 5;//drop : 5
+                        blocks[posZ, posX].Data = BlockNumber.normal;
+                        GameController.ParfaitOrder++;
+                    }
+                    else if (next >= BlockNumber.upperParfaitA && next <= BlockNumber.upperParfaitD)//onCloud(2층)에서 2층 파레페 먹고 멈
+                    {
+                        player.actionnum = 3;// crash : 3
+                        blocks[posZ, posX].Data = BlockNumber.upperNormal;
+                        GameController.ParfaitOrder++;
+                    }
+                    else
+                    {
+                        player.actionnum = 3;// crash : 3
+                    }
 
-                    parfaitBlock[0].gameObject.SetActive(true);
-                    parfaitBlock[0].gameObject.transform.position = new Vector3(j, -8, i);
-                    parfaitBlock[0].sequence = 0;
-                    parfaitBlock[0].Activate();
-
-
-                    
-                }
-
-                else if (map[i, j] == BlockNumber.upperParfaitB)
-                {
-                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
-                    second_ground.transform.parent = groundParent;
-                    second_ground.GetComponent<GroundBlock>().IsNormal(true);
-
-                    parfaitBlock[1].gameObject.SetActive(true);
-                    parfaitBlock[1].gameObject.transform.position = new Vector3(j, -8, i);
-                    parfaitBlock[1].sequence = 1;
-                }
-
-
-                else if (map[i, j] == BlockNumber.upperParfaitC)
-                {
-                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
-                    second_ground.transform.parent = groundParent;
-                    second_ground.GetComponent<GroundBlock>().IsNormal(true);
-
-                    parfaitBlock[2].gameObject.SetActive(true);
-                    parfaitBlock[2].gameObject.transform.position = new Vector3(j, -8, i);
-                    parfaitBlock[2].sequence = 2;
-
-                }
-
-                else if (map[i, j] == BlockNumber.upperParfaitD)
-                {
-                    GameObject second_ground = Instantiate(secondfloor_block, new Vector3(j, -9, i), secondfloor_block.transform.rotation) as GameObject;
-                    second_ground.transform.parent = groundParent;
-                    second_ground.GetComponent<GroundBlock>().IsNormal(true);
-
-                    parfaitBlock[3].gameObject.SetActive(true);
-                    parfaitBlock[3].gameObject.transform.position = new Vector3(j, -8, i);
-                    parfaitBlock[3].sequence = 3;
-                    parfaitEndPoint = parfaitBlock[3].transform.position + new Vector3(0, -0.5f, 0);
-                }
+                    break;
+                case 2://drop 2-> 1 or 0
+                    if (next >= BlockNumber.normal && next <= BlockNumber.cracked)
+                    {
+                        player.actionnum = 5;//drop : 5
+                        pos.y -= 2;
+                    }
+                    else if(next >= BlockNumber.parfaitA && next <= BlockNumber.parfaitD)
+                    {
+                        player.actionnum = 5;//drop : 5
+                        pos.y -= 2;
+                        blocks[posZ, posX].Data = BlockNumber.normal;
+                        GameController.ParfaitOrder++;
+                    }
+                    else if(next >= BlockNumber.upperNormal && next <= BlockNumber.upperCracked)
+                    {
+                        player.actionnum = 5;//drop : 5
+                        pos.y -= 1;
+                    }
+                    else if (next >= BlockNumber.upperParfaitA && next <= BlockNumber.upperParfaitD)
+                    {
+                        player.actionnum = 5;//drop : 5
+                        pos.y -= 1;
+                        blocks[posZ, posX].Data = BlockNumber.upperNormal;
+                        GameController.ParfaitOrder++;
+                    }
+                    else
+                    {
+                        player.actionnum = 3;//crash : 3
+                    }
+                    break;
+            }//end switch
 
 
 
+            //StopCheckChangeState();
+            pos = new Vector3(posX, pos.y, posZ);
+            UpdateCheckTrue(width: posX, height: posZ);
+            
 
-            }
-        }
-    }
-
-    public void GenerateMap(int index)
-    {
-        Debug.Log(index);
-        sample[index].init();
-        sampleMap = sample[index];
-
-        MakeMap();
-    }
-    public IEnumerator InfiniteMAP(int level)
-    {
-        UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2 + "map/difficulty?difficulty=" +level+"&nickname="+GoogleInstance.instance.id);
-        yield return www.SendWebRequest();
-
-        if (www.isNetworkError || www.isHttpError)
-        {
-            Debug.Log(www.error);
-        }
-        else
-        {
-            // Show results as text
-            Debug.Log(www.downloadHandler.text);
-
-            // Or retrieve results as binary data
-            byte[] results = www.downloadHandler.data;
-
-            //Get data and convert to samplemap list..
 
             
-            string fixdata = JsonHelper.fixJson(www.downloadHandler.text);
-            JsonData[] datas = JsonHelper.FromJson<JsonData>(fixdata);
-           
-            JsonData selectedData = datas[UnityEngine.Random.Range(0, datas.Length)];
-            sampleMap = selectedData.MakeSampleMap();
-            selectedData.DataToString();
 
 
-
-            MakeMap();
-           
+        }
+        else//cant block
+        {
+            if((pos.y == 0 && next == BlockNumber.character) || (pos.y == 1 &&next == BlockNumber.upperCharacter))
+            {
+                player.actionnum = 4; // character끼리 충돌 : 4
+            }
+            else
+            {
+                player.actionnum = 3;
+            }
         }
 
-        yield break;
+        //pos = new Vector3(posX, pos.y, posZ);
+
+        //temp
+        player.temp = blocks[posZ, posX].Data;
+        switch((int)pos.y)
+        {
+            case 0:
+                blocks[posZ, posX].Data = BlockNumber.character;
+                break;
+            case 1:
+                blocks[posZ, posX].Data = BlockNumber.upperCharacter;
+                break;
+            case 2:
+                blocks[posZ, posX].Data = BlockNumber.upperCharacter;
+                break;
+        }
+        //remaincheck는 도착한 후
+
+        GameController.instance.moveCommand.SetLaterData(snowList, crackerList);
+
+        snowList.Clear();
+        crackerList.Clear();
+
+        return pos;
+        
+    }
+    public void UpdateCheckTrue(int width, int height)
+    {
+        if (!check[height, width])
+        {
+            snowList.Add(new Vector2(height, width));
+            check[height, width] = true;
+        }
     }
 
+    public void UpdateCheckArray(int width, int height, bool isCheck)
+    {
+        Debug.Log(height + "," + width + "  is checked " + isCheck);
 
+        
 
-   
+        check[height, width] = isCheck;
+    }
 
+    public int GetBlockData(int x, int z)
+    {
+        if (x < mapsizeW && x >=0 && z < mapsizeH && z >= 0)
+            return blocks[z, x].Data;
+        else
+            return BlockNumber.obstacle;
+    }
+
+    public void SetBlockData(int x, int z , int value)
+    {
+        blocks[z, x].Data = value;
+    }
+
+    public void SetBlocks(int x, int z , Block block)
+    {
+        blocks[z, x] = block;
+    }
 }
-
-
 
 

@@ -31,10 +31,22 @@ public class ButtonManager_Main : UIScript
 		{
 			islandList[1].SetActive(true);
 		}
+		else if (Island_Name(highLevel) == "Beach")
+		{
+			islandList[2].SetActive(true);
+		}
+		else if (Island_Name(highLevel) == "Cracker")
+		{
+			islandList[3].SetActive(true);
+		}
+		else if (Island_Name(highLevel) == "Cottoncandy")
+		{
+			islandList[4].SetActive(true);
+		}
 		else
 		{
 			// default : last island
-			islandList[1].SetActive(true);
+			islandList[4].SetActive(true);
 		}
 	}
 

@@ -25,53 +25,37 @@ public class JsonData
     public int moveCount;//simulating game move count
     public int difficulty;//game difficulty from movecount
     public int parfait;//default 0 == false
+    
     public void DataToString()
     {
         Debug.Log(JsonUtility.ToJson(this));
     }
 
-    public SampleMap MakeSampleMap()
+    public Map MakeSampleMap()
     {
-        SampleMap sampleMap = new SampleMap();
-        sampleMap.mapsizeW = width;
-        sampleMap.mapsizeH = height;
-
-        if (parfait == 0)
-            sampleMap.parfait = false;
-        else
-            sampleMap.parfait = true;
-        
-        sampleMap.map = new int[height, width];
-        sampleMap.startPositionA = StringToPosition(posA);
-        sampleMap.startPositionB = StringToPosition(posB);
-        if(CharToIndex(posA[3]) == 0)
-        {
-            sampleMap.startUpstairA = false;
-        }
-        else
-        {
-            sampleMap.startUpstairA = true;
-        }
-        if (CharToIndex(posB[3]) == 0)
-        {
-            sampleMap.startUpstairB = false;
-        }
-        else
-        {
-            sampleMap.startUpstairB = true;
-        }
+        int[,] datas = new int[height, width];
         int index = 0;
-        for(int i = 0; i < height; i++)
+        for (int i = 0; i < height; i++)
         {
-            for(int j = 0; j < width; j++)
+            for (int j = 0; j < width; j++)
             {
-                //sampleMap.map[i, j] = value[index]-'0';
-                sampleMap.map[i, j] = CharToIndex(value[index]);
-                //Debug.Log(i + "," + j + " : " + sampleMap.map[i, j]);
+
+                datas[i, j] = CharToIndex(value[index]);
+
                 index++;
             }
         }
-        return sampleMap;
+
+        Map newMap = new Map(
+            size : new Vector2(height,width) ,
+            isParfait : parfait == 0 ? false : true ,
+            posA : StringToPosition(posA) ,
+            posB : StringToPosition(posB) ,
+            datas : datas
+            );
+      
+        
+        return newMap;
     }
 
     int CharToIndex(char value)
@@ -110,7 +94,7 @@ public class Simulator : MonoBehaviour
     public Player player2;
     public Player nowPlayer;
 
-    public Map simulatingMap;
+    public MapLoader simulatingMap;
 
     public SimulatorObject simulatorObject;
     public GameObject generatorObject;
@@ -165,13 +149,16 @@ public class Simulator : MonoBehaviour
         simulatorObject.gameObject.SetActive(true);
 
         simulatingMap.GenerateMap(0);
-        player1.SetSimulatorData();
-        player2.SetSimulatorData();
+
+        //player1.SetSimulatorData();
+        //player2.SetSimulatorData();
 
         backUpPositionA = player1.transform.position;
         backUpPositionB = player2.transform.position;
-        player1.SetPosition(simulatingMap.sampleMap.startPositionA + new Vector3(0, -0.5f, 0), simulatingMap.sampleMap.startUpstairA); //position correction fix .. 5/13
-        player2.SetPosition(simulatingMap.sampleMap.startPositionB + new Vector3(0, -0.5f, 0), simulatingMap.sampleMap.startUpstairB);
+
+
+        //player1.SetPosition(simulatingMap.liveMap.startPositionA + new Vector3(0, -0.5f, 0), simulatingMap.liveMap.startUpstairA); //position correction fix .. 5/13
+        //player2.SetPosition(simulatingMap.liveMap.startPositionB + new Vector3(0, -0.5f, 0), simulatingMap.liveMap.startUpstairB);
 
         
         
@@ -198,14 +185,14 @@ public class Simulator : MonoBehaviour
         isRunning = true;
 
     }
-    public void SimulatingSuccess()//Can Make Map
+    public void SimulatingSuccess()//Can Make MapLoader
     {
         isRunning = false;
         Debug.Log("can build!");
-        int count = player1.moveCount + player2.moveCount;
-        int level = (count / 5) + 1;
+        //int count = player1.moveCount + player2.moveCount;
+        //int level = (count / 5) + 1;
         //StartCoroutine(INSERTMAP());
-        MoveCountTxt.text = "이동횟수 : " + count + "\n" + "난이도 : " + level;
+        //MoveCountTxt.text = "이동횟수 : " + count + "\n" + "난이도 : " + level;
         successPopup.SetActive(true);
 
     }
@@ -265,23 +252,23 @@ public class Simulator : MonoBehaviour
             else*/
                 jsonData.id = GoogleInstance.instance.id;//get google id
 
-            jsonData.height = simulatingMap.sampleMap.mapsizeH;
-            jsonData.width = simulatingMap.sampleMap.mapsizeW;
+            jsonData.height = simulatingMap.liveMap.mapsizeH;
+            jsonData.width = simulatingMap.liveMap.mapsizeW;
 
-            Vector3 startA = simulatingMap.sampleMap.startPositionA;
-            jsonData.posA = PositionToString(startA, simulatingMap.sampleMap.startUpstairA);
+            Vector3 startA = simulatingMap.liveMap.startPositionA;
+            jsonData.posA = PositionToString(startA, simulatingMap.liveMap.startUpstairA);
 
-            Vector3 startB = simulatingMap.sampleMap.startPositionB;
-            jsonData.posB = PositionToString(startB, simulatingMap.sampleMap.startUpstairB);
+            Vector3 startB = simulatingMap.liveMap.startPositionB;
+            jsonData.posB = PositionToString(startB, simulatingMap.liveMap.startUpstairB);
 
-            jsonData.moveCount = player1.moveCount + player2.moveCount;
+            //jsonData.moveCount = player1.moveCount + player2.moveCount;
 
             jsonData.difficulty = (jsonData.moveCount / 5) + 1;
 
-            if (simulatingMap.parfait)
+            /*if (simulatingMap.parfait)
                 jsonData.parfait = 1;
             else
-                jsonData.parfait = 0;
+                jsonData.parfait = 0;*/
             
             if (jsonData.difficulty > 5)
                 jsonData.difficulty = 5;
@@ -292,8 +279,8 @@ public class Simulator : MonoBehaviour
                 for (int j = 0; j < jsonData.width; j++)
                 {
 
-                    //arrayToString += simulatingMap.sampleMap.map[i, j].ToString();
-                    arrayToString += IndexToChar(simulatingMap.sampleMap.map[i, j]);
+                    //arrayToString += simulatingMap.liveMap.map[i, j].ToString();
+                    arrayToString += IndexToChar(simulatingMap.liveMap.map[i, j]);
                 }
             }
             jsonData.value = arrayToString;

@@ -112,8 +112,7 @@ public class BaseCanvas : MonoBehaviour
 
 	private void Update()
 	{
-		if (SceneManager.GetActiveScene().name == "Beach_Island" || SceneManager.GetActiveScene().name == "Tutorial_Island"
-            || SceneManager.GetActiveScene().name == "MapEditor" || SceneManager.GetActiveScene().name == "CustomMapPlayScene")
+		if (SceneManager.GetActiveScene().buildIndex >= 4)
 		{
 			changePlayerBtn = GameObject.FindGameObjectWithTag("ChangePlayer");
 			userState.SetActive(false);

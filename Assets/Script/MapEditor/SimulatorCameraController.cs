@@ -158,12 +158,12 @@ public class SimulatorCameraController : MonoBehaviour
     }
     IEnumerator MapScanning()//top down camera move
     {
-        Map map = Simulator.instance.simulatingMap;
+        MapLoader map = Simulator.instance.simulatingMap;
 
         float t = 0;
 
-        float height = map.mapsizeH;
-        float width = map.mapsizeW;
+        //float height = map.mapsizeH;
+        //float width = map.mapsizeW;
         float now_height;
 
         //map scanning
@@ -173,7 +173,7 @@ public class SimulatorCameraController : MonoBehaviour
 
             now_height = Mathf.Lerp(height, 0, t / height);
 
-            transform.position = new Vector3((width - 1) / 2, 10, now_height);
+            //transform.position = new Vector3((width - 1) / 2, 10, now_height);
             camera_transform.position = transform.position;
             yield return new WaitForSeconds(Time.deltaTime);
         }
@@ -182,7 +182,7 @@ public class SimulatorCameraController : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
 
 
-        if (map.parfait)
+        /*if (map.parfait)
         {
             t = 0;
             Vector3 start = transform.position;
@@ -226,6 +226,7 @@ public class SimulatorCameraController : MonoBehaviour
 
             yield return new WaitForSeconds(1f);
         }
+        */
         //Simulator.instance.GameStart();
         cameraView = 1;
         coroutine = null;

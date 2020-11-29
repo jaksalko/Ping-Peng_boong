@@ -7,6 +7,7 @@ public class GroundBlock : Block
 
 	public GameObject snow;
 
+    
 
     public void IsNormal(bool normal)
     {
@@ -16,14 +17,4 @@ public class GroundBlock : Block
 			snow.SetActive(false);
     }
 
-
-	private void OnCollisionStay(Collision collision)
-	{
-		if(collision.gameObject.CompareTag("Leg"))
-		{
-			
-		}
-	}
-
-   
 }

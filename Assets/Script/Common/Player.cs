@@ -2,72 +2,55 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UniRx;
-using UniRx.Triggers;
-using System;
-using UnityEngine.EventSystems;
-public class Player : MonoBehaviour
+
+public class Player : MonoBehaviour , IMoveable
 {
-    [Header("Character Infomation")]
-    public float speed;
-    int posZ;     // vertical
-    int posX;     // horizental
-    public int moveCount = 0;
-    bool isPlayingParticle = false;
-    public int actionnum;
-    public int parfaitOrder = 0; // parfait step 0~4(clear)
-    int getDirection = -1;
 
-    //public Text moveCountText;
-
-    [Header("Map Infomation")]
-    Map stage;
-    int mapsizeH;
-    int mapsizeW;
-    int[,] map;
-    
-    bool[,] check;
-    public List<int> through;
-    public List<int> stop;
-    [SerializeField]
-    int temp;
-    int total = 0;
-
-
-    [Header("Character State")]
-    [SerializeField]
-    public bool isMoving = false;
-    [SerializeField]
-    bool upstair = false;//if player located in second floor --> true
-    [SerializeField]
-    State state;
-    [SerializeField]
-    bool stateChange;
-    [SerializeField]
-    bool thirdFloor;
-    [SerializeField]
-    public bool onCloud;
-    [SerializeField]
-    public bool isActive = false;
-
-	[Header("Character Sound")]
-	public AudioClip crashSound;
-	public AudioClip departureSound;
-	public AudioClip fallSound;
-	public AudioClip slideSound;
-	private AudioSource playerAudio;
-	private bool isSlideSoundPlaying;
-
-	public enum State
+    public enum State
     {
         Idle,//no interaction
         Master,//in interaction and state is master
         Slave//in interaction and state is slave...
     }
-    public bool Moving()
-    {
-        return isMoving;
-    }
+    Vector3[] dir = new Vector3[] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
+
+    [SerializeField]
+    CharacterController cc;
+    CheckAnimationState stateMachine;
+
+    [Header("Character Infomation")]
+    public float speed;   
+    bool isPlayingParticle = false;
+
+    public int actionnum;   
+    public int getDirection = -1;
+    public int direction = -1;
+
+    Vector3 targetPos;
+    [SerializeField]
+    bool stateChange = false;
+
+    [Header("Character State")]
+    [SerializeField]
+    bool isMoving = false; public bool Moving() { return isMoving; }
+    [SerializeField]
+    public bool isActive = false;
+
+   
+    [SerializeField] 
+    public State state { get; set; }    
+    [SerializeField]
+    public bool onCloud = false;
+    public int temp;
+
+    [Header("Character Sound")]
+	public AudioClip crashSound;
+	public AudioClip departureSound;
+	public AudioClip fallSound;
+	public AudioClip slideSound;
+    [SerializeField]
+	AudioSource playerAudio;
+	private bool isSlideSoundPlaying;
 
     [Header("Character Particle System")]
     public ParticleSystem moveParticle;
@@ -76,193 +59,49 @@ public class Player : MonoBehaviour
     public Animator animator;
     
 	
-    CharacterController cc;
-    Vector3[] dir = new Vector3[] { Vector3.forward, Vector3.right, Vector3.back, Vector3.left };
-    int[,] step = new int[4, 2] { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
+    
     [SerializeField]
     Player other;
-
-    Vector3 targetPos;
-
-
-
-    // Start is called before the first frame update
-    //public Animator animator;
-
-
-    [SerializeField]
-    Vector2 down;
-    [SerializeField]
-    Vector2 up;
-    [SerializeField]
-    bool click;
-
+    
     [SerializeField]
     bool simulating;
 
-    private CheckAnimationState stateMachine;
+    
+
     void AnimationEnd()
     {
-//        Debug.Log("Animation End...");
+        //Debug.Log("Animation End...");
         animator.SetInteger("action", 0);
         actionnum = 0;
 
 	}
   
-    public void SetSimulatorData()
-    {
-        
-        stage = Simulator.instance.simulatingMap;
-        mapsizeH = stage.mapsizeH;
-        mapsizeW = stage.mapsizeW;
-        map = stage.map;
-        
-
-        check = stage.check;
-
-        stateMachine = animator.GetBehaviour<CheckAnimationState>();
-        stateMachine.player = this;
-        stateMachine.ActionEnd += AnimationEnd;
-
-    }
-    public void SetMap()
-    {
-        stage = GameController.instance.map;
-
-        mapsizeH = stage.mapsizeH;
-        mapsizeW = stage.mapsizeW;
-        map = stage.map;
-        Debug.Log(mapsizeH + "," + mapsizeW + " (MAP :" + stage.map.Length);
-        check = stage.check;
-    }
-    public void SetTotal()
-    {
-        total = RemainCheck();
-        Debug.Log("check total start : " + total);
-    }
+    
+   
+   
     void Start()
     {
         state = State.Idle;
-        stateChange = false;
-        thirdFloor = false;
 
-        isMoving = false;
-        onCloud = false;
-      
 
         cc = GetComponent<CharacterController>();
-
-        if(!simulating)
-        {
-            stateMachine = animator.GetBehaviour<CheckAnimationState>();
-            stateMachine.player = this;
-            stateMachine.ActionEnd += AnimationEnd;
-        }
-
-        
         playerAudio = GetComponent<AudioSource>();
-
-		/*
-        map.ObserveEveryValueChanged(data => map[posZ, posX])
-            .Subscribe(_ => Debug.Log("change my position :" + posZ + "," + posX +" : " + _));
-
-        map.ObserveEveryValueChanged(data => map[other.posZ, other.posX])
-        .Subscribe(_ => Debug.Log("change other position :" + other.posZ + "," + other.posX + " : " + _));
-        */
-
-
-#if UNITY_EDITOR
-		var mouseDownStream = this.UpdateAsObservable()
-                .Where(_ => !EventSystem.current.IsPointerOverGameObject())
-               
-                .Where(_ => !click)
-                .Where(_ => Input.GetMouseButtonDown(0))
-                .Select(_ => Input.mousePosition)
-                .Subscribe(_ => { down = _; click = true; });
-
-            var mouseUpStream = this.UpdateAsObservable()
-               
-                .Where(_ => click)
-                .Where(_ => Input.GetMouseButtonUp(0))
-                .Select(_ => Input.mousePosition)
-                .Subscribe(_ => { up = _; PlayerMove(); click = false; });
-
-#elif UNITY_ANDROID || UNITY_IOS
-        var touchDownStream = this.UpdateAsObservable()
-          
-            .Where(_ => !click)
-            .Where(_ => Input.touchCount > 0)
-            .Where(_ => !EventSystem.current.IsPointerOverGameObject(0))
-            .Where(_ => Input.GetTouch(0).phase == TouchPhase.Began)
-            .Select(_ => Input.GetTouch(0))
-            .Subscribe(_ => { down = _.position; click = true; } );
-
-        var touchUpStream = this.UpdateAsObservable()
-         
-            .Where(_ => click)
-            .Where(_ => Input.touchCount > 0)
-            .Where(_ => Input.GetTouch(0).phase == TouchPhase.Ended)
-            .Select(_ => Input.mousePosition)
-            .Subscribe(_ => { up = _; PlayerMove(); click = false; });
-#endif
-    
-        
-
-        //Reactive stream
+        stateMachine = animator.GetBehaviour<CheckAnimationState>();
+        stateMachine.player = this;
+        stateMachine.ActionEnd += AnimationEnd;
+  
 
 
     }
-
-
-    void PlayerMove()
+    public void Move(Map map, int direction)//call by GameController Command
     {
-        //Debug.Log("distance : " + Vector2.Distance(up, down));
-        bool isMove = false;
+        //if (!simulating && !GameController.Playing)
+        //return false;
 
-        if(Vector2.Distance(up, down) <= 30)//민감도
-        {
-            return;
-        }
-        Vector2 normalized = (up - down).normalized;
-        
-
-        if (normalized.x < -0.5)
-        {
-            isMove = PlayerControl(3); //left
-        }
-        else if (normalized.x > 0.5)
-        {
-            isMove = PlayerControl(1); //right
-        }
-        else
-        {
-            if (normalized.y > 0)
-            {
-                isMove = PlayerControl(0); //up
-
-            }
-            else
-            {
-                isMove = PlayerControl(2); // down
-            }
-
-        }
-
-        if (isMove)
-            moveCount++;
-
-
-        
-    }
-    bool PlayerControl(int direction)//0 : u // 1 : r // 2 : d // 3 : l
-    {
-        if (!simulating && !GameController.Playing)
-            return false;
-
-        if (isActive && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))//remove this
         {
 
-            getDirection = direction;
+            this.direction = getDirection = direction;
 
             if (state == State.Slave)
             {
@@ -271,152 +110,160 @@ public class Player : MonoBehaviour
                 other.state = State.Idle;
                 transform.SetParent(null);
 
-                if(other.upstair)
+                /*if (other.upstair)
                 {
-                    thirdFloor = true;
-                }
+                    //thirdFloor = true;
+                }*/
 
-				playerAudio.Stop();
+                playerAudio.Stop();
 
-			}
+            }
 
-            Debug.Log("move direction : " + getDirection);
-            transform.rotation = Quaternion.Euler(new Vector3(0f, getDirection * 90 , 0f));
+            Debug.Log("move direction : " + direction);
+            transform.rotation = Quaternion.Euler(new Vector3(0f, direction * 90, 0f));
 
-            CharacterMove();
-
-            return true;
-
+            //CharacterMove(map.map);
+            
+            map.SetBlockData((int)transform.position.x, (int)transform.position.z, temp);
+            targetPos =  map.GetDestination(this, transform.position);
+            Debug.Log("target position : " + targetPos);
+            isMoving = true;
         }
-        else
-        {
-            //getDirection = -1;
-            return false;
-        }
-
-
-
-
     }
 
-    public void SetPosition(Vector3 startpos , bool upstair)
+    /*void CharacterMove(Map map)
+    {
+        map.map[posZ, posX] = temp;//set initializedMap data
+
+        SettingBlockLevel();//stop , through block list setting
+        CompareWithNextBlock(map); // set target position ... 재
+    }*/
+
+
+
+
+    public void SetPosition(Vector3 startpos)
     {
         transform.position = startpos;
-        this.upstair = upstair;
+
+        switch(startpos.y)
+        {
+            case 0:
+                temp = BlockNumber.normal;
+                break;
+                
+            case 1:
+                temp = BlockNumber.upperNormal;
+                break;
+        }
+        
     }
 
     public void FindPlayer()
     {
         
 
-        posX = (int)transform.position.x;
-        posZ = (int)transform.position.z;
+      
 
-        if (map == null)
-            Debug.Log("null exception");
-
-        temp = map[posZ, posX];
-        if (upstair)
+        /*if (upstair)
             map[posZ, posX] = BlockNumber.upperCharacter;
         else
             map[posZ, posX] = BlockNumber.character;
 
-        Debug.Log(map[posZ, posX] + "," + other.map[posZ, posX]);
+        Debug.Log(map[posZ, posX] + "," + other.map[posZ, posX]);*/
 
     
 
-        check[posZ, posX] = true;
-        if(!simulating)
+        //check[posZ, posX] = true;//이미 맵 생성할때 체크 트루로 해둠 근데 데이터는 노멀블럭 또는 위노멀블
+        /*if(!simulating)
         {
             Debug.Log("check remain : " + RemainCheck());
             GameController.instance.ui.SetRemainText(RemainCheck(), total);
 
-        }
+        }*/
 
         //        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);
     }
 
+    void CharacterControllerMovement()
+    {
 
+
+        if (cc.isGrounded)  // 바닥에 붙어있으면 움직임
+        {
+            Debug.Log("dir : " + direction);
+            cc.Move(speed * Time.deltaTime * dir[direction]);
+        }
+        else                // 바닥이 없으면 떨어짐 (여기다 쿵! 넣으면되는데 지금 잘 작동이 안 되서 넣으면 안 됨)
+        {
+            //Debug.Log("is not grounded!!!!");
+            cc.Move(speed * Time.deltaTime * Vector3.down);
+        }
+
+        if (direction % 2 == 0)//vector.forward , vector.back ==> z 움직임 
+        {
+           
+
+            int x = Mathf.RoundToInt(transform.position.x);
+            transform.position = new Vector3(x, transform.position.y, transform.position.z);
+            Debug.Log("X : " + transform.position.x);
+        }
+        else
+        {
+           
+
+            int z = Mathf.RoundToInt(transform.position.z);
+            transform.position = new Vector3(transform.position.x, transform.position.y, z);
+            Debug.Log("Z : " + transform.position.z);
+        }
+    }
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!simulating && !GameController.Running)
+        if (!simulating && !GameController.Playing)
             return;
         if (simulating && !Simulator.Running)
             return;
 
         if (isMoving)
         {
-			//이동 시 발생하는 particle control
-			if(!moveParticle.isPlaying)
-			{
-				moveParticle.Play();
-				moveParticle.loop = true;
-				var main = moveParticle.main;
-				// main.startColor = new Color(1, 0.4f, 0.7f);	// skin마다 color 바꿔주도록 할 것!!
-			}
+           
+            CharacterControllerMovement();
 
-			if (cc.isGrounded)	// 바닥에 붙어있으면 움직임
-            {
-                //Debug.Log("is grounded");
-                cc.Move(speed * Time.deltaTime * dir[getDirection]);
-            }
-            else				// 바닥이 없으면 떨어짐 (여기다 쿵! 넣으면되는데 지금 잘 작동이 안 되서 넣으면 안 됨)
-            {
-                //Debug.Log("is not grounded!!!!");
-                cc.Move(speed * Time.deltaTime * Vector3.down);
-            }
             float distance = Vector3.Distance(transform.position, targetPos);
             
             if (distance < 0.25f)//arrive condition
             {
-                /*if(state == State.Master)
-                {
-                    other.posX = posX;
-                    other.posZ = posZ;
+                transform.position = targetPos;
+                isMoving = false;
+                //temp and block data change in map script(SetDestination end...) 
 
-                    
-                }*/
-                temp = map[posZ, posX];
-               
+                //맵 데이터 치환
+                //temp = map[posZ, posX];
+
+                /*
                 if (upstair)
                     map[posZ, posX] = BlockNumber.upperCharacter;
                 else
                     map[posZ, posX] = BlockNumber.character;
+                */
 
-                if (state == State.Master)
-                {
-                    other.posX = posX;
-                    other.posZ = posZ;
+                //상태 변경
+                
 
-                    other.temp = map[posZ, posX];
-                }
-                Debug.Log("arrive target position...temp : " + temp);
-                Debug.Log("other temp : " + other.temp);
-                Debug.Log(map[posZ, posX] + "," +other.posX + "," +other.posZ +":"+ other.map[other.posZ, other.posX]);
-
-                /*
-                     if (other.upstair)
-                         map[other.posZ, other.posX] = BlockNumber.upperCharacter;
-                     else
-                         map[other.posZ, other.posX] = BlockNumber.character;
-
-               */
-
-
-
+               
                 
                 animator.SetBool("move", false);
                 Debug.Log("Arrive... target position : " + targetPos + "  distance : " + distance);
                
-                //isMoving = false;
+               
 
 				//이동 시 발생하는 particle control
 				moveParticle.loop = false;
 
-				transform.position = new Vector3(targetPos.x, targetPos.y, targetPos.z);
+                GameController.instance.RemainCheck();
 
-                if(RemainCheck() == 0)
+                /*if(RemainCheck() == 0)
                 {
                     if (!simulating)
                         GameController.instance.GameEnd(true);
@@ -427,16 +274,44 @@ public class Player : MonoBehaviour
                 {
                     if (!simulating)
                         GameController.instance.ui.SetRemainText(RemainCheck(), total);
-                }
-                
-                /*if (CheckStageClear())
-                {
-                    if (!simulating)
-                        GameController.instance.GameEnd(true);
-                    else
-                        Simulator.instance.SimulatingSuccess();
                 }*/
 
+                if (state == State.Master)
+                {
+                    other.temp = transform.position.y == 0 ? BlockNumber.character : BlockNumber.upperCharacter;
+
+                    //change character?
+
+                    //other == State.Slave
+                    other.Move(GameController.instance.GetMap(), direction);
+                    //둘 다 Idle로 변경됨.
+                }
+                else//Idle 상태 - slave는 움직일때 풀림
+                {
+                    Vector3 otherPos = other.transform.position;
+                    Vector3 myPos = transform.position;
+                    //master 에서 other.move로 idle상태로 other이 움직이기 때문에 모든 move는 else로 들어오게 되어있음.
+                    //Other에서 불리느냐 this에서 불리느냐의 차이
+                    if(otherPos.x == myPos.x && otherPos.z == myPos.z)
+                    {
+                        if(myPos.y < otherPos.y)
+                        {
+                            state = State.Master;
+                            other.state = State.Slave;
+
+                            other.transform.SetParent(transform);
+                        }
+                        else
+                        {
+                            state = State.Slave;
+                            other.state = State.Master;
+
+                            transform.SetParent(other.transform);
+                        }
+                    }
+                }
+
+                /*상태 변경
                 if (stateChange)//state == master !upstair 에서 (갈수없는 블럭을 제외한)2층의 블럭과 부딪히면 true
                 {
                     Debug.Log("state change");
@@ -497,56 +372,62 @@ public class Player : MonoBehaviour
 
                    
                 }
+                */
 
 
-                isMoving = false;
 
-                if(other.onCloud && other.temp == temp)
-                {
-                    if(upstair)
-                    {
-                        if (map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] == BlockNumber.upperCharacter)
-                        {
-                            Debug.Log(name + " connect Action with method");
-                            CloudBlock.Exit += CallBackOtherExitCloud;
-                        }
-                    }
-                    else
-                    {
-                        if(map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] == BlockNumber.character)
-                        {
-                            Debug.Log(name + " connect Action with method");
-                            CloudBlock.Exit += CallBackOtherExitCloud;
-                        }
-                    }
-                }
-
+                /*
+                 if(other.onCloud && other.temp == temp)
+                 {
+                     if(upstair)
+                     {
+                         if (map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] == BlockNumber.upperCharacter)
+                         {
+                             Debug.Log(name + " connect Action with method");
+                             CloudBlock.Exit += CallBackOtherExitCloud;
+                         }
+                     }
+                     else
+                     {
+                         if(map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] == BlockNumber.character)
+                         {
+                             Debug.Log(name + " connect Action with method");
+                             CloudBlock.Exit += CallBackOtherExitCloud;
+                         }
+                     }
+                 }
+                 */
             }
         }
         
 
     }
-    void CallBackOtherExitCloud(GameObject player)
+
+
+    /*void CallBackOtherExitCloud(GameObject player)
     {
         Debug.Log(gameObject + "/" +player + " disconnect Action with method");
         CloudBlock.Exit -= CallBackOtherExitCloud;
 
-        if (player == gameObject)
+        if (player == gameObject)//나는 안움직여 
         {
             Debug.Log("same player");
             //nothing
         }
-        else
+        else//뒤에 있던 캐릭터만 움직
         {
             Debug.Log("different player");
             onCloud = true;//블록 설정을 위한 input (stay 에서 호출하지 않으므로 설정)
+
             MoveByCloud(temp);
         }
        
-    }
+    }*/
+
     private void LateUpdate()
     {
         animator.SetBool("move", isMoving);
+        
         if (isMoving)
         {
 			if (actionnum == 5)//drop
@@ -563,7 +444,7 @@ public class Player : MonoBehaviour
 				float distance = Vector3.Distance(transform.position, targetPos + new Vector3(0, 1, 0));
                 if (distance < 1f)//거리가 1일때부터 드랍 애니메이션 실행 , 움직이고 있던상태에서 애니메이션 실행
                 {
-                    animator.SetInteger("action", actionnum);
+                    animator.SetInteger("action", actionnum);//actionnum = 5 drop...
 
 					if (isSlideSoundPlaying)
 					{
@@ -584,7 +465,7 @@ public class Player : MonoBehaviour
 				if (!playerAudio.isPlaying)
 				{
 					playerAudio.loop = true;
-					playerAudio.clip = slideSound;
+					playerAudio.clip = slideSound;   
 
 					playerAudio.Play();
 					isSlideSoundPlaying = true;
@@ -592,7 +473,7 @@ public class Player : MonoBehaviour
 			}
             
         }
-        else
+        else//isMoving == false
         {
 			if(isSlideSoundPlaying)
 			{
@@ -638,75 +519,13 @@ public class Player : MonoBehaviour
 			}
 			
 		}
-
-
-    }
-
-    int RemainCheck()
-    {
-        int remain = 0;
-        for (int i = 0; i < mapsizeH; i++)
-        {
-            for (int j = 0; j < mapsizeW; j++)
-            {
-                if(!check[i,j])
-                {
-                    remain++;
-                }
-            }
-        }
-
-        return remain;
-    }
-
-    bool CheckStageClear()
-    {
         
-            for (int i = 0; i < mapsizeH; i++)
-            {
-                for (int j = 0; j < mapsizeW; j++)
-                {
-                    if (!check[i, j])
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
-      
 
     }
 
-   
-
-   
-
-    bool SetEndPoint_Paint()
-    {
-        for (int i = 0; i < mapsizeH; i++)
-        {
-            for (int j = 0; j < mapsizeW; j++)
-            {
-                if (!check[i, j])
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
-
-    }
-
-   
-    public void CrackedBlockisBroken(int x , int z , int block_num)
-    {
-        map[z, x] = block_num;
-        other.map[z, x] = block_num;
-        Debug.Log(block_num + " is changed!");
-    }
 
 
-    public void MoveByCloud(int block_num)
+    /*public void MoveByCloud(int block_num)
     {
         
         Debug.Log("Moved by Cloud");
@@ -757,392 +576,25 @@ public class Player : MonoBehaviour
         //set targetposition
         //isMoving = true;
 
-    }
-
-    void CharacterMove()
-    {
-        SettingBlockLevel();
-
-        
-        map[posZ, posX] = temp;//set initializedMap data
-
-        CompareWithNextBlock();
-    }
-
-    void CompareWithNextBlock()
-    {
-        float firstFloorY = -9.5f;//animation character modification.. 5/13
-        float secondFloorY = -8.5f;//
-        float thirdFloorY = -7.5f;
-     
-
-        int next = map[posZ + step[getDirection, 0], posX + step[getDirection, 1]];
-        
-
-        if (IsThrough(next) && ThroughCheckChangeState(next))// next block is through block
-        {
-
-            posZ += step[getDirection, 0];
-            posX += step[getDirection, 1];
-            check[posZ, posX] = true;
-
-            if (!SetEndPoint_Paint())
-            {
-                CompareWithNextBlock();
-                return;
-            }
-            
-                
-           
-            
-
-
-        }
-        else if (IsStop(next))// next block is stop block
-        {
-
-            StopCheckChangeState(next);
-
-            posZ += step[getDirection, 0];
-            posX += step[getDirection, 1];
-            check[posZ, posX] = true;
-            
-        }
-        else// next block is cant block
-        {
-            if ((!upstair && next == BlockNumber.character) || (upstair && next == BlockNumber.upperCharacter))
-            {
-                actionnum = 4;//캐릭터//bump
-            }
-            else if (!upstair && state == State.Master/* && (next >= BlockNumber.upperNormal && next <= BlockNumber.upperParfaitD)*/ )
-            {
-                stateChange = true;
-                actionnum = 3;//crash
-                //state change
-                //other character move
-            }
-            else
-            {
-                actionnum = 3;//crash
-            }
-
-           
-
-           
-        }
-
-        if(thirdFloor)
-        {
-            targetPos = new Vector3(posX, thirdFloorY, posZ);
-        }
-        else if (upstair)
-        {
-            targetPos = new Vector3(posX, secondFloorY, posZ);
-        }
-        else
-        {
-            targetPos = new Vector3(posX, firstFloorY, posZ);
-        }
-        Debug.Log("targetposition : " + targetPos);
-        isMoving = true;
-        //cant go 
-
-
-
-    }
-    bool IsThrough(int next)
-    {
-        for (int i = 0; i < through.Count; i++)
-        {
-            if (through[i] == next)
-                return true;
-
-        }
-
-        return false;
-
-    }
-    bool IsStop(int next)
-    {
-        for (int i = 0; i < stop.Count; i++)
-        {
-            if (stop[i] == next)
-                return true;
-        }
-
-        return false;
-    }
-    bool ThroughCheckChangeState(int next)//next block is throughlevel and check if block is slopeBlock?
-    {
-
-      
-        int nextnext = map[posZ + (step[getDirection, 0] * 2), posX + (step[getDirection, 1] * 2)];
-        //int next = map[posZ + step[getDirection, 0], posX + step[getDirection, 1]];
-        //meet parfait block
-        if (!upstair)
-        {
-            if(next >= BlockNumber.parfaitA && next <= BlockNumber.parfaitD)
-            {
-                map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] = BlockNumber.normal;
-                parfaitOrder++;
-                other.parfaitOrder++;
-                SettingBlockLevel();
-            }
-        }
-        else
-        {
-            if(next >= BlockNumber.upperParfaitA && next <= BlockNumber.upperParfaitD)
-            {
-                map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] = BlockNumber.upperNormal;
-                parfaitOrder++;
-                other.parfaitOrder++;
-                SettingBlockLevel();
-
-            }
-        }
-
-        //through
-        if (upstair && next >= BlockNumber.slopeUp && next <= BlockNumber.slopeLeft)
-        {
-            upstair = false;
-            if(state == State.Master)
-            {
-                other.thirdFloor = false;
-            }
-            SettingBlockLevel();
-
-            //if next block is slope block(can through)
-            if (IsThrough(nextnext) || IsStop(nextnext))// next next block is can position
-            {
-                return true;
-            }
-            else//cant through slope block because next next block cannot position
-            {
-                upstair = true;
-                if (state == State.Master)
-                {
-                    other.thirdFloor = true;
-                }
-                SettingBlockLevel();
-                //actionnum = 1;
-                return false;
-            }
-
-
-        }
-        else if (!upstair && next >= BlockNumber.slopeUp && next <= BlockNumber.slopeLeft)
-        {
-            upstair = true;
-            if (state == State.Master)
-            {
-                other.thirdFloor = true;
-            }
-            SettingBlockLevel();
-
-            if (IsThrough(nextnext) || IsStop(nextnext))
-            {
-                return true;
-            }
-            else
-            {
-                upstair = false;
-                if (state == State.Master)
-                {
-                    other.thirdFloor = false;
-                }
-                SettingBlockLevel();
-                return false;
-            }
-        }
-        else
-        {
-            return true;
-        }
-
-
-    }
-    void StopCheckChangeState(int next)//cloud or ride or drop
-    {
-        //stop
-
-
-        if (upstair && next == BlockNumber.character)
-        {
-
-            actionnum = 2; //ride motion
-            Debug.Log("master slave!");
-        }
-        else if (upstair &&
-            (next == BlockNumber.normal || next == BlockNumber.cracked
-            || next == BlockNumber.parfaitA + parfaitOrder || (next >= BlockNumber.cloudUp && next <= BlockNumber.cloudLeft)))
-        {
-            upstair = false;
-            thirdFloor = false;
-            other.thirdFloor = false;
-            actionnum = 5; // drop motion
-
-            if(next == BlockNumber.parfaitA + parfaitOrder)
-            {
-                map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] = BlockNumber.normal;
-                parfaitOrder++;
-                other.parfaitOrder++;
-            }
-        }
-        else if (thirdFloor &&
-            (next == BlockNumber.upperNormal || next == BlockNumber.upperCracked ||
-            next == BlockNumber.upperParfaitA + parfaitOrder ||
-            (next >= BlockNumber.upperCloudUp && next <= BlockNumber.upperCloudLeft))
-            )
-        {
-            if (next == BlockNumber.upperParfaitA + parfaitOrder)
-            {
-                map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] = BlockNumber.upperNormal;
-                parfaitOrder++;
-                other.parfaitOrder++;
-            }
-
-
-            thirdFloor = false;
-            other.thirdFloor = false;
-            actionnum = 5;
-        }
-    }
-    void SettingBlockLevel()//player state change callback method
-    {
-        ThroughSetting();
-        StopSetting();
-    }
-
-    void ThroughSetting()
-    {
-        through.Clear();
-
-        if(thirdFloor)
-        {
-            //nothing to add through list
-        }
-        else if (upstair)
-        {
-            switch (getDirection)
-            {
-                case 0:
-                    through.Add(BlockNumber.slopeDown);
-                    break;
-                case 1:
-                    through.Add(BlockNumber.slopeLeft);
-                    break;
-                case 2:
-                    through.Add(BlockNumber.slopeUp);
-                    break;
-                case 3:
-                    through.Add(BlockNumber.slopeRight);
-                    break;
-            }
-            through.AddRange(BlockNumber.secondLevel);
-            through.Add(BlockNumber.upperParfaitA + parfaitOrder);
-        }
-        else
-        {
-            through.AddRange(BlockNumber.firstlevel);
-            through.Add(BlockNumber.slopeUp + getDirection);
-            through.Add(BlockNumber.parfaitA + parfaitOrder);
-        }
-
-
-    }
-    void StopSetting()
-    {
-        stop.Clear();
-
-        if(thirdFloor)
-        {
-            stop.AddRange(BlockNumber.secondLevel);
-            stop.AddRange(BlockNumber.firstlevel);
-
-            stop.Add(BlockNumber.parfaitA + parfaitOrder);//first floor parfait
-            stop.Add(BlockNumber.upperParfaitA + parfaitOrder);//first floor parfait
-
-            for (int i = 0; i <= 3; i++)
-            {
-                if (Mathf.Abs(getDirection - i) != 2)
-                {
-                    stop.Add(BlockNumber.upperCloudUp + i);
-                    stop.Add(BlockNumber.cloudUp + i);
-                }
-            }
-
-
-        }
-        else if (upstair)
-        {
-            if(onCloud)
-            {
-                stop.AddRange(BlockNumber.secondLevel);
-                stop.Add(BlockNumber.upperParfaitA + parfaitOrder);
-            }
-
-            stop.AddRange(BlockNumber.firstlevel);//normal , cracked
-            stop.Add(BlockNumber.parfaitA + parfaitOrder);//first floor parfait
-
-
-
-            stop.Add(BlockNumber.character);
-            
-            for (int i = 0; i <= 3; i++)
-            {
-                if (Mathf.Abs(getDirection - i) != 2)
-                {
-                    stop.Add(BlockNumber.upperCloudUp + i);
-                    stop.Add(BlockNumber.cloudUp + i);
-                }
-            }
-        }
-        else
-        {
-            if(onCloud)
-            {
-                stop.AddRange(BlockNumber.firstlevel);
-                stop.Add(BlockNumber.parfaitA + parfaitOrder);
-            }
-            for (int i = 0; i <= 3; i++)
-            {
-                if (Mathf.Abs(getDirection - i) != 2)
-                {
-                    stop.Add(BlockNumber.cloudUp + i);
-                }
-            }
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
+    }*/
 
 
   
+
+
 
     private void OnTriggerEnter(Collider collider)
     {
         if (collider.gameObject.CompareTag("Parfait"))
         {
-            ParfaitObject parfait = collider.GetComponent<ParfaitObject>();
-            if (parfait.state == ParfaitObject.State.active)
+            ParfaitBlock parfait = collider.GetComponent<ParfaitBlock>();
+            if (parfait.state == ParfaitBlock.State.active)
             {
                 if (!simulating)
-                    GameController.instance.ui.ParfaitDone();
-                if (parfait.GetParfait(stage))//if true end game
                 {
-                    Debug.Log("end parfait mode.");
-                   
+                    GameController.instance.ui.ParfaitDone();
                 }
+                parfait.ActiveNextParfait();
 
             }
             else
@@ -1157,6 +609,5 @@ public class Player : MonoBehaviour
 		bumpParticle.SetActive(false);
 	}
 
-
-
+   
 }

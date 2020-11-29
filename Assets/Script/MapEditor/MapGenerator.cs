@@ -33,7 +33,7 @@ public class MapGenerator : MonoBehaviour
 
     [Header("MapGenerating")]
     [SerializeField] GameObject selectedPrefab;
-    public SampleMap newMap;
+    public Map newMap;
     public List<Indexer> indexer;
     public Vector2 maxSize;
     RaycastHit hit;
@@ -527,7 +527,7 @@ public class MapGenerator : MonoBehaviour
 
         for (int i = 0; i < newMap.mapsizeH; i++)
         {
-            SampleMap.Line line = new SampleMap.Line();
+            Map.Line line = new Map.Line();
             for (int j = 0; j < newMap.mapsizeW; j++)
             {
                 line.line.Add(BlockNumber.obstacle);

@@ -28,5 +28,9 @@ public class IslandEditor : Editor
         {
             generator.GenerateMap(myString ,title, island_num);
         }
+        if (GUILayout.Button("Refresh"))
+        {
+            generator.RefreshMapData();
+        }
     }
 }

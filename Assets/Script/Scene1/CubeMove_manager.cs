@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class CubeMove_manager : MonoBehaviour
 {
-	//public SampleMap _samplemap;
+	//public Map _samplemap;
 	public int adjustX;
 	public int adjustZ;
 	public float speed;

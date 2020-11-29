@@ -28,7 +28,7 @@ public class CameraController : MonoBehaviour
     {
         //target = GameController.instance.nowPlayer;
         camera_transform = main_camera.transform;
-        centerOfMap = GameController.instance.map.centerOfMap;
+        centerOfMap = GameController.instance.mapLoader.centerOfMap;
         
     }
 
@@ -86,7 +86,7 @@ public class CameraController : MonoBehaviour
 
         if(coroutine == null)
         {
-            camera_target = GameController.instance.map.transform;
+            camera_target = GameController.instance.mapLoader.transform;
             coroutine = StartCoroutine(MapScanning());
         }
             
@@ -148,7 +148,7 @@ public class CameraController : MonoBehaviour
     }
     IEnumerator MapScanning()//top down camera move
     {
-        Map map = GameController.instance.map;
+        Map map = GameController.instance.GetMap();
         
         float t = 0;
         
@@ -156,7 +156,7 @@ public class CameraController : MonoBehaviour
         float width = map.mapsizeW;
         float now_height;
 
-        //map scanning
+        //mapLoader scanning
         while (t <= height)
         {
             t += Time.deltaTime*5;
@@ -176,7 +176,7 @@ public class CameraController : MonoBehaviour
         {
             t = 0;
             Vector3 start = transform.position;
-            Vector3 end = map.parfaitBlock[0].transform.position;
+            Vector3 end = GameController.instance.mapLoader.parfaitBlock[0].transform.position;//map.parfaitBlock[0].transform.position;
 
             //Look Parfait
             transform.position = end - (Vector3.forward * 2)
@@ -187,7 +187,7 @@ public class CameraController : MonoBehaviour
             yield return new WaitForSeconds(1f);
             //for(int i = 0; i<4; i++)
             //{
-            //    map.parfaitList[i].SetActive(true);
+            //    mapLoader.parfaitList[i].SetActive(true);
             //}
             yield return new WaitForSeconds(1.5f);
 
@@ -224,7 +224,7 @@ public class CameraController : MonoBehaviour
 
     void MiniMapCamera()
     {
-        camera_target = GameController.instance.map.minimapTarget;
+        camera_target = GameController.instance.mapLoader.minimapTarget;
         transform.position = camera_target.position
            + (Vector3.up * 10);
 

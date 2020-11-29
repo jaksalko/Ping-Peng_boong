@@ -411,6 +411,75 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 154403448}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &173285475
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7204667214940189373, guid: 69e333cf1f124174b97bb22228bf2ac0,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7204667214940189373, guid: 69e333cf1f124174b97bb22228bf2ac0,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -9.9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7204667214940189373, guid: 69e333cf1f124174b97bb22228bf2ac0,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 5.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7204667214940189373, guid: 69e333cf1f124174b97bb22228bf2ac0,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7204667214940189373, guid: 69e333cf1f124174b97bb22228bf2ac0,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7204667214940189373, guid: 69e333cf1f124174b97bb22228bf2ac0,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7204667214940189373, guid: 69e333cf1f124174b97bb22228bf2ac0,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 7204667214940189373, guid: 69e333cf1f124174b97bb22228bf2ac0,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 7204667214940189373, guid: 69e333cf1f124174b97bb22228bf2ac0,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7204667214940189373, guid: 69e333cf1f124174b97bb22228bf2ac0,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 7204667214940189373, guid: 69e333cf1f124174b97bb22228bf2ac0,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7545726219100743687, guid: 69e333cf1f124174b97bb22228bf2ac0,
+        type: 3}
+      propertyPath: m_Name
+      value: IceCream_island
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 69e333cf1f124174b97bb22228bf2ac0, type: 3}
 --- !u!1 &187130691
 GameObject:
   m_ObjectHideFlags: 0
@@ -2134,6 +2203,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: WaterQuad
       objectReference: {fileID: 0}
+    - target: {fileID: 8061423457581796275, guid: 88e05a261dd4f41a59a8177e411d18b2,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8061423457581796284, guid: 88e05a261dd4f41a59a8177e411d18b2,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2189,6 +2263,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8061423457581796286, guid: 88e05a261dd4f41a59a8177e411d18b2,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4f59254cb334b401d8e9b64d8840bb38, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 88e05a261dd4f41a59a8177e411d18b2, type: 3}
 --- !u!4 &399020222 stripped
@@ -4725,7 +4804,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &805797174
 Transform:
   m_ObjectHideFlags: 0
@@ -4797,11 +4876,11 @@ MonoBehaviour:
   mapsizeW: 0
   parfait: 0
   checkparfait: 0
-  groundBlock: {fileID: 3038474782244975178, guid: bdf7b45aa9c6f477a98fc71f08206494,
+  groundBlock: {fileID: 3038474782244975178, guid: 38e14df7bf42c4ded952337d06be5302,
     type: 3}
-  ground_half: {fileID: 4468862542011246566, guid: 0e2c75f8510b64c94b35433874bbb35c,
+  ground_half: {fileID: 4468862542011246566, guid: d3755da32d3044326a21c4265571ff49,
     type: 3}
-  secondfloor_block: {fileID: 4809144009187686176, guid: 4fb85fbb763ac4dcab2aa2fa54835c6f,
+  secondfloor_block: {fileID: 4809144009187686176, guid: ebda5698f20c7445d8bd80faf9536b5a,
     type: 3}
   obstacleBlock: {fileID: 1479013432931312234, guid: fb0d89b9b9d1d4efd936b532c834fbdf,
     type: 3}
@@ -13863,7 +13942,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 73e76eb8a031910469e08fbc442db3ae, type: 2}
+  - {fileID: 2100000, guid: 40c86a0f5859442adbf1e52967c15d93, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -16,6 +16,7 @@ TagManager:
   - GoogleInstance
   - ChangePlayer
   - SFXSlider
+  - Map
   layers:
   - Default
   - TransparentFX

@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8511377200144004594}
+  - component: {fileID: 8960399834706773575}
   m_Layer: 0
   m_Name: Beach Obstacle
   m_TagString: Obstacle
@@ -31,6 +32,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8960399834706773575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7226831220380563992}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 05a22b99ede2747ceafd00f9f436ee12, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6284746615669781995
 PrefabInstance:
   m_ObjectHideFlags: 0

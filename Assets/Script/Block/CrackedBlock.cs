@@ -8,23 +8,43 @@ public class CrackedBlock : Block
     public int x;
     public int z;
 
-    public Material material;
-    public MeshRenderer meshRenderer;
+    public Material transparentMaterial;
+    
 
     public MeshRenderer[] crackerRenderer;
     public MeshFilter[] crackerMesh;
     public Mesh cracker2;
     public Mesh cracker3;
 
+
+    public override void Init(int block_num, bool snow)
+    {
+        base.Init(block_num, snow);
+        x = (int)transform.position.x;
+        z = (int)transform.position.z;
+        count = 0;
+
+        if(block_num == BlockNumber.broken)
+        {
+            count = 3;
+            //is not cracker block
+            for (int i = 0; i < crackerRenderer.Length; i++)
+            {
+                crackerRenderer[i].material = transparentMaterial;
+            }
+        }
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+            Debug.Log("stay");
+    }
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            Player onCrackedPlayer = other.gameObject.GetComponent<Player>();
+           
             count++;
-
-
-
             Debug.Log("through the cracked block :" + count);
             if(count == 1)
             {
@@ -46,24 +66,19 @@ public class CrackedBlock : Block
             }
             else if(count == 3)
             {
-                Debug.Log(num);
-                if(BlockNumber.cracked == num)
+                Debug.Log(Data);
+                if(BlockNumber.cracked == Data)
                 {
-                    num = BlockNumber.broken;
-                    onCrackedPlayer.CrackedBlockisBroken(x, z, num);
-                    
+                    Data = BlockNumber.broken;    
                 }
-                else if(BlockNumber.upperCracked == num)
+                else if(BlockNumber.upperCracked == Data)
                 {
-                    num = BlockNumber.upperBroken;
-                    onCrackedPlayer.CrackedBlockisBroken(x, z, num);
+                    Data = BlockNumber.upperBroken;
                 }
-
-                //meshRenderer.material = material;
 
                 for(int i = 0; i < crackerRenderer.Length; i++)
                 {
-                    crackerRenderer[i].material = material;
+                    crackerRenderer[i].material = transparentMaterial;
                 }
             }
             

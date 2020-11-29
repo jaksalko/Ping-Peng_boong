@@ -30,6 +30,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Build/Stage/Tutorial_Island.unity
     guid: eac0d3f9388873d488ee81817da4c92f
   - enabled: 1
+    path: Assets/Scenes/Build/Stage/Icecream_Island.unity
+    guid: c1ceb7151bba74202a849091916c1962
+  - enabled: 1
     path: Assets/Scenes/Build/Stage/Beach_Island.unity
     guid: 5aab9e6b0c3d541f7a33cc121771d98a
+  - enabled: 1
+    path: Assets/Scenes/Build/Stage/Cracker_Island.unity
+    guid: f658cb1fdea4c4423b7aebf751c0e9ec
+  - enabled: 1
+    path: Assets/Scenes/Build/Stage/Cottoncandy_Island.unity
+    guid: 3ec8224e4a92048f9a34b51f70037f66
   m_configObjects: {}

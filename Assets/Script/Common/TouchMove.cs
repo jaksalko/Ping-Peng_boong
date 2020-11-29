@@ -17,7 +17,7 @@ public class TouchMove : MonoBehaviour
 
     public event System.Action<int> Move;
 
-    public Text swipe;
+    
     Vector2 startpos;
     Vector2 v;
      
@@ -37,7 +37,7 @@ public class TouchMove : MonoBehaviour
             }
         }
 
-		swipe.text = "(" + v.x + "," + v.y + ")";
+		
 
 	}
 

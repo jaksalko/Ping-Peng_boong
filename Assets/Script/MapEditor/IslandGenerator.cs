@@ -10,9 +10,11 @@ public class IslandGenerator : MonoBehaviour
     public List<int> splitToInt;
     string row = ""; // width one line
     
-    public SampleMap sample;
+    public Map sample;
 
     int characterCount = 0;
+
+    public MapLoader loader;
 
     private void Awake()
     {
@@ -44,7 +46,7 @@ public class IslandGenerator : MonoBehaviour
                 Debug.Log("done map data");
                 sample.MapToLine();
 
-                SampleMap newMap = Instantiate(sample, default);
+                Map newMap = Instantiate(sample, default);
                 newMap.gameObject.transform.SetParent(transform);
                 newMap.name = title + "_" + island_num;
                 break;
@@ -83,11 +85,11 @@ public class IslandGenerator : MonoBehaviour
 
 
                     case BlockNumber.character://27
-                        sample.startPositionA = new Vector3(x, -9, z);
+                        sample.startPositionA = new Vector3(x, 0, z);
                         sample.startUpstairA = false;
                         break;
                     case BlockNumber.upperCharacter://38
-                        sample.startPositionA = new Vector3(x, -8, z);
+                        sample.startPositionA = new Vector3(x, 1, z);
                         sample.startUpstairA = true;
                         break;
 
@@ -100,11 +102,11 @@ public class IslandGenerator : MonoBehaviour
                 switch (data)
                 {
                     case BlockNumber.character://27
-                        sample.startPositionB = new Vector3(x, -9, z);
+                        sample.startPositionB = new Vector3(x, 0, z);
                         sample.startUpstairB = false;
                         break;
                     case BlockNumber.upperCharacter://38
-                        sample.startPositionB = new Vector3(x, -8, z);
+                        sample.startPositionB = new Vector3(x, 1, z);
                         sample.startUpstairB = true;
                         break;
 
@@ -126,6 +128,17 @@ public class IslandGenerator : MonoBehaviour
         SplitLine(datas,title, num);
 
 
+    }
+    public void RefreshMapData()
+    {
+        loader.sample.Clear();
+        GameObject[] maps = GameObject.FindGameObjectsWithTag("Map");
+        Debug.Log(maps.Length);
+        for(int i = 0; i < maps.Length; i++)
+        {
+            loader.sample.Add(maps[i].GetComponent<Map>());
+        }
+        
     }
     #endregion
 

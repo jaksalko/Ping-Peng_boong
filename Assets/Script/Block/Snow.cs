@@ -5,6 +5,7 @@ using UnityEngine;
 public class Snow : MonoBehaviour
 {
     public ParticleSystem particle;
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.gameObject.CompareTag("Leg"))

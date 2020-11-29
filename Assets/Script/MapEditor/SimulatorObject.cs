@@ -9,7 +9,7 @@ public class SimulatorObject : MonoBehaviour
     public GameObject simulatorUI;
     public GameObject successPopup;
     public Text moveCountTxt;
-    public Map simulatingMap;
+    public MapLoader simulatingMap;
     // Start is called before the first frame update
     public void Adapting()
     {

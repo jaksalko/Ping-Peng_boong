@@ -5,17 +5,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
-    public static class IslandData
-    {
-        public const int
-            tutorial = 4,	// 0 - 4
-            iceCream = 15;	// 5 - 15
-        public const string
-            stage1 = "Tutorial_Island",
-            stage2 = "Beach_Island";
-
-        public const int lastLevel = 15;
-    }
+   
 
 public class UIScript : MonoBehaviour
 {
@@ -27,25 +17,47 @@ public class UIScript : MonoBehaviour
         }
         else if(stage <= IslandData.iceCream)
         {
+            SceneManager.LoadScene("Icecream_Island");
+        }
+        else if (stage <= IslandData.beach)
+        {
             SceneManager.LoadScene("Beach_Island");
+        }
+        else if (stage <= IslandData.cracker)
+        {
+            SceneManager.LoadScene("Cracker_Island");
+        }
+        else if (stage <= IslandData.cottoncandy)
+        {
+            SceneManager.LoadScene("Cottoncandy_Island");
         }
     }
 
 	public string Island_Name(int stage)
 	{
-		if (stage <= IslandData.tutorial)
-		{
-			return "Tutorial";
-		}
-		else if (stage <= IslandData.iceCream)
-		{
-			return "Icecream";
-		}
-		else
-		{
-			return "";
-		}
-	}
+        if (stage <= IslandData.tutorial)
+        {
+            return "Tutorial";
+        }
+        else if (stage <= IslandData.iceCream)
+        {
+            return "Icecream";
+        }
+        else if (stage <= IslandData.beach)
+        {
+            return "Beach";
+        }
+        else if (stage <= IslandData.cracker)
+        {
+            return "Cracker";
+        }
+        else if (stage <= IslandData.cottoncandy)
+        {
+            return "Cottoncandy";
+        }
+
+        return "";
+    }
 
     public void ExitButton()
     {

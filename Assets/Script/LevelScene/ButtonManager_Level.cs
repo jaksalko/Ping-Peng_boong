@@ -28,6 +28,11 @@ public class ButtonManager_Level : UIScript
 		googleInstance = GameObject.FindGameObjectWithTag("GoogleInstance").GetComponent<GoogleInstance>();
 		highLevel = GoogleInstance.instance.user.stage;
 
+		for (int l = 0; l < levelList.Length; l++)
+        {
+			levelStep[l] = levelList[l].transform.GetChild(2).GetComponent<Text>();
+        }
+
         for(int j = 0; j < highLevel; j++)
         {
 			int step = GoogleInstance.instance.stages[j].stage_step;
@@ -47,10 +52,25 @@ public class ButtonManager_Level : UIScript
 			Debug.Log("icecream");
 			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 0.5f ;
 		}
+		else if (Island_Name(highLevel) == "Beach")
+		{
+			Debug.Log("beach");
+			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 1f;
+		}
+		else if (Island_Name(highLevel) == "Cracker")
+		{
+			Debug.Log("Cracker");
+			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 1.5f;
+		}
+		else if (Island_Name(highLevel) == "Cottoncandy")
+		{
+			Debug.Log("cottoncandy");
+			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 2f;
+		}
 		else
 		{
 			Debug.Log("default : last island");
-			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 0.5f;
+			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 2f;
 		}
 
 		Color clearcolor;
