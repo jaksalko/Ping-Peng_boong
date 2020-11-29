@@ -72,7 +72,7 @@ public class MoveCommand : ICommand
     public void SetLaterData(List<Vector2> snowList , List<KeyValuePair<Vector2, int>> crackerList)//call by player? GameController?
     {
         beforeSnow.AddRange(snowList);
-        crackerList.AddRange(crackerList);
+        beforeCracker.AddRange(crackerList);
         //Map -> ErasedSnowList
     }
     public void Execute()

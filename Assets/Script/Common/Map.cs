@@ -461,6 +461,9 @@ public class Map : MonoBehaviour, IMap
         }
         //remaincheck는 도착한 후
 
+
+
+
         GameController.instance.moveCommand.SetLaterData(snowList, crackerList);
 
         snowList.Clear();
