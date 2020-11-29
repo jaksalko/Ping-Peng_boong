@@ -433,9 +433,14 @@ public class Map : MonoBehaviour, IMap
         }
         else//cant block
         {
+            
+
             if((pos.y == 0 && next == BlockNumber.character) || (pos.y == 1 &&next == BlockNumber.upperCharacter))
             {
                 player.actionnum = 4; // character끼리 충돌 : 4
+
+                if (player.onCloud)
+                    player.isLock = true;
             }
             else
             {

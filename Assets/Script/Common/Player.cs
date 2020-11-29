@@ -27,8 +27,7 @@ public class Player : MonoBehaviour , IMoveable
     public int direction = -1;
 
     Vector3 targetPos;
-    [SerializeField]
-    bool stateChange = false;
+    
 
     [Header("Character State")]
     [SerializeField]
@@ -41,6 +40,7 @@ public class Player : MonoBehaviour , IMoveable
     public State state { get; set; }    
     [SerializeField]
     public bool onCloud = false;
+    public bool isLock = false;
     public int temp;
 
     [Header("Character Sound")]
@@ -308,6 +308,11 @@ public class Player : MonoBehaviour , IMoveable
 
                             transform.SetParent(other.transform);
                         }
+                    }
+                    else if(other.isLock && otherPos + dir[other.direction] != myPos)
+                    {
+                        other.isLock = false;
+                        other.Move(GameController.instance.GetMap(), other.direction);
                     }
                 }
 
