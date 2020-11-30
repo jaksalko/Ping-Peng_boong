@@ -61,7 +61,7 @@ app.get('/count',function(req,res){
 app.get('/map/difficulty' , function(req,res){
 	var param = req.query.difficulty;
 	var nickname = req.query.nickname;
-	var sql = 'select * from map where difficulty = ? and id != ?';
+	var sql = 'select * from map where difficulty = ? and nickname != ?';
 	console.log("param : "+ param+"  nick : " + nickname);
 	connection.query(sql,[param,nickname],function(error, results, fields)
 	{	
