@@ -79,7 +79,7 @@ app.get('/test' , function(req,res){
 		res.end(JSON.stringify(results));		
 	});
 });
-app.post('/test',function(req,res){
+app.post('/editor/generate',function(req,res){
 	var postData = req.body;
 	connection.query('INSERT INTO map SET ?', postData ,
 	 function(error,results,fields)
