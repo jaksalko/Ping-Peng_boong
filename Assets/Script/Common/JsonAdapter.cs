@@ -9,6 +9,7 @@ public class JsonAdapter : MonoBehaviour
     
     public static event Action<bool> GET;
     public static event Action<bool> POST;
+
     public IEnumerator API_GET(string url)
     {
         UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2+url);
@@ -82,76 +83,10 @@ public class JsonAdapter : MonoBehaviour
     }
 
 }
-[Serializable]
-public class Chat
-{
-    public string id_1;
-    public string id_2;
-    public string text;
-    public DateTime time;
-
-    public Chat(string i1,string i2,string txt)
-    {
-        id_1 = i1;
-        id_2 = i2;
-        text = txt;
-        time = DateTime.Now;
-    }
-}
-[Serializable]
-public class FriendRequest
-{
-    public string id;
-    public string friend_id;
-
-    public FriendRequest(string i, string f)
-    {
-        id = i;
-        friend_id = f;
-    }
-}
-[Serializable]
-public class UserData
-{
-    public string id;
-    public int cash;
-    public string nickname;
-    public int stage;
-    //public int change;
-}
-[Serializable]
-public class StageData
-{
-    public string id;
-    public int stage_num;
-    public int stage_step;
-
-    public StageData(string i , int num)
-    {
-        id = i;
-        stage_num = num;
-        stage_step = 99;
-    }
-}
 
 
 
 
-public class UserSkinData
-{
-	public int rid;
-	public string userid;
-	public int skinid_1;
-	public Time gettime_1;
-	public int skinid_2;
-	public Time gettime_2;
-	public int skinid_3;
-	public Time gettime_3;
-	public int skinid_4;
-	public Time gettime_4;
-	public int skinid_5;
-	public Time gettime_5;
-}
 
 public static class JsonHelper
 {

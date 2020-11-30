@@ -19,24 +19,18 @@ public class LoadingScene : MonoBehaviour
     public Text addAccountText;
     public GameObject addAccountPanel;
 
-    XMLManager xMLManager;
-
+   
 
     private void Awake()
     {
-        xMLManager = XMLManager.ins;
 
         JsonAdapter.GET += IsNew;
         JsonAdapter.POST += IsUnique;
-        StartCoroutine(Interpolation());
+        StartCoroutine(Interpolation());//Animation Effect
 
 
         Cloud.OnInitializeComplete += CloudInitializeCompleted;
-        Cloud.OnSignInFailed += SignFailed;
 
-        Cloud.OnSignedInChanged += SignChanged;
-
-        
         Cloud.Initialize(false, true);
         //Cloud.Initialize();
         
@@ -51,25 +45,10 @@ public class LoadingScene : MonoBehaviour
         }
         else
         {
-            //alreay have user data
-
-            if (xMLManager == null)
-            {
-                Debug.Log("xml instance is null");
-                xMLManager = XMLManager.ins;
-                xMLManager.LoadItems(); // already have xml , so load item to itemDB instance
-            }
-            else
-            {
-                xMLManager.LoadItems();
-            }
 
             Debug.Log("already exist");
-            GoogleInstance.instance.id = Cloud.PlayerDisplayName;
-            if(GoogleInstance.instance.id == "game_develop")
-            {
-                //GoogleInstance.instance.canvas.SetActive(true);
-            }
+            GoogleInstance.instance.id = Cloud.PlayerID;
+            
             JsonAdapter.POST -= IsUnique;
             SceneManager.LoadScene("MainScene");
 
@@ -78,25 +57,14 @@ public class LoadingScene : MonoBehaviour
         
         
     }
-    public void IsUnique(bool unique)//call by add account button
+    public void IsUnique(bool unique)//call by add AddAccount button
     {
         if(unique)
         {
             addAccountText.text = "created successfully";
-            GoogleInstance.instance.id = Cloud.PlayerDisplayName;
+            GoogleInstance.instance.id = Cloud.PlayerID;
             JsonAdapter.POST -= IsUnique;
 
-            if (xMLManager == null)
-            {
-                Debug.Log("xml instance is null");
-                xMLManager = XMLManager.ins;
-            }
-                
-
-            //xMLManager.SaveItems();
-            //xMLManager.LoadItems();
-            xMLManager.itemDB.Initialize();
-            xMLManager.SaveItems();
 
             SceneManager.LoadScene("MainScene");
         }
@@ -108,11 +76,7 @@ public class LoadingScene : MonoBehaviour
     public void AddAccount()
     {
         JsonAdapter jsonAdapter = new JsonAdapter();
-        UserData newAccount = new UserData();
-        newAccount.id = Cloud.PlayerID;
-        newAccount.nickname = nickname.text;
-        newAccount.cash = 0;
-        newAccount.stage = 0;
+        UserData newAccount = new UserData(userid : Cloud.PlayerID , nick : nickname.text);       
         var json = JsonUtility.ToJson(newAccount);
 
         
@@ -123,28 +87,17 @@ public class LoadingScene : MonoBehaviour
     public void CloudInitializeCompleted()
     {
         Cloud.OnInitializeComplete -= CloudInitializeCompleted;
-        GoogleInstance.instance.SetText("initialized completed ! " + Cloud.PlayerDisplayName);
+        GoogleInstance.instance.SetText("initialized completed ! " + Cloud.PlayerID);
 
         Debug.LogWarning("initialize completed");
 
-        string userId = Cloud.PlayerDisplayName;
+        string userId = Cloud.PlayerID;
 
         JsonAdapter jsonAdapter = new JsonAdapter();
         StartCoroutine(jsonAdapter.API_GET("account/checkid?id="+userId));
 
     }
-    public void SignChanged(bool signin)
-    {
-        if(signin)
-            GoogleInstance.instance.SetText("sign in " + Cloud.PlayerDisplayName);
-        else
-            GoogleInstance.instance.SetText("sign out");
-
-    }
-    public void SignFailed()
-    {
-        GoogleInstance.instance.SetText("sign failed");
-    }
+   
     public void OnLogin()
     {
         if (!Social.localUser.authenticated)

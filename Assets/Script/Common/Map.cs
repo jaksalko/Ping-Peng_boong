@@ -58,8 +58,8 @@ public class Map : MonoBehaviour, IMap
         startPositionA = posA;
         startPositionB = posB;
 
-        startUpstairA = startPositionA.y > -9 ? true : false;//안쓸거임
-        startUpstairB = startPositionB.y > -9 ? true : false;//안쓸거임
+        startUpstairA = startPositionA.y > 0 ? true : false;//안쓸거임
+        startUpstairB = startPositionB.y > 0 ? true : false;//안쓸거임
 
 
         map = datas;//안쓸거임

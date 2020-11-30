@@ -36,6 +36,7 @@ public class GameController : MonoBehaviour
     }
 
     public bool infiniteMode;
+    public bool editorMode;
 	public int maxLevel;
 
 	
@@ -57,7 +58,7 @@ public class GameController : MonoBehaviour
 
 
     JsonAdapter jsonAdapter = new JsonAdapter();
-    UserData user = new UserData();
+    UserData user;
 
     [SerializeField]
     Vector2 down;
@@ -196,6 +197,10 @@ public class GameController : MonoBehaviour
                 }
 
             }));//return을 받아오지못함
+        else if(editorMode)
+        {
+            map = mapLoader.EditorMap();
+        }
         else
             map = mapLoader.GenerateMap(GoogleInstance.instance.nowLevel);//map 생성
 
@@ -257,7 +262,7 @@ public class GameController : MonoBehaviour
             }
         }
 
-        if (remain == 0) GameEnd(true);
+        if (remain == 0) GameEnd();
         else
         {
             snow_remain = remain;
@@ -302,47 +307,74 @@ public class GameController : MonoBehaviour
     }
 
     #region JSON
-    public void UserUpdate(int cash , int stage)
+    public void UserUpdate(int cash , int stage)//cash : +cash , stage : nowStage
     {
-        user.id = Cloud.PlayerDisplayName;
-        user.cash = cash;
-        user.stage = stage;
+        UserData user = new UserData(GoogleInstance.instance.user.id, cash, stage);       
         var json = JsonUtility.ToJson(user);
         StartCoroutine(jsonAdapter.API_POST("account/update", json));
     }
 
     public void StageClear(int stage_num , int step)//max update
     {
-        StageData stage = new StageData(Cloud.PlayerDisplayName , stage_num);
+        StageData stage = new StageData(GoogleInstance.instance.user.id, stage_num , step);
        
-        stage.stage_step = step;
-
         var json = JsonUtility.ToJson(stage);
         StartCoroutine(jsonAdapter.API_POST("stage/insert", json));
     }
 
     public void StageClear(int step)//update step
     {
-        StageData stage = new StageData(Cloud.PlayerDisplayName, GoogleInstance.instance.nowLevel);
-       
-        stage.stage_step = step;
-
+        StageData stage = new StageData(GoogleInstance.instance.user.id, GoogleInstance.instance.nowLevel , step);
+ 
         var json = JsonUtility.ToJson(stage);
         StartCoroutine(jsonAdapter.API_POST("stage/update", json));
     }
     #endregion
 
 
-    public void GameEnd(bool isSuccess)
+    public void GameEnd()
     {
+
         isPlaying = false;
         endTime = Time.time;
         Debug.Log("Game End... PlayTime : " + (endTime - startTime));
+
+        ui.GameEnd(moveCount , infiniteMode , editorMode);
        
+        if (infiniteMode)
+        {
+            //클리어 에디터 모드 맵 데이터 추가하기 (클리어 한 맵 데이터를 처리하기 위해서)
+        }
+        else if(editorMode)//mapLoader.editorMap 생성하기
+        {
+            //??
+        }
+        else
+        {
+            int level = GoogleInstance.instance.user.stage;
+            int nowLevel = GoogleInstance.instance.nowLevel;//input level (select stage or play btn)
+
+            if (nowLevel == level)//지금 스테이지 레벨 == 유저의 도전해야할 레벨
+            {
+                StageClear(GoogleInstance.instance.nowLevel, moveCount);//stage clear data insert (stage , step)
+                GoogleInstance.instance.nowLevel++;
+                Leaderboards.LeaderBoard.SubmitScore(GoogleInstance.instance.nowLevel);
+                UserUpdate(30, GoogleInstance.instance.nowLevel);//cash +30 & clear stage +1
+
                
-        ui.inGame.SetActive(false);
-        ui.resultPopup.SetActive(true);
-        ui.SetMoveCountText(moveCount);
+            }
+            else
+            {
+                StageClear(moveCount);//stage clear data Update (step)
+                GoogleInstance.instance.nowLevel++;
+            }
+
+            if (nowLevel == maxLevel)//???
+            {
+                ui.nextLevelBtn.interactable = false;
+            }
+        }
+ 
 
         if (backgroundSound != null)
 		{
@@ -352,55 +384,7 @@ public class GameController : MonoBehaviour
         
         
 
-        if (isSuccess && !infiniteMode)
-        {
-            //FirstClear();
-            
-
-
-            xMLManager = XMLManager.ins;
-
-            int level = GoogleInstance.instance.user.stage;
-
-            int nowLevel = GoogleInstance.instance.nowLevel;//input level (select stage or play btn)
-
-            
-            if(xMLManager.itemDB.stepList[nowLevel].step > moveCount)
-            {
-                xMLManager.itemDB.stepList[nowLevel].step = moveCount;
-                xMLManager.SaveItems();
-            }
-
-
-            if (nowLevel == level)
-            {
-                StageClear(GoogleInstance.instance.nowLevel, moveCount);
-                GoogleInstance.instance.nowLevel++;
-                Leaderboards.LeaderBoard.SubmitScore(GoogleInstance.instance.nowLevel);
-                UserUpdate(30, GoogleInstance.instance.nowLevel);
-                
-
-
-
-                xMLManager.SaveItems();
-            }
-            else
-            {
-                StageClear(moveCount);
-                GoogleInstance.instance.nowLevel++;
-            }
-           
-            if(nowLevel == maxLevel)
-			{
-				ui.nextLevelBtn.interactable = false;
-			}
-            
-          
-        }
-        else
-        {
-            //not use this paragraph...
-        }
+        
 
     }
 

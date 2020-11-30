@@ -12,14 +12,7 @@ using CloudOnce;
 public class UiController : UIScript
 {
     public GameObject inGame;
-    public GameObject resultPopup;
-	public Button nextLevelBtn;
     public GameObject pausePopup;
-
-    public Text devtext;
-    public Text remainText;
-    public Text moveText;
-    bool mini = false;
 
     int order = 0;
     public GameObject[] parfaitOrder;
@@ -28,12 +21,57 @@ public class UiController : UIScript
     public GameObject mission_default;
     public GameObject mission_parfait;
 
+    public StageSceneResultPopup stageSceneResultPopup;
+    public CustomsSceneResultPopup customSceneResultPopup;
+    public EditorSceneResultPopup editorSceneResultPopup;
+
+	public Button nextLevelBtn;
+    
+    public Text devtext;
+    public Text remainText;
+    public Text moveText;
+
+    bool mini = false;
+
     private void Awake()
     {
         devtext.text = "platform : " + Application.platform + "\n" + "level : " + PlayerPrefs.GetInt("level", 0);
        
     }
 
+    public void GameEnd(int moveCount,bool infinite , bool editor)
+    {
+        inGame.SetActive(false);
+        //SetMoveCountText(moveCount);
+
+        //infinite --> 종료 팝업 선택 버튼 : 다음 맵 / 로비로?
+        //editor --> 종료 팝업 선택 버튼 : 생성할지 말지
+        //Default --> 종료 팝업 선택 버튼 : 다음 스테이지 / 로비로
+        if (infinite)
+        {
+            customSceneResultPopup.ShowResultPopup(moveCount);
+        }
+        else if(editor)
+        {
+            int level = (moveCount / 5) + 1;
+            if (level > 5) level = 5;
+
+            
+
+            editorSceneResultPopup.ShowResultPopup(moveCount, level);
+        }
+        else
+        {
+            stageSceneResultPopup.ShowResultPopup(moveCount);
+        }
+       
+    }
+
+    #region 인게임 UI
+    public void SetRemainText(int remain, int total)//inGame UI
+    {
+        remainText.text = "<size=60>" + remain + "</size>/<size=40>" + total + "</size>";
+    }
     public void ParfaitDone()
     {
         parfaitOrder[order].SetActive(false);
@@ -41,14 +79,36 @@ public class UiController : UIScript
         order++;
     }
 
-    public void SetMoveCountText(int count)
+    #endregion
+
+    #region 결과 창 UI
+    public void SetMoveCountText(int count)//Result UI
     {
         moveText.text = count.ToString();
     }
-    public void SetRemainText(int remain , int total)
+    public void Pause()
     {
-        remainText.text = "<size=60>" + remain + "</size>/<size=40>" + total + "</size>";
+        GameController.instance.SetPlaying(false);
+        pausePopup.SetActive(true);
     }
+
+    public void Reset()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void GoLobby()
+    {
+        SceneManager.LoadScene("MainScene");
+    }
+
+    public void Resume()
+    {
+        GameController.instance.SetPlaying(true);
+        pausePopup.SetActive(false);
+    }
+    #endregion
+
 
     public void MiniMapButton()
     {
@@ -58,33 +118,27 @@ public class UiController : UIScript
 
     public void ChangeCharacter()
     {
-        Player now = GameController.instance.nowPlayer;
+        GameController instance = GameController.instance;
+
+        Player now = instance.nowPlayer;
 
 		if (!now.Moving())
 		{
 //			Debug.Log("change Character");
-			GameController.instance.nowPlayer.isActive = false;
+			now.isActive = false;
 
-			if (now == GameController.instance.player1)
-			{
-				GameController.instance.nowPlayer = GameController.instance.player2;
-			}
-			else
-			{
-				GameController.instance.nowPlayer = GameController.instance.player1;
-			}
-			GameController.instance.nowPlayer.isActive = true;
+            instance.nowPlayer = (now == instance.player1) ? instance.player2 : instance.player1;
+			instance.nowPlayer.isActive = true;
 
-			if (!GameController.instance.nowPlayer.GetComponent<AudioSource>().isPlaying)
+			if (!instance.nowPlayer.GetComponent<AudioSource>().isPlaying)
 			{
-				GameController.instance.nowPlayer.GetComponent<AudioSource>().loop = false;
-				GameController.instance.nowPlayer.GetComponent<AudioSource>().clip = GameController.instance.nowPlayer.GetComponent<Player>().departureSound;
+				instance.nowPlayer.GetComponent<AudioSource>().loop = false;
+				instance.nowPlayer.GetComponent<AudioSource>().clip = instance.nowPlayer.GetComponent<Player>().departureSound;
 
-				GameController.instance.nowPlayer.GetComponent<AudioSource>().Play();
+				instance.nowPlayer.GetComponent<AudioSource>().Play();
 			}
 
-			//			Debug.Log("player 1 : " + GameController.instance.player1.isActive);
-			//			Debug.Log("player 2 : " + GameController.instance.player2.isActive);
+			
 		}
 		else
 		{
@@ -108,27 +162,7 @@ public class UiController : UIScript
         
     }
 
-    public void Pause()
-    {
-        GameController.instance.SetPlaying(false);
-        pausePopup.SetActive(true);
-    }
-
-    public void Reset()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    public void GoLobby()
-    {
-        SceneManager.LoadScene("MainScene");
-    }
-
-    public void Resume()
-    {
-        GameController.instance.SetPlaying(true);
-        pausePopup.SetActive(false);
-    }
+   
 
     public void CloudInitializeCompleted()
     {
@@ -136,10 +170,5 @@ public class UiController : UIScript
         Debug.Log("initialize completed");
     }
 
-    public void FirstClear()
-    {
-        Achievements.FirstPlay.Unlock();
-        Debug.Log("first play");
-    }
-
+    
 }

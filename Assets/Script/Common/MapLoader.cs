@@ -47,7 +47,8 @@ public class MapLoader : MonoBehaviour
     public Transform groundParent;
     public Transform obstacleParent;
 
-    
+    public Map editorMap;//made by editor scene
+
     public List<Map> sample;//island map datas
 
     //public Vector3 parfaitEndPoint;
@@ -370,6 +371,12 @@ public class MapLoader : MonoBehaviour
         return liveMap;
 
         //return MakeMap(liveMap.mapsizeH, liveMap.mapsizeW, liveMap.parfait);
+    }
+    public Map EditorMap()
+    {
+        liveMap = editorMap;
+        MakeMap(editorMap.mapsizeH, editorMap.mapsizeW, editorMap.parfait);
+        return editorMap;
     }
     public IEnumerator InfiniteMAP(int level , System.Action<Map> callback)
     {

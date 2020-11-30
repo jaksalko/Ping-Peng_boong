@@ -43,8 +43,8 @@ public class MapGenerator : MonoBehaviour
     int parfait_id;
     public Text warning;
 
-    public Simulator simulator;
-
+    public GameObject gameResource;
+    public GameObject generatorResource;
     bool erase = false;
 
     private void Awake()
@@ -255,12 +255,12 @@ public class MapGenerator : MonoBehaviour
                                 if (selected_id == BlockNumber.characterA)
                                 {
                                     newMap.startUpstairA = false;
-                                    newMap.startPositionA = new Vector3(indexer.X + 1, -9, indexer.Z + 1);
+                                    newMap.startPositionA = new Vector3(indexer.X + 1, 0, indexer.Z + 1);
                                 }
                                 else if (selected_id == BlockNumber.characterB)
                                 {
                                     newMap.startUpstairB = false;
-                                    newMap.startPositionB = new Vector3(indexer.X + 1, -9, indexer.Z + 1);
+                                    newMap.startPositionB = new Vector3(indexer.X + 1, 0, indexer.Z + 1);
                                 }
                                 
                                 selectedPrefab.transform.position = new Vector3(indexer.X, 0.5f, indexer.Z);
@@ -340,12 +340,12 @@ public class MapGenerator : MonoBehaviour
                                 if (selected_id == BlockNumber.characterA)
                                 {
                                     newMap.startUpstairA = true;
-                                    newMap.startPositionA = new Vector3(indexer.X+1, -8, indexer.Z+1);
+                                    newMap.startPositionA = new Vector3(indexer.X+1, 1, indexer.Z+1);
                                 }
                                 else if (selected_id == BlockNumber.characterB)
                                 {
                                     newMap.startUpstairB = true;
-                                    newMap.startPositionB = new Vector3(indexer.X+1, -8, indexer.Z+1);
+                                    newMap.startPositionB = new Vector3(indexer.X+1, 1, indexer.Z+1);
                                 }
                                
                                 selectedPrefab.transform.position = new Vector3(indexer.X, 1.5f, indexer.Z);
@@ -545,7 +545,8 @@ public class MapGenerator : MonoBehaviour
 
         //newMap.parfait = false;
         newMap.LineToMap();
-        simulator.StartSimulator();
+        generatorResource.SetActive(false);
+        gameResource.SetActive(true);
     }
 
    

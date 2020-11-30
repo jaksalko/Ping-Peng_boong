@@ -220,11 +220,9 @@ public class Player : MonoBehaviour , IMoveable
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (!simulating && !GameController.Playing)
+        if (!GameController.Playing)
             return;
-        if (simulating && !Simulator.Running)
-            return;
-
+        
         if (isMoving)
         {
            
