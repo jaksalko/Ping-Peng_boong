@@ -70,7 +70,18 @@ app.get('/map/difficulty' , function(req,res){
 		res.end(JSON.stringify(results));		
 	});
 });
-
+app.get('/map/all' , function(req,res){
+	
+	var nickname = req.query.nickname;
+	var sql = 'select * from map where nickname != ?';
+	console.log("nick : " + nickname);
+	connection.query(sql,[nickname],function(error, results, fields)
+	{	
+		if(error){console.log(error);}
+		console.log(results);
+		res.end(JSON.stringify(results));		
+	});
+});
 app.get('/test' , function(req,res){
 	console.log(req);
 	connection.query('select * from map',function(error, results, fields)
