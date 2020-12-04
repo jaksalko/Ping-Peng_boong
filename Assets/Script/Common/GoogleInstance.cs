@@ -21,6 +21,8 @@ public class GoogleInstance : MonoBehaviour
     public GameObject canvas;
 
     public List<JsonData> customMapdatas = new List<JsonData>();
+    public JsonData playCustomData;
+
     private void Awake()
     {
         

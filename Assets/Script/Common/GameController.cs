@@ -187,16 +187,19 @@ public class GameController : MonoBehaviour
 
         // map 생성
         if (customMode)
-            yield return StartCoroutine(mapLoader.InfiniteMAP(GoogleInstance.instance.infiniteLevel , callback =>
+        /*yield return StartCoroutine(mapLoader.InfiniteMAP(GoogleInstance.instance.infiniteLevel , callback =>
+        {
+            if(callback !=null)
+                map = callback;
+            else
             {
-                if(callback !=null)
-                    map = callback;
-                else
-                {
-                    //do something...
-                }
+                //do something...
+            }
 
-            }));//return을 받아오지못함
+        }));//return을 받아오지못함*/
+        {
+            map = mapLoader.CustomPlayMap();
+        }
         else if(editorMode)
         {
             map = mapLoader.EditorMap();

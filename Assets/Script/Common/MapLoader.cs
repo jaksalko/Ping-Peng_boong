@@ -379,6 +379,14 @@ public class MapLoader : MonoBehaviour
         MakeMap(editorMap.mapsizeH, editorMap.mapsizeW, editorMap.parfait);
         return editorMap;
     }
+    public Map CustomPlayMap()
+    {
+        editorMap.Initialize(GoogleInstance.instance.playCustomData);
+        liveMap = editorMap;
+        liveMap.gameObject.SetActive(true);
+        MakeMap(editorMap.mapsizeH, editorMap.mapsizeW, editorMap.parfait);
+        return editorMap;
+    }
     public IEnumerator InfiniteMAP(int level , System.Action<Map> callback)
     {
         UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2 + "map/difficulty?difficulty=" +level+"&nickname="+GoogleInstance.instance.id);

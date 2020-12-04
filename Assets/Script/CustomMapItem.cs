@@ -23,7 +23,7 @@ public class CustomMapItem : MonoBehaviour
 
     public void PlayButton()
     {
-        GoogleInstance.instance.infiniteLevel = 1;
+        GoogleInstance.instance.playCustomData = itemdata;
         SceneManager.LoadScene("CustomMapPlayScene");//customMode Scene
     }
 }
