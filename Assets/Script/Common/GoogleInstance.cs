@@ -19,6 +19,8 @@ public class GoogleInstance : MonoBehaviour
     public List<StageData> stages;
 
     public GameObject canvas;
+
+    public List<JsonData> customMapdatas = new List<JsonData>();
     private void Awake()
     {
         
@@ -45,6 +47,35 @@ public class GoogleInstance : MonoBehaviour
     public void SetText(string txt)
     {
         debugTxt.text = debugTxt.text + "\n" + txt;
+
+    }
+
+    public IEnumerator LoadCustomMapList(System.Action<bool> load)
+    {
+        
+
+        JsonAdapter adapter = new JsonAdapter();
+        yield return StartCoroutine(adapter.API_GET(/*"map/all?nickname=" + user.nickname*/"test/",callback =>
+        {
+            if(callback == null)
+            {
+                //StartCoroutine(LoadCustomMapList(repeat + 1));
+                load(false);
+            }
+            else
+            {
+                //successfully loaded the map
+                customMapdatas.Clear();
+
+                string fixdata = JsonHelper.fixJson(callback);
+                customMapdatas.AddRange(JsonHelper.FromJson<JsonData>(fixdata));//all map data
+
+                load(true);
+
+            }
+        }));
+
+        yield break;
 
     }
 }

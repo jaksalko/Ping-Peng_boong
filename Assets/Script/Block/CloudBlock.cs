@@ -17,7 +17,7 @@ public class CloudBlock : Block
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("Player"))
+        /*if (other.gameObject.CompareTag("Player"))
         {
             Player onCloud_player = other.gameObject.GetComponent<Player>();
             Vector2 player_pos = new Vector2(onCloud_player.transform.position.x, onCloud_player.transform.position.z);
@@ -30,7 +30,7 @@ public class CloudBlock : Block
                 Debug.Log("move to : " + onCloud_player.transform.position);
                 //Time.timeScale = 0;
             }
-        }
+        }*/
     }
 
     /*private void OnTriggerStay(Collider other)

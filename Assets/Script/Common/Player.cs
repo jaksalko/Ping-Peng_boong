@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using System;
 public class Player : MonoBehaviour , IMoveable
 {
 
@@ -27,6 +27,7 @@ public class Player : MonoBehaviour , IMoveable
     public int direction = -1;
 
     Vector3 targetPos;
+    public List<Tuple<Vector3, int>> targetPositions = new List<Tuple<Vector3, int>>();
     
 
     [Header("Character State")]
@@ -41,6 +42,7 @@ public class Player : MonoBehaviour , IMoveable
     [SerializeField]
     public bool onCloud = false;
     public bool isLock = false;
+    public bool stateChange = false;
     public int temp;
 
     [Header("Character Sound")]
@@ -73,7 +75,7 @@ public class Player : MonoBehaviour , IMoveable
         //Debug.Log("Animation End...");
         animator.SetInteger("action", 0);
         actionnum = 0;
-
+        
 	}
   
     
@@ -98,9 +100,9 @@ public class Player : MonoBehaviour , IMoveable
         //if (!simulating && !GameController.Playing)
         //return false;
 
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))//remove this
-        {
-
+        //if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))//remove this
+        //{
+            //isLock = false;
             this.direction = getDirection = direction;
 
             if (state == State.Slave)
@@ -125,10 +127,13 @@ public class Player : MonoBehaviour , IMoveable
             //CharacterMove(map.map);
             
             map.SetBlockData((int)transform.position.x, (int)transform.position.z, temp);
-            targetPos =  map.GetDestination(this, transform.position);
-            Debug.Log("target position : " + targetPos);
+            //targetPos =  map.GetDestination(this, transform.position);
+            map.ResettargetList();
+            targetPositions = map.GetDestination(this, transform.position);
+            Debug.Log(targetPositions.Count);
+            Debug.Log("target position : " + targetPositions[targetPositions.Count - 1]);
             isMoving = true;
-        }
+        //}
     }
 
     /*void CharacterMove(Map map)
@@ -159,31 +164,7 @@ public class Player : MonoBehaviour , IMoveable
         
     }
 
-    public void FindPlayer()
-    {
-        
-
-      
-
-        /*if (upstair)
-            map[posZ, posX] = BlockNumber.upperCharacter;
-        else
-            map[posZ, posX] = BlockNumber.character;
-
-        Debug.Log(map[posZ, posX] + "," + other.map[posZ, posX]);*/
-
     
-
-        //check[posZ, posX] = true;//이미 맵 생성할때 체크 트루로 해둠 근데 데이터는 노멀블럭 또는 위노멀블
-        /*if(!simulating)
-        {
-            Debug.Log("check remain : " + RemainCheck());
-            GameController.instance.ui.SetRemainText(RemainCheck(), total);
-
-        }*/
-
-        //        Debug.Log(gameObject.name + "   Vertical : " + posZ + " Horizental : " + posX + "5 mark : " + map[posZ,posX]);
-    }
 
     void CharacterControllerMovement()
     {
@@ -227,61 +208,57 @@ public class Player : MonoBehaviour , IMoveable
         {
            
             CharacterControllerMovement();
-
-            float distance = Vector3.Distance(transform.position, targetPos);
+            
+            float distance = Vector3.Distance(transform.position, targetPositions[0].Item1);
             
             if (distance < 0.25f)//arrive condition
             {
-                transform.position = targetPos;
+                transform.position = targetPositions[0].Item1;
+                Debug.Log("Arrive... target position : " + targetPositions[0].Item1 + "  distance : " + distance);
+
+
+
+                if (targetPositions.Count != 1)
+                {
+                    direction = targetPositions[0].Item2;
+                    transform.rotation = Quaternion.Euler(new Vector3(0f, direction * 90, 0f));
+                    targetPositions.RemoveAt(0);
+
+                    return;
+                }
+                else//last target position
+                {
+                    direction = targetPositions[0].Item2;
+                    transform.rotation = Quaternion.Euler(new Vector3(0f, direction * 90, 0f));
+                    targetPositions.RemoveAt(0);
+                }
+
+                
                 isMoving = false;
-                //temp and block data change in map script(SetDestination end...) 
 
-                //맵 데이터 치환
-                //temp = map[posZ, posX];
-
-                /*
-                if (upstair)
-                    map[posZ, posX] = BlockNumber.upperCharacter;
-                else
-                    map[posZ, posX] = BlockNumber.character;
-                */
-
-                //상태 변경
-                
-
-               
-                
                 animator.SetBool("move", false);
-                Debug.Log("Arrive... target position : " + targetPos + "  distance : " + distance);
-               
-               
-
+                
+ 
 				//이동 시 발생하는 particle control
 				moveParticle.loop = false;
 
                 GameController.instance.RemainCheck();
 
-                /*if(RemainCheck() == 0)
-                {
-                    if (!simulating)
-                        GameController.instance.GameEnd(true);
-                    else
-                        Simulator.instance.SimulatingSuccess();
-                }
-                else
-                {
-                    if (!simulating)
-                        GameController.instance.ui.SetRemainText(RemainCheck(), total);
-                }*/
+                
 
                 if (state == State.Master)
                 {
-                    other.temp = transform.position.y == 0 ? BlockNumber.character : BlockNumber.upperCharacter;
+                    other.temp = (transform.position.y == 0) ? BlockNumber.character : BlockNumber.upperCharacter;
 
                     //change character?
 
                     //other == State.Slave
-                    other.Move(GameController.instance.GetMap(), direction);
+                    if(stateChange)
+                    {
+                        stateChange = false;
+                        other.Move(GameController.instance.GetMap(), direction);
+                    }
+                        
                     //둘 다 Idle로 변경됨.
                 }
                 else//Idle 상태 - slave는 움직일때 풀림
@@ -307,99 +284,17 @@ public class Player : MonoBehaviour , IMoveable
                             transform.SetParent(other.transform);
                         }
                     }
-                    else if(other.isLock && otherPos + dir[other.direction] != myPos)
+                    else if(other.isLock && otherPos + dir[(other.temp % 10) - 1] != myPos)
                     {
                         other.isLock = false;
-                        other.Move(GameController.instance.GetMap(), other.direction);
+                        Debug.Log(other.name + " Lock move");
+                        //other이 다른 곳을 보고 있을 수 있으므로
+                        other.Move(GameController.instance.GetMap(), (other.temp % 10) - 1);
                     }
                 }
 
-                /*상태 변경
-                if (stateChange)//state == master !upstair 에서 (갈수없는 블럭을 제외한)2층의 블럭과 부딪히면 true
-                {
-                    Debug.Log("state change");
-
-                    state = State.Idle;
-                    other.state = State.Idle;
-                    stateChange = false;
-                    other.transform.SetParent(null);
-
-                    isMoving = false;
-
-                    if (!simulating)
-                        GameController.instance.ui.ChangeCharacter();
-                    else
-                        Simulator.instance.ChangeCharacter();
-
-                    other.PlayerControl(getDirection);
-                    
-
-                    
-                }
-                else
-                {
-                    if(posX == other.posX && posZ == other.posZ)//위치가 같고 갈라질 상황이 아니다? 무조건 같이 붙어 있는 상태
-                    {
-//                        Debug.Log("slave master");
-
-                        if(transform.position.y > other.transform.position.y)//움직인 놈이 더 위에 있다
-                        {
-                            state = State.Slave;
-                            other.state = State.Master;
-                            transform.SetParent(other.transform);
-
-                            isMoving = false;
-
-
-                            if (!simulating)
-                                GameController.instance.ui.ChangeCharacter();
-                            else
-                                Simulator.instance.ChangeCharacter();
-
-                         
-
-                        }
-                        else//움직인 놈이 더 아래에 있다.
-                        {
-                            state = State.Master;
-                            other.state = State.Slave;
-                            other.transform.SetParent(transform);
-
-                          
-                        
-                        }
-
-                       
-                    }
-                  
-
-                   
-                }
-                */
-
-
-
-                /*
-                 if(other.onCloud && other.temp == temp)
-                 {
-                     if(upstair)
-                     {
-                         if (map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] == BlockNumber.upperCharacter)
-                         {
-                             Debug.Log(name + " connect Action with method");
-                             CloudBlock.Exit += CallBackOtherExitCloud;
-                         }
-                     }
-                     else
-                     {
-                         if(map[posZ + step[getDirection, 0], posX + step[getDirection, 1]] == BlockNumber.character)
-                         {
-                             Debug.Log(name + " connect Action with method");
-                             CloudBlock.Exit += CallBackOtherExitCloud;
-                         }
-                     }
-                 }
-                 */
+                
+            
             }
         }
         
@@ -444,7 +339,7 @@ public class Player : MonoBehaviour , IMoveable
 					isSlideSoundPlaying = true;
 				}
 
-				float distance = Vector3.Distance(transform.position, targetPos + new Vector3(0, 1, 0));
+				float distance = Vector3.Distance(transform.position, targetPositions[0].Item1 + new Vector3(0, 1, 0));
                 if (distance < 1f)//거리가 1일때부터 드랍 애니메이션 실행 , 움직이고 있던상태에서 애니메이션 실행
                 {
                     animator.SetInteger("action", actionnum);//actionnum = 5 drop...

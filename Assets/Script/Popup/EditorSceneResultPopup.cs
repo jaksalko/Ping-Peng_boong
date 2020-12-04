@@ -47,8 +47,9 @@ public class EditorSceneResultPopup : MonoBehaviour
     IEnumerator InsertCustomStage()
     {
         JsonAdapter jsonAdapter = new JsonAdapter();
+        
         JsonData customStage =
-            new JsonData(GoogleInstance.instance.user.nickname, stageTitle.text, newMap, DateTime.Now, move, dif);
+            new JsonData(GoogleInstance.instance.user.nickname, stageTitle.text, newMap, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), move, dif);
 
         var json = JsonUtility.ToJson(customStage);
 

@@ -110,8 +110,8 @@ public class Simulator : MonoBehaviour
     {
         simulatorUI.SetActive(true);
 
-        player1.FindPlayer();
-        player2.FindPlayer();
+//        player1.FindPlayer();
+  //      player2.FindPlayer();
 
         nowPlayer = player1;
         nowPlayer.isActive = true;

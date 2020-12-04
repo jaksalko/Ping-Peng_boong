@@ -210,6 +210,8 @@ public class MapGenerator : MonoBehaviour
             }
         }
     }
+
+
     void MakeBlock(Ray ray)
     {
         if(Physics.Raycast(ray,out hit , 1000))
@@ -232,7 +234,7 @@ public class MapGenerator : MonoBehaviour
                             firstFloorHolder.SetParent(selected);
                             indexer.data = BlockNumber.cloudUp + cloud_id;
                         }
-                        else
+                        else//Cracker,Normal
                         {
                             GameObject selected = Instantiate(selectedPrefab, new Vector3(indexer.X, 0, indexer.Z), selectedPrefab.transform.rotation);
                             firstFloorHolder.SetParent(selected);
@@ -265,7 +267,8 @@ public class MapGenerator : MonoBehaviour
                                 
                                 selectedPrefab.transform.position = new Vector3(indexer.X, 0.5f, indexer.Z);
                                 selectedPrefab.SetActive(true);
-                                //indexer.data = BlockNumber.character;//블럭 넘버 1층 캐릭터로 바꿔야
+                                indexer.data = BlockNumber.character;//블럭 넘버 1층 캐릭터로 바꿔야
+                                Debug.Log(indexer.data +" : "+ indexer.Z + "," + indexer.X);
                             }
                             else
                             {
@@ -353,7 +356,8 @@ public class MapGenerator : MonoBehaviour
                                 //thirdFloorHolder.SetParent(selectedPrefab);
 
 
-                                //indexer.data = BlockNumber.upperCharacter;//2층 캐릭터
+                                indexer.data = BlockNumber.upperCharacter;//2층 캐릭터
+                                Debug.Log(indexer.data + " : " + indexer.Z + "," + indexer.X);
                             }
                             else
                             {
@@ -522,8 +526,9 @@ public class MapGenerator : MonoBehaviour
         }
 
 
-        newMap.mapsizeH = (int)maxSize.y + 2;
+        newMap.mapsizeH = (int)maxSize.y + 2;//외벽
         newMap.mapsizeW = (int)maxSize.x + 2;
+
 
         for (int i = 0; i < newMap.mapsizeH; i++)
         {
@@ -540,6 +545,10 @@ public class MapGenerator : MonoBehaviour
         {
             
             newMap.lines[indexer[i].Z+1].line[indexer[i].X+1] = indexer[i].data;
+            if(indexer[i].data == BlockNumber.character)
+            {
+                Debug.Log("character index : " + indexer[i].Z + 1 + " , " + indexer[i].X + 1);
+            }
 
         }
 

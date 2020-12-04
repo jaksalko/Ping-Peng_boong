@@ -38,6 +38,11 @@ public class Map : MonoBehaviour, IMap
     public List<Vector2> snowList;
     public List<KeyValuePair<Vector2, int>> crackerList;
 
+    List<Tuple<Vector3, int>> targetPositions;
+    public void ResettargetList()
+    {
+        targetPositions.Clear();
+    }
     private void Awake()
     {
         Debug.Log("Activate");
@@ -48,6 +53,7 @@ public class Map : MonoBehaviour, IMap
 
         snowList = new List<Vector2>();
         crackerList = new List<KeyValuePair<Vector2, int>>();
+        targetPositions = new List<Tuple<Vector3, int>>();
     }
 
     public Map(Vector2 size, bool isParfait, Vector3 posA, Vector3 posB, int[,] datas)//로더에서 생성
@@ -63,14 +69,39 @@ public class Map : MonoBehaviour, IMap
 
 
         map = datas;//안쓸거임
-
+        //MapToLine();
         //blocks = new Block[mapsizeH, mapsizeW];//로더의 MakeGround에서 채워짐
         //check = new bool[mapsizeH, mapsizeW];//마찬가지
         //check?
 
     }
 
+    public void Initialize(JsonData map)
+    {
+        mapsizeH = map.height;
+        mapsizeW = map.width;
 
+        parfait = (map.parfait == 1) ? true : false;
+
+        startPositionA = map.StringToPosition(map.posA);
+        startPositionB = map.StringToPosition(map.posB);
+
+        int[,] datas = new int[mapsizeH, mapsizeW];
+        int index = 0;
+        for (int i = 0; i < mapsizeH; i++)
+        {
+            for (int j = 0; j < mapsizeW; j++)
+            {
+
+                datas[i, j] = map.CharToIndex(map.value[index]);
+
+                index++;
+            }
+        }
+
+        this.map = datas;
+        MapToLine();
+    }
 
 
 
@@ -119,7 +150,7 @@ public class Map : MonoBehaviour, IMap
             {
                 if (!check[i, j])
                 {
-                    Debug.Log("is false : " + i + "," + j);
+//                    Debug.Log("is false : " + i + "," + j);
                     return false;
                 }
             }
@@ -173,6 +204,8 @@ public class Map : MonoBehaviour, IMap
         return false;
     }
 
+    
+
     bool ChangeState(int next, int nextnext, Player player, ref Vector3 pos)
     {
 
@@ -196,7 +229,15 @@ public class Map : MonoBehaviour, IMap
                 }
                 else if(next >= BlockNumber.cloudUp && next <= BlockNumber.cloudLeft)
                 {
-                    player.getDirection = (next % 10) - 1; // cloud direction...
+                    int cloudDirection = (next % 10) - 1;
+                    Vector3 targetPosition = new Vector3(posX + step[direction, 1], pos.y, posZ + step[direction, 0]);
+
+                    if (player.getDirection != cloudDirection)
+                    {
+                        player.getDirection = cloudDirection;
+                        targetPositions.Add(new Tuple<Vector3, int>(targetPosition,cloudDirection));
+                    }
+                    
                     player.onCloud = true;
 
                     return true;
@@ -244,15 +285,32 @@ public class Map : MonoBehaviour, IMap
                 }
                 else if (next >= BlockNumber.cloudUp && next <= BlockNumber.cloudLeft)
                 {
-                    player.getDirection = (next % 10) - 1; // cloud direction...
-                    player.onCloud = true;
                     pos.y -= 1;
+
+                    int cloudDirection = (next % 10) - 1;
+                    Vector3 targetPosition = new Vector3(posX + step[direction, 1], pos.y, posZ + step[direction, 0]);
+
+                    if (player.getDirection != cloudDirection)
+                    {
+                        player.getDirection = cloudDirection;
+                        targetPositions.Add(new Tuple<Vector3, int>(targetPosition, cloudDirection));
+                    }
+                    player.onCloud = true;
+                    
 
                     return true;
                 }
                 else if (next >= BlockNumber.upperCloudUp && next <= BlockNumber.upperCloudLeft)
                 {
-                    player.getDirection = (next % 10) - 1; // cloud direction...
+                    int cloudDirection = (next % 10) - 1;
+                    Vector3 targetPosition = new Vector3(posX + step[direction, 1], pos.y, posZ + step[direction, 0]);
+
+                    if (player.getDirection != cloudDirection)
+                    {
+                        player.getDirection = cloudDirection;
+                        targetPositions.Add(new Tuple<Vector3, int>(targetPosition, cloudDirection));
+                    }
+
                     player.onCloud = true;
 
                     return true;
@@ -281,17 +339,32 @@ public class Map : MonoBehaviour, IMap
             case 2://2층에서는 through 로 들어올 수 없음.?
                 if (next >= BlockNumber.cloudUp && next <= BlockNumber.cloudLeft)
                 {
-                    player.getDirection = (next % 10) - 1; // cloud direction...
+                    
                     player.onCloud = true;
                     pos.y -= 2;
+                    int cloudDirection = (next % 10) - 1;
+                    Vector3 targetPosition = new Vector3(posX + step[direction, 1], pos.y, posZ + step[direction, 0]);
 
+                    if (player.getDirection != cloudDirection)
+                    {
+                        player.getDirection = cloudDirection;
+                        targetPositions.Add(new Tuple<Vector3, int>(targetPosition, cloudDirection));
+                    }
                     return true;
                 }
                 else if (next >= BlockNumber.upperCloudUp && next <= BlockNumber.upperCloudLeft)
                 {
-                    player.getDirection = (next % 10) - 1; // cloud direction...
+                   
                     player.onCloud = true;
                     pos.y -= 1;
+                    int cloudDirection = (next % 10) - 1;
+                    Vector3 targetPosition = new Vector3(posX + step[direction, 1], pos.y, posZ + step[direction, 0]);
+
+                    if (player.getDirection != cloudDirection)
+                    {
+                        player.getDirection = cloudDirection;
+                        targetPositions.Add(new Tuple<Vector3, int>(targetPosition, cloudDirection));
+                    }
                     return true;
                 }
                 return false;
@@ -302,7 +375,7 @@ public class Map : MonoBehaviour, IMap
     }
 
     
-    public Vector3 GetDestination(Player player, Vector3 pos)
+    public List<Tuple<Vector3,int>> GetDestination(Player player, Vector3 pos)
     {
         Debug.Log("player name : " + player.name + " position : " + pos + " player dir : " + player.getDirection);
         int direction = player.getDirection;
@@ -312,14 +385,15 @@ public class Map : MonoBehaviour, IMap
         int posZ = (int)pos.z;
 
         //blocks[posZ, posX].Data = player.temp;//이거 문제임 한번만 불려야 하는데... player.cs 151 line
-        Debug.Log((posZ + step[direction, 0]) + "," + (posX + step[direction, 1]) + " DATA : " + GetBlockData(x: posX + step[direction, 1], z: posZ + step[direction, 0]));
+//        Debug.Log((posZ + step[direction, 0]) + "," + (posX + step[direction, 1]) + " DATA : " + GetBlockData(x: posX + step[direction, 1], z: posZ + step[direction, 0]));
         int next = GetBlockData(x: posX + step[direction, 1], z: posZ+ step[direction, 0]);
         int nextnext = GetBlockData(x: posX + step[direction, 1] * 2, z: posZ + step[direction, 0] * 2);
 
         if(CheckNextBlock(GetThroughBlockList(floor, direction, player.onCloud), next) && ChangeState(next, nextnext, player , ref pos))//다음은 지나갈 수 있는 블럭
         {
             //지나갈 수 있는 블럭
-            
+            player.isLock = false;
+
             posX += step[direction, 1];
             posZ += step[direction, 0];
             UpdateCheckTrue(width: posX, height: posZ);
@@ -334,6 +408,7 @@ public class Map : MonoBehaviour, IMap
         else if (CheckNextBlock(GetStopBlockList(floor, direction, player.onCloud), next))//다음은 멈춰야하는 블럭
         {
             player.onCloud = false; // stop 이면 무조건 oncloud 에서 벗어남.
+            player.isLock = false;
 
             posX += step[direction, 1];
             posZ += step[direction, 0];
@@ -420,20 +495,21 @@ public class Map : MonoBehaviour, IMap
             }//end switch
 
 
-
+            
             //StopCheckChangeState();
             pos = new Vector3(posX, pos.y, posZ);
             UpdateCheckTrue(width: posX, height: posZ);
-            
+
+            //targetPositions.Add(new Tuple<Vector3, int>(pos, player.getDirection));
 
 
-            
+
 
 
         }
         else//cant block
         {
-            
+            Debug.Log("cant block : " + pos);
 
             if((pos.y == 0 && next == BlockNumber.character) || (pos.y == 1 &&next == BlockNumber.upperCharacter))
             {
@@ -442,6 +518,11 @@ public class Map : MonoBehaviour, IMap
                 if (player.onCloud)
                     player.isLock = true;
             }
+            else if(pos.y == 0 && next >= BlockNumber.upperNormal && next < BlockNumber.obstacle)
+            {
+                player.actionnum = 3;
+                player.stateChange = true;
+            }
             else
             {
                 player.actionnum = 3;
@@ -449,7 +530,7 @@ public class Map : MonoBehaviour, IMap
         }
 
         //pos = new Vector3(posX, pos.y, posZ);
-
+        targetPositions.Add(new Tuple<Vector3, int>(pos, player.getDirection));
         //temp
         player.temp = blocks[posZ, posX].Data;
         switch((int)pos.y)
@@ -474,7 +555,7 @@ public class Map : MonoBehaviour, IMap
         snowList.Clear();
         crackerList.Clear();
 
-        return pos;
+        return targetPositions;
         
     }
     public void UpdateCheckTrue(int width, int height)
@@ -488,7 +569,7 @@ public class Map : MonoBehaviour, IMap
 
     public void UpdateCheckArray(int width, int height, bool isCheck)
     {
-        Debug.Log(height + "," + width + "  is checked " + isCheck);
+//        Debug.Log(height + "," + width + "  is checked " + isCheck);
 
         
 

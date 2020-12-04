@@ -8,7 +8,7 @@ public class JsonData
 {
     public string title = "";//pk
     public string nickname = "";//user nickname
-    public DateTime updateTime;
+    public string updateTime = "";
 
     public int height;//map height
     public int width;//map width
@@ -22,7 +22,7 @@ public class JsonData
     public int parfait;//default 0 == false
    
 
-    public JsonData(string nickname , string title , Map map, DateTime time , int move , int dif)
+    public JsonData(string nickname , string title , Map map, String time , int move , int dif)
     {
         this.nickname = nickname;
         this.title = title;
@@ -38,7 +38,7 @@ public class JsonData
         {
             for (int j = 0; j < width; j++)
             {
-                value += IndexToChar(map.GetBlockData(j,i));
+                value += IndexToChar(map.lines[i].line[j]);
             }
         }
 
@@ -81,7 +81,7 @@ public class JsonData
         return newMap;
     }
 
-    int CharToIndex(char value)
+    public int CharToIndex(char value)
     {
         int ascii = (int)value - 65; // a -> 0
         return ascii;
@@ -94,7 +94,7 @@ public class JsonData
         return ascii;
     }
 
-    string PositionToString(Vector3 pos)
+    public string PositionToString(Vector3 pos)
     {
         string s = "";
         s += IndexToChar((int)pos.x);
@@ -104,7 +104,7 @@ public class JsonData
 
         return s;
     }
-    Vector3 StringToPosition(string pos)
+    public Vector3 StringToPosition(string pos)
     {
         Vector3 v = new Vector3(CharToIndex(pos[0]),
             CharToIndex(pos[1]),

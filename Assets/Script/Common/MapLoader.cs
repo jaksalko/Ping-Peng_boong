@@ -375,6 +375,7 @@ public class MapLoader : MonoBehaviour
     public Map EditorMap()
     {
         liveMap = editorMap;
+        liveMap.gameObject.SetActive(true);
         MakeMap(editorMap.mapsizeH, editorMap.mapsizeW, editorMap.parfait);
         return editorMap;
     }
@@ -402,10 +403,11 @@ public class MapLoader : MonoBehaviour
             string fixdata = JsonHelper.fixJson(www.downloadHandler.text);
             JsonData[] datas = JsonHelper.FromJson<JsonData>(fixdata);
            
-            JsonData selectedData = datas[UnityEngine.Random.Range(0, datas.Length)];
+            JsonData selectedData = datas[Random.Range(0, datas.Length)];
 
-            liveMap = selectedData.MakeSampleMap();
-
+            editorMap.Initialize(selectedData);
+            Debug.Log(editorMap.mapsizeH + "," + editorMap.mapsizeW + "," + editorMap.startPositionA);
+            liveMap = editorMap;
             callback(liveMap);
             //selectedData.DataToString();//Debug.Log
 

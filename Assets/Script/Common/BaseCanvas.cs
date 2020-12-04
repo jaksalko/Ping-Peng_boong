@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
-
+using System;
 
 public class BaseCanvas : MonoBehaviour
 {
@@ -23,7 +23,7 @@ public class BaseCanvas : MonoBehaviour
 	public Text star;
 
 	public GameObject friendManage;
-
+	DateTime d;
 	void Awake()
     {
 		if (Instance != null)
@@ -31,7 +31,8 @@ public class BaseCanvas : MonoBehaviour
 			Destroy(gameObject);
 			return;
 		}
-
+		d = DateTime.Now;
+		Debug.Log(d);
 		Instance = this;
 		DontDestroyOnLoad(gameObject);
 
@@ -44,7 +45,7 @@ public class BaseCanvas : MonoBehaviour
     {
         while(true)
         {
-			UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/account/info?id=" + GoogleInstance.instance.id);
+			UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2 + "account/info?id=" + GoogleInstance.instance.id);
 			yield return www.SendWebRequest();
 
 			if (www.isNetworkError || www.isHttpError)
@@ -54,26 +55,26 @@ public class BaseCanvas : MonoBehaviour
 			else
 			{
 				// Show results as text
-				Debug.Log(www.downloadHandler.text);
+//				Debug.Log(www.downloadHandler.text);
 
 
 
 				string fixdata = JsonHelper.fixJson(www.downloadHandler.text);
-				Debug.Log(fixdata);
+				//Debug.Log(fixdata);
 
 				UserData[] datas = JsonHelper.FromJson<UserData>(fixdata);
-				Debug.Log(datas.Length);
+				//Debug.Log(datas.Length);
 
 				UserData selectedData = datas[0];
 
 				GoogleInstance.instance.user = selectedData;
 
 				cash.text = selectedData.cash.ToString();
-
+				star.text = selectedData.candy + "/5";
 			}
 
             ///stage
-			www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/stage/info?id=" + GoogleInstance.instance.id);
+			www = UnityWebRequest.Get(PrivateData.ec2 + "stage/info?id=" + GoogleInstance.instance.id);
 			yield return www.SendWebRequest();
 
 			if (www.isNetworkError || www.isHttpError)
@@ -83,14 +84,14 @@ public class BaseCanvas : MonoBehaviour
 			else
 			{
 				// Show results as text
-				Debug.Log(www.downloadHandler.text);
+//				Debug.Log(www.downloadHandler.text);
 
 
 				string fixdata = JsonHelper.fixJson(www.downloadHandler.text);
-				Debug.Log(fixdata);
+//				Debug.Log(fixdata);
 
 				StageData[] datas = JsonHelper.FromJson<StageData>(fixdata);
-				Debug.Log("stage clear : " +datas.Length);
+//				Debug.Log("stage clear : " +datas.Length);
 
 				for(int i = 0; i < datas.Length; i++)
                 {

@@ -39,7 +39,7 @@ public class UiController : UIScript
        
     }
 
-    public void GameEnd(int moveCount,bool infinite , bool editor)
+    public void GameEnd(int moveCount,bool custom , bool editor)
     {
         inGame.SetActive(false);
         //SetMoveCountText(moveCount);
@@ -47,7 +47,7 @@ public class UiController : UIScript
         //infinite --> 종료 팝업 선택 버튼 : 다음 맵 / 로비로?
         //editor --> 종료 팝업 선택 버튼 : 생성할지 말지
         //Default --> 종료 팝업 선택 버튼 : 다음 스테이지 / 로비로
-        if (infinite)
+        if (custom)
         {
             customSceneResultPopup.ShowResultPopup(moveCount);
         }
@@ -155,7 +155,7 @@ public class UiController : UIScript
     public void NextLevel()
     {
         //GameController googleinstance level++....
-        if(GameController.instance.infiniteMode)
+        if(GameController.instance.customMode)
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         else
             Load_Island(GoogleInstance.instance.nowLevel);

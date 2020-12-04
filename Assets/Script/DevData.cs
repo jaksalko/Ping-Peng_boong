@@ -13,7 +13,7 @@ public class DevData : MonoBehaviour
 
     private void Awake()
     {
-        if (GoogleInstance.instance.id == "Test Player")
+        if (GoogleInstance.instance.id == "TestPlayerID")
             gameObject.SetActive(true);
         else
             gameObject.SetActive(false);
@@ -24,10 +24,10 @@ public class DevData : MonoBehaviour
     {
         p1Text.text = "Player1 Data\n isMoving : " + p1.Moving() + "\n isActive : " + p1.isActive
             + "\n dir : " + p1.direction + "\n onCloud : " + p1.onCloud + "\n isLock : " + p1.isLock
-            + "\n temp : " + p1.temp;
+            + "\n stateChange : "+p1.stateChange+"\n temp : " + p1.temp;
 
         p2Text.text = "Player2 Data\n isMoving : " + p2.Moving() + "\n isActive : " + p2.isActive
             + "\n dir : " + p2.direction + "\n onCloud : " + p2.onCloud + "\n isLock : " + p2.isLock
-            + "\n temp : " + p2.temp;
+             + "\n stateChange : " + p2.stateChange + "\n temp : " + p2.temp;
     }
 }

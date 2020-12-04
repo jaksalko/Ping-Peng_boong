@@ -94,7 +94,7 @@ public class LoadingScene : MonoBehaviour
         string userId = Cloud.PlayerID;
 
         JsonAdapter jsonAdapter = new JsonAdapter();
-        StartCoroutine(jsonAdapter.API_GET("account/checkid?id="+userId));
+        StartCoroutine(jsonAdapter.API_GET("account/checkid?id="+userId,callback => { }));
 
     }
    

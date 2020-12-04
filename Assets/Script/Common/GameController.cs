@@ -35,7 +35,7 @@ public class GameController : MonoBehaviour
         set => instance.parfaitOrder = value;
     }
 
-    public bool infiniteMode;
+    public bool customMode;
     public bool editorMode;
 	public int maxLevel;
 
@@ -186,7 +186,7 @@ public class GameController : MonoBehaviour
         BackgroundSoundSetting();
 
         // map 생성
-        if (infiniteMode)
+        if (customMode)
             yield return StartCoroutine(mapLoader.InfiniteMAP(GoogleInstance.instance.infiniteLevel , callback =>
             {
                 if(callback !=null)
@@ -339,9 +339,9 @@ public class GameController : MonoBehaviour
         endTime = Time.time;
         Debug.Log("Game End... PlayTime : " + (endTime - startTime));
 
-        ui.GameEnd(moveCount , infiniteMode , editorMode);
+        ui.GameEnd(moveCount , customMode , editorMode);
        
-        if (infiniteMode)
+        if (customMode)
         {
             //클리어 에디터 모드 맵 데이터 추가하기 (클리어 한 맵 데이터를 처리하기 위해서)
         }

@@ -90,9 +90,20 @@ public class ButtonManager_Main : UIScript
 
     public void EditorPlayBtn()
     {
-        //추후에 난이도 설정
-        EditorPlayPopup.SetActive(true);
-
+		//추후에 난이도 설정
+		//EditorPlayPopup.SetActive(true);
+		StartCoroutine(GoogleInstance.instance.LoadCustomMapList(success =>
+		{
+			if (success)
+			{
+				EditorPlayPopup.SetActive(true);
+				
+			}
+			else
+			{
+				Debug.Log("cant load custom map list...");
+			}
+		}));
         //SceneManager.LoadScene("CustomMapPlayScene");
     }
 

@@ -10,7 +10,7 @@ public class JsonAdapter : MonoBehaviour
     public static event Action<bool> GET;
     public static event Action<bool> POST;
 
-    public IEnumerator API_GET(string url)
+    public IEnumerator API_GET(string url , System.Action<string> callback)
     {
         UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2+url);
         yield return www.SendWebRequest();
@@ -18,6 +18,7 @@ public class JsonAdapter : MonoBehaviour
         if(www.isNetworkError || www.isHttpError)
         {
             Debug.Log(www.error);
+            callback(null);
         }
         else
         {
@@ -26,11 +27,13 @@ public class JsonAdapter : MonoBehaviour
             if(www.responseCode != 200)
             {
                 Debug.Log("already exist");
+                callback(null);
                 GET?.Invoke(false);
             }
             else
             {
                 Debug.Log("add account");
+                callback(www.downloadHandler.text);
                 GET?.Invoke(true);
             }
             //GET.Invoke(JsonHelper.fixJson(www.downloadHandler.text));
@@ -93,7 +96,7 @@ public static class JsonHelper
     public static T[] FromJson<T>(string json)
     {
         Wrapper<T> wrapper = JsonUtility.FromJson<Wrapper<T>>(json);
-        Debug.Log(wrapper.Items.Length);
+//        Debug.Log(wrapper.Items.Length);
         return wrapper.Items;
     }
 

@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public interface IMap
 {
-    Vector3 GetDestination(Player player , Vector3 startPosition);
+    List<Tuple<Vector3,int>> GetDestination(Player player , Vector3 startPosition);
     void UpdateCheckArray(int width, int height, bool isCheck);
     int GetBlockData(int x, int z);
     void SetBlockData(int x, int z, int value);
