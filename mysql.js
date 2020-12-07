@@ -82,6 +82,28 @@ app.get('/map/all' , function(req,res){
 		res.end(JSON.stringify(results));		
 	});
 });
+app.post('/map/clear' , function(req,res)
+{
+	var title = req.body.title;
+	var moveCount = req.body.moveCount;
+	var difficulty = req.body.difficulty;
+	var sql = 'update map set popularty = popularity + 1, moveCount = ?,difficulty = ? where title = ?';
+	connection.query(sql,[moveCount,difficulty,title],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send('clear custom map title : ' + title);
+		}
+				
+	});
+})
+
+
 app.get('/test' , function(req,res){
 	console.log(req);
 	connection.query('select * from map',function(error, results, fields)
