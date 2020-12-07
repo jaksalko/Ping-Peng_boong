@@ -87,7 +87,7 @@ app.post('/map/clear' , function(req,res)
 	var title = req.body.title;
 	var moveCount = req.body.moveCount;
 	var difficulty = req.body.difficulty;
-	var sql = 'update map set popularty = popularity + 1, moveCount = ?,difficulty = ? where title = ?';
+	var sql = 'update map set popularity = popularity + 1, moveCount = ?,difficulty = ? where title = ?';
 	connection.query(sql,[moveCount,difficulty,title],function(error, results, fields)
 	{	
 		if(error){
