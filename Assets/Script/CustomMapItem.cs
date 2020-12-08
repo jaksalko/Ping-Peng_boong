@@ -15,6 +15,7 @@ public class CustomMapItem : MonoBehaviour
 
     public void Initialize(JsonData item)
     {
+        name = item.updateTime;
         itemdata = item;
         title.text = itemdata.title;
         maker.text = itemdata.nickname;

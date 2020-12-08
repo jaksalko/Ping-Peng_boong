@@ -3,75 +3,62 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+using System;
 
 public class EditorPlayPopup : MonoBehaviour
 {
     public CustomMapItem item_prefab;
-    public Transform itemList;
 
-    public InputField searchText;
-    public Transform searchTab;
-
-    List<CustomMapItem> customMapItems = new List<CustomMapItem>();
+    public Tab[] tabs;
 
     private void OnEnable()
     {
         MakeCustomeMapItem();
+        foreach (Tab tab in tabs) tab.InitializeTab();
     }
 
     public void ExitButton()
     {
-        int listCount = customMapItems.Count;
-        for (int i = 0; i < listCount; i++)
-        {
-            Destroy(customMapItems[i].gameObject);
-        }
-        customMapItems.Clear();
+        foreach (Tab tab in tabs) tab.ClearList();
         
         gameObject.SetActive(false);
     }
-    public void ClickLevel(int level)
+
+    public void ChangeTab(int tab_number)
     {
-
-        GoogleInstance.instance.infiniteLevel = level;
-        SceneManager.LoadScene("CustomMapPlayScene");
-
+        foreach(Tab tab in tabs)
+        {
+            if (tab.gameObject.activeSelf)
+            {
+                tab.gameObject.SetActive(false);
+                break;
+            } 
+        }
+        tabs[tab_number].gameObject.SetActive(true);
     }
 
-    public void MakeCustomeMapItem()
+   
+
+    void MakeCustomeMapItem()
     {
         Debug.Log("make map");
         List<JsonData> datas = GoogleInstance.instance.customMapdatas;
+
         for (int i = 0; i < datas.Count ; i++)
         {
             CustomMapItem newItem = Instantiate(item_prefab);
             newItem.Initialize(datas[i]);
-            customMapItems.Add(newItem);
-            newItem.transform.SetParent(itemList);
-        }
-    }
+            tabs[0].GetItem(newItem);
 
-    public void Search()
-    {
-        int listCount = searchTab.childCount;
-        for(int i = 0; i < listCount; i++)
-        {
-            searchTab.GetChild(0).transform.SetParent(itemList);
+            CustomMapItem levelItem = Instantiate(item_prefab);
+            levelItem.Initialize(datas[i]);
+            int level = datas[i].difficulty;
+            tabs[level].GetItem(levelItem);
+           
         }
 
-        for(int i = 0; i < customMapItems.Count; i++)
-        {
-            if(customMapItems[i].title.text.Contains(searchText.text))
-            {
-                customMapItems[i].transform.SetParent(searchTab);
-            }
-        }
+       
     }
 
-    public void Exit()
-    {
-        gameObject.SetActive(false);
-    }
    
 }

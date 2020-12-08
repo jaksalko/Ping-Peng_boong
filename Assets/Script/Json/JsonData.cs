@@ -9,6 +9,7 @@ public class JsonData
     public string title = "";//pk
     public string nickname = "";//user nickname
     public string updateTime = "";
+    public int popularity;
 
     public int height;//map height
     public int width;//map width
@@ -21,12 +22,20 @@ public class JsonData
     public int difficulty;//game difficulty from movecount
     public int parfait;//default 0 == false
    
+    public JsonData(string title , int move )//to clear map
+    {
+        this.title = title;
+        moveCount = move;
+        difficulty = (move / 5) + 1;
+        if (difficulty > 5) difficulty = 5;
+    }
 
     public JsonData(string nickname , string title , Map map, String time , int move , int dif)
     {
         this.nickname = nickname;
         this.title = title;
         updateTime = time;
+        popularity = 0;
 
         height = map.mapsizeH;
         width = map.mapsizeW;
