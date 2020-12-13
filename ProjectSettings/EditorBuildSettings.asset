@@ -27,7 +27,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Build/Editor/CustomMapPlayScene.unity
     guid: 484b6d2154e004b7997920058e829125
   - enabled: 1
-    path: Assets/Scenes/Build/Stage/Tutorial_Island.unity
+    path: Assets/Scenes/Build/Stage/Tutorial_Island_Profiles/Tutorial_Island.unity
     guid: eac0d3f9388873d488ee81817da4c92f
   - enabled: 1
     path: Assets/Scenes/Build/Stage/Icecream_Island.unity

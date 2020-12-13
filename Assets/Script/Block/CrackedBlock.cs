@@ -17,9 +17,9 @@ public class CrackedBlock : Block
     public Mesh cracker3;
 
 
-    public override void Init(int block_num, bool snow)
+    public override void Init(int block_num)
     {
-        base.Init(block_num, snow);
+        base.Init(block_num);
         x = (int)transform.position.x;
         z = (int)transform.position.z;
         count = 0;

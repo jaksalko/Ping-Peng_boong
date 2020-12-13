@@ -78,7 +78,7 @@ public class UiController : UIScript
         parfaitOrder_done[order].SetActive(true);
         order++;
     }
-
+    
     #endregion
 
     #region 결과 창 UI

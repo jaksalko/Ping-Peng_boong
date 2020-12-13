@@ -104,7 +104,7 @@ public class MapLoader : MonoBehaviour
             case Block.Type.Outline:
                 GroundBlock outline = Instantiate(groundBlock , pos_ , groundBlock.transform.rotation);
                 outline.gameObject.SetActive(visible);                
-                outline.Init(blockData, false);
+                outline.Init(blockData);
                 outline.transform.parent = obstacleParent;
                 newBlock = outline;
 
@@ -113,8 +113,8 @@ public class MapLoader : MonoBehaviour
             case Block.Type.Ground:
                 GroundBlock ground = Instantiate(groundBlock, pos_, groundBlock.transform.rotation);
                 ground.gameObject.SetActive(visible);                
-                ground.Init(blockData, true);
-                ground.IsNormal(true);//active snow object
+                ground.Init(blockData);
+                ground.IsNormal(ground.Snow);//active snow object
                 ground.transform.parent = groundParent;
 
                 newBlock = ground;
@@ -123,8 +123,8 @@ public class MapLoader : MonoBehaviour
             case Block.Type.SecondGround:
                 GroundBlock second = Instantiate(groundBlock_second, pos_, groundBlock.transform.rotation);
                 second.gameObject.SetActive(visible);
-                second.Init(blockData, true);
-                second.IsNormal(true);//active snow object
+                second.Init(blockData);
+                second.IsNormal(second.Snow);//active snow object
                 second.transform.parent = groundParent;
 
                 newBlock = second;
@@ -133,7 +133,7 @@ public class MapLoader : MonoBehaviour
             case Block.Type.Obstacle:
                 ObstacleBlock obstacle = Instantiate(obstacleBlock,obstacleBlock.transform.position +  pos_, obstacleBlock.transform.rotation);
                 obstacle.gameObject.SetActive(visible);
-                obstacle.Init(blockData, false);
+                obstacle.Init(blockData);
                 obstacle.transform.parent = obstacleParent;
 
                 newBlock = obstacle;
@@ -142,7 +142,7 @@ public class MapLoader : MonoBehaviour
             case Block.Type.Slope:
                 SlopeBlock slope = Instantiate(slopeBlock, pos_, Quaternion.Euler(new Vector3(0, 90 * (blockData - BlockNumber.slopeUp), 0)));
                 slope.gameObject.SetActive(visible);
-                slope.Init(blockData, false);
+                slope.Init(blockData);
                 slope.transform.parent = groundParent;
 
                 newBlock = slope;
@@ -161,7 +161,7 @@ public class MapLoader : MonoBehaviour
             case Block.Type.Cloud:
                 CloudBlock cloud = Instantiate(cloudBlock, pos_, Quaternion.Euler(new Vector3(0, 90*(blockData%10), 90)));
                 cloud.gameObject.SetActive(visible);
-                cloud.Init(blockData, false);
+                cloud.Init(blockData);
                 cloud.transform.parent = groundParent;
 
                 newBlock = cloud;
@@ -170,7 +170,7 @@ public class MapLoader : MonoBehaviour
             case Block.Type.Cracked:
                 CrackedBlock cracked = Instantiate(crackedBlock, pos_, Quaternion.identity);
                 cracked.gameObject.SetActive(visible);
-                cracked.Init(blockData, false);
+                cracked.Init(blockData);
                 cracked.transform.parent = groundParent;
 
                 newBlock = cracked;
@@ -179,7 +179,7 @@ public class MapLoader : MonoBehaviour
             case Block.Type.broken:
                 CrackedBlock broken = Instantiate(crackedBlock, pos_, Quaternion.identity);
                 broken.gameObject.SetActive(visible);
-                broken.Init(blockData, false);
+                broken.Init(blockData);
                 broken.transform.parent = obstacleParent;
 
                 newBlock = broken;
@@ -331,7 +331,7 @@ public class MapLoader : MonoBehaviour
                     parfaitBlock[sequence].gameObject.SetActive(true);
                     parfaitBlock[sequence].gameObject.transform.position = new Vector3(j, 0.5f, i);
                     
-                    parfaitBlock[sequence].Init(blockData, false);
+                    parfaitBlock[sequence].Init(blockData);
                     
                     parfait_sequence++;
                  
@@ -344,7 +344,7 @@ public class MapLoader : MonoBehaviour
                     parfaitBlock[sequence].gameObject.SetActive(true);
                     parfaitBlock[sequence].gameObject.transform.position = new Vector3(j, 1.5f, i);
 
-                    parfaitBlock[sequence].Init(blockData, false);
+                    parfaitBlock[sequence].Init(blockData);
 
                     
                     parfait_sequence++;

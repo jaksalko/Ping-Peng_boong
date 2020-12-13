@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4809144009187686189}
   - component: {fileID: 4809144009187686178}
   m_Layer: 0
-  m_Name: Second Floor Block
+  m_Name: Chocolate Second Ground
   m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 4809144009187686176}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -2.5, y: 1.25, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_Children:
   - {fileID: 8087226048415304969}
   m_Father: {fileID: 0}
@@ -107,7 +107,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc56b1ca9138c7249b9ee98731ec4be9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  num: 0
   snow: {fileID: 8894690158165940147}
 --- !u!1001 &7788321625643656983
 PrefabInstance:

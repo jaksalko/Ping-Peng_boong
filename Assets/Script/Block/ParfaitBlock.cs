@@ -20,9 +20,9 @@ public class ParfaitBlock : Block
     public State state;
 
 	public AudioClip meltSound;
-    public override void Init(int block_num, bool snow)
+    public override void Init(int block_num)
     {
-        base.Init(block_num, snow);
+        base.Init(block_num);
         state = State.inactive;
         switch(block_num)
         {

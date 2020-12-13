@@ -20,15 +20,14 @@ public class CameraController : MonoBehaviour
     public int cameraView = 0;
     Coroutine coroutine;
 
-    Vector3 centerOfMap;
-
+    public GameObject startPanel;
     
     // Start is called before the first frame update
     void Start()
     {
         //target = GameController.instance.nowPlayer;
         camera_transform = main_camera.transform;
-        centerOfMap = GameController.instance.mapLoader.centerOfMap;
+        
         
     }
 
@@ -74,6 +73,8 @@ public class CameraController : MonoBehaviour
         
         camera_transform.position = transform.position;
         camera_transform.LookAt(camera_target.position);
+
+
         //_transform.position = target.position + (Vector3.up * height);
         //transform.LookAt(target);
 
@@ -86,6 +87,7 @@ public class CameraController : MonoBehaviour
 
         if(coroutine == null)
         {
+
             camera_target = GameController.instance.mapLoader.transform;
             coroutine = StartCoroutine(MapScanning());
         }
@@ -251,5 +253,17 @@ public class CameraController : MonoBehaviour
         }
 
         return mini;
+    }
+
+    public void SkipMapScanning()
+    {
+        startPanel.SetActive(false);
+
+        if(coroutine != null)
+            StopCoroutine(coroutine);
+
+        GameController.instance.GameStart();
+        cameraView = 1;
+        coroutine = null;
     }
 }

@@ -22,7 +22,18 @@ public class Block : MonoBehaviour , IBlock
 
     public int Data { get; set; }
     public bool Snow { get; set; }
-    public virtual void Init(int block_num , bool snow) { Data = block_num; Snow = snow; }
+    public virtual void Init(int block_num)
+    {
+        Data = block_num;
+        if((block_num == BlockNumber.normal && transform.position.y == -0.5f) || (block_num == BlockNumber.upperNormal && transform.position.y == 0.5f))
+        {
+            Snow = true;
+        }
+        else
+        {
+            Snow = false;
+        }
+    }
 
     public bool IsSnow()
     {

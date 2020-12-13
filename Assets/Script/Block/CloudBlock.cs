@@ -8,9 +8,9 @@ public class CloudBlock : Block
 
     public int direction; // 0 상 1 우 2 하 3 좌
     Vector2 pos_;
-    public override void Init(int block_num, bool snow)
+    public override void Init(int block_num)
     {
-        base.Init(block_num, snow);
+        base.Init(block_num);
         direction = (block_num % 10) - 1;//block num 11-14 21-24
         pos_ = new Vector2(transform.position.x, transform.position.z);
     }
