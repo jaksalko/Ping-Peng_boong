@@ -218,6 +218,7 @@ public class CameraController : MonoBehaviour
            
             yield return new WaitForSeconds(1f);
         }
+        startPanel.SetActive(false);
         GameController.instance.GameStart();
         cameraView = 1;
         coroutine = null;

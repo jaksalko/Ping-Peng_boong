@@ -97,9 +97,7 @@ public class Player : MonoBehaviour , IMoveable
     }
     public void Move(Map map, int direction)//call by GameController Command
     {
-        //if (!simulating && !GameController.Playing)
-        //return false;
-
+       
         //if (animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))//remove this
         //{
             //isLock = false;
@@ -136,15 +134,7 @@ public class Player : MonoBehaviour , IMoveable
         //}
     }
 
-    /*void CharacterMove(Map map)
-    {
-        map.map[posZ, posX] = temp;//set initializedMap data
-
-        SettingBlockLevel();//stop , through block list setting
-        CompareWithNextBlock(map); // set target position ... 재
-    }*/
-
-
+  
 
 
     public void SetPosition(Vector3 startpos)
@@ -302,25 +292,6 @@ public class Player : MonoBehaviour , IMoveable
     }
 
 
-    /*void CallBackOtherExitCloud(GameObject player)
-    {
-        Debug.Log(gameObject + "/" +player + " disconnect Action with method");
-        CloudBlock.Exit -= CallBackOtherExitCloud;
-
-        if (player == gameObject)//나는 안움직여 
-        {
-            Debug.Log("same player");
-            //nothing
-        }
-        else//뒤에 있던 캐릭터만 움직
-        {
-            Debug.Log("different player");
-            onCloud = true;//블록 설정을 위한 input (stay 에서 호출하지 않으므로 설정)
-
-            MoveByCloud(temp);
-        }
-       
-    }*/
 
     private void LateUpdate()
     {
@@ -420,64 +391,6 @@ public class Player : MonoBehaviour , IMoveable
         
 
     }
-
-
-
-    /*public void MoveByCloud(int block_num)
-    {
-        
-        Debug.Log("Moved by Cloud");
-        
-        getDirection = (block_num % 10) - 1;
-
-        through.Clear();
-        through.Add(block_num);
-
-        if (upstair)
-        {
-            switch (getDirection)
-            {
-                case 0:
-                    through.Add(BlockNumber.slopeDown);
-                    break;
-                case 1:
-                    through.Add(BlockNumber.slopeLeft);
-                    break;
-                case 2:
-                    through.Add(BlockNumber.slopeUp);
-                    break;
-                case 3:
-                    through.Add(BlockNumber.slopeRight);
-                    break;
-            }
-          
-        }
-        else
-        {
-           
-            through.Add(BlockNumber.slopeUp + getDirection);
-           
-        }
-        StopSetting();
-
-        
-        map[posZ, posX] = temp;//set initializedMap data
-
-        
-
-        CompareWithNextBlock();
-
-
-
-      
-
-        //set targetposition
-        //isMoving = true;
-
-    }*/
-
-
-  
 
 
 
