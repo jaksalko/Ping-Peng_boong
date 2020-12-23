@@ -381,7 +381,7 @@ public class MapLoader : MonoBehaviour
     }
     public Map CustomPlayMap()
     {
-        editorMap.Initialize(GoogleInstance.instance.playCustomData);
+        editorMap.Initialize(GoogleInstance.instance.playCustomData.itemdata);
         liveMap = editorMap;
         liveMap.gameObject.SetActive(true);
         MakeMap(editorMap.mapsizeH, editorMap.mapsizeW, editorMap.parfait);

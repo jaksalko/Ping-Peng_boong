@@ -104,8 +104,10 @@ public class ButtonManager_Main : UIScript
 				Debug.Log("cant load custom map list...");
 			}
 		}));
-        //SceneManager.LoadScene("CustomMapPlayScene");
-    }
+
+		
+		//SceneManager.LoadScene("CustomMapPlayScene");
+	}
 
     public void EditorBtn()
     {

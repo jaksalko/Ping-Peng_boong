@@ -19,7 +19,9 @@ public class LoadingScene : MonoBehaviour
     public Text addAccountText;
     public GameObject addAccountPanel;
 
-   
+    public Button make_account_button;
+    public Button play_button;
+
 
     private void Awake()
     {
@@ -35,13 +37,24 @@ public class LoadingScene : MonoBehaviour
         //Cloud.Initialize();
         
     }
+
+    public void GameStart()
+    {
+        StartCoroutine(Fader());
+    }
+    public void ActiveMakeAccountPanel()
+    {
+        addAccountPanel.SetActive(true);
+
+    }
     public void IsNew(bool add)// call by loading
     {
         JsonAdapter.GET -= IsNew;
         if (add)
         {
+            make_account_button.gameObject.SetActive(true);
             // create new account
-            addAccountPanel.SetActive(true);
+            
         }
         else
         {
@@ -50,9 +63,8 @@ public class LoadingScene : MonoBehaviour
             GoogleInstance.instance.id = Cloud.PlayerID;
             
             JsonAdapter.POST -= IsUnique;
-            SceneManager.LoadScene("MainScene");
 
-            //Load Lobby Scene
+            play_button.gameObject.SetActive(true);
         }
         
         
@@ -61,16 +73,17 @@ public class LoadingScene : MonoBehaviour
     {
         if(unique)
         {
-            addAccountText.text = "created successfully";
+            //addAccountText.text = "created successfully";
             GoogleInstance.instance.id = Cloud.PlayerID;
             JsonAdapter.POST -= IsUnique;
 
-
-            SceneManager.LoadScene("MainScene");
+            addAccountPanel.SetActive(false);
+            play_button.gameObject.SetActive(true);
+            
         }
         else
         {
-            addAccountText.text = "already exist!";
+            addAccountText.text = "이미 존재하는 닉네임입니다.";
         }
     }
     public void AddAccount()
@@ -98,48 +111,7 @@ public class LoadingScene : MonoBehaviour
 
     }
    
-    public void OnLogin()
-    {
-        if (!Social.localUser.authenticated)
-        {
-            Social.localUser.Authenticate((bool bSuccess) =>
-            {
-                if (bSuccess)
-                {
-                    Debug.Log("Success : " + Social.localUser.userName);
-                    id.text = Social.localUser.userName;
-                    GoogleInstance.instance.id = Social.localUser.userName;
-                    GoogleInstance.instance.SetText(Social.localUser.userName);
-                    if (!once)
-                        StartCoroutine(Fader());
-                }
-                else
-                {
-                    Debug.Log("Fall");
-                    id.text = "Fail";
-                    GoogleInstance.instance.SetText("fail login");
-                    
-                }
-            });
-        }
-    }
-    public void GuestLogin()
-    {
-        GoogleInstance.instance.id = nickname.text;
-        if (!once)
-            StartCoroutine(Fader());
-    }
-    public void OnLogOut()
-    {
-        GoogleInstance.instance.id = Cloud.PlayerID;
-        StartCoroutine(Fader());
-    }
-
-    public void LoadMainScene()
-    {
-        if(!once)
-            StartCoroutine(Fader());
-    }
+   
     IEnumerator Interpolation()
     {
         float t = 0;
@@ -169,6 +141,8 @@ public class LoadingScene : MonoBehaviour
         }
 
         SceneManager.LoadScene("MainScene");
+
+        yield break;
         
     }
 }

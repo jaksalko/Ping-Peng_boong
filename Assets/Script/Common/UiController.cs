@@ -33,6 +33,15 @@ public class UiController : UIScript
 
     bool mini = false;
 
+    public Button player1;
+    public Button player2;
+
+    public Sprite player1_off_image;
+    public Sprite player2_off_image;
+    public Sprite player1_on_image;
+    public Sprite player2_on_image;
+
+
     private void Awake()
     {
         devtext.text = "platform : " + Application.platform + "\n" + "level : " + PlayerPrefs.GetInt("level", 0);
@@ -116,11 +125,42 @@ public class UiController : UIScript
         GameController.instance.SetPlaying(!mini);
     }
 
-    public void ChangeCharacter()
+    public void ReturnButton()
+    {
+
+    }
+
+
+    public void ChangeCharacter(Player player)
     {
         GameController instance = GameController.instance;
 
         Player now = instance.nowPlayer;
+
+        if(!now.Moving())
+        {
+            now.isActive = false;
+            instance.nowPlayer = player;
+            player.isActive = true;
+
+            if(player == GameController.instance.player1)
+            {
+                player1.interactable = false;
+                player1.image.sprite = player1_on_image;
+
+                player2.interactable = true;
+                player2.image.sprite = player2_off_image;
+            }
+            else
+            {
+                player1.interactable = true;
+                player1.image.sprite = player1_off_image;
+
+                player2.interactable = false;
+                player2.image.sprite = player2_on_image;
+            }
+            
+        }
 
 		if (!now.Moving())
 		{

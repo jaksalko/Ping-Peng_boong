@@ -227,5 +227,20 @@ public class StageData
     }
 }
 
+[Serializable]
+public class CustomStagePlayerData
+{
+    public string player_id;
+    public string title;
+    public bool push;
+
+    public CustomStagePlayerData(string id_ , string title_ , bool push_)
+    {
+        player_id = id_;
+        title = title_;
+        push = push_;
+    }
+}
+
 #endregion
 

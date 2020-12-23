@@ -17,11 +17,12 @@ public class GoogleInstance : MonoBehaviour
 
     public UserData user;
     public List<StageData> stages;
+    public List<CustomStagePlayerData> customStagePlayerDatas;
 
     public GameObject canvas;
 
     public List<JsonData> customMapdatas = new List<JsonData>();
-    public JsonData playCustomData;
+    public CustomMapItem playCustomData;
 
     private void Awake()
     {
@@ -39,11 +40,13 @@ public class GoogleInstance : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);//Dont destroy this singleton gameobject :(
 
-        for(int i = 0; i < IslandData.lastLevel; i++)
+        for(int i = 0; i <= IslandData.lastLevel; i++)
         {
             stages.Add(new StageData(user.id , i));
         }
-        
+
+
+        //StartCoroutine(LoadCustomPlayList());
     }
 
     public void SetText(string txt)
@@ -52,7 +55,7 @@ public class GoogleInstance : MonoBehaviour
 
     }
 
-    public IEnumerator LoadCustomMapList(System.Action<bool> load)
+    public IEnumerator LoadCustomMapList(System.Action<bool> load)//call by editor play popup open...(ButtonManager_Main.cs)
     {
         
 
@@ -77,7 +80,39 @@ public class GoogleInstance : MonoBehaviour
             }
         }));
 
+
         yield break;
 
     }
+    public IEnumerator LoadCustomPlayList()//call by editor play popup open...(ButtonManager_Main.cs)
+    {
+
+
+        JsonAdapter adapter = new JsonAdapter();
+        yield return StartCoroutine(adapter.API_GET("editorPlay/all?id=" + user.id , callback =>
+        {
+            if (callback == null)
+            {
+                
+               //retry?
+            }
+            else
+            {
+                //successfully loaded the map
+                customStagePlayerDatas.Clear();
+
+                string fixdata = JsonHelper.fixJson(callback);
+                customStagePlayerDatas.AddRange(JsonHelper.FromJson<CustomStagePlayerData>(fixdata));//all map data
+
+               
+
+            }
+        }));
+
+
+        yield break;
+
+    }
+
+
 }

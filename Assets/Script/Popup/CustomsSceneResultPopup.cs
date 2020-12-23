@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class CustomsSceneResultPopup : MonoBehaviour
 {
+    JsonAdapter jsonAdapter = new JsonAdapter();
+
     public Text moveCount;
     public Text candyText;
     public Button retryButton;
@@ -27,12 +29,18 @@ public class CustomsSceneResultPopup : MonoBehaviour
 
     public void RetryButtonClicked()
     {
-        //candy--
-        //reload this custom stage...
+        SceneManager.LoadScene("CustomMapPlayScene");//customMode Scene
     }
 
-    public void AdButtonClicked()
+    public void PushButtonClicked()
     {
+        JsonData jsonData = GoogleInstance.instance.playCustomData.itemdata;
+
+        var json = JsonUtility.ToJson(jsonData);
+        StartCoroutine(jsonAdapter.API_POST("map/push", json));
+        StartCoroutine(jsonAdapter.API_POST("editorPlay/push", json));
+
+        //map push++
         //candy++
         //show ad...
     }

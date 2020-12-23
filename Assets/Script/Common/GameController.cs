@@ -347,9 +347,28 @@ public class GameController : MonoBehaviour
         if (customMode)
         {
             //클리어 에디터 모드 맵 데이터 추가하기 (클리어 한 맵 데이터를 처리하기 위해서)
-            JsonData clearMapJsonData = new JsonData(GoogleInstance.instance.playCustomData.title, moveCount);
-            var json = JsonUtility.ToJson(clearMapJsonData);
-            StartCoroutine(jsonAdapter.API_POST("map/clear", json));
+            CustomMapItem nowPlayData = GoogleInstance.instance.playCustomData;
+
+            if(!nowPlayData.isPlayed)
+            {
+                CustomStagePlayerData newPlayerData = new CustomStagePlayerData(GoogleInstance.instance.user.id, nowPlayData.itemdata.title, false);
+                GoogleInstance.instance.customStagePlayerDatas.Add(newPlayerData);
+                var json = JsonUtility.ToJson(newPlayerData);
+
+                StartCoroutine(jsonAdapter.API_POST("editorPlay/add", json));//add tuple
+            }
+
+            if(moveCount < nowPlayData.itemdata.moveCount)
+            {
+                nowPlayData.itemdata.moveCount = moveCount;
+                var json = JsonUtility.ToJson(nowPlayData.itemdata);
+
+                StartCoroutine(jsonAdapter.API_POST("map/clear", json));//change moveCount
+            }
+            //if !is
+            //Add Tuple Customclear DB
+            //
+           
 
             //clear custom map user update(cash+? map clear 여부)
 

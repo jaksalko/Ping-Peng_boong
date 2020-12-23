@@ -74,7 +74,7 @@ public class BaseCanvas : MonoBehaviour
 			}
 
             ///stage
-			www = UnityWebRequest.Get(PrivateData.ec2 + "stage/info?id=" + GoogleInstance.instance.id);
+			www = UnityWebRequest.Get(PrivateData.ec2 + "stage/info?id=" + GoogleInstance.instance.user.id);
 			yield return www.SendWebRequest();
 
 			if (www.isNetworkError || www.isHttpError)
@@ -91,7 +91,7 @@ public class BaseCanvas : MonoBehaviour
 //				Debug.Log(fixdata);
 
 				StageData[] datas = JsonHelper.FromJson<StageData>(fixdata);
-//				Debug.Log("stage clear : " +datas.Length);
+				Debug.Log("stage clear : " +datas.Length);
 
 				for(int i = 0; i < datas.Length; i++)
                 {
