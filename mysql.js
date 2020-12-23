@@ -87,7 +87,7 @@ app.post('/map/clear' , function(req,res)
 	var title = req.body.title;
 	var moveCount = req.body.moveCount;
 	var difficulty = req.body.difficulty;
-	var sql = 'update map set popularity = popularity + 1, moveCount = ?,difficulty = ? where title = ?';
+	var sql = 'update map set moveCount = ?,difficulty = ? where title = ?';
 	connection.query(sql,[moveCount,difficulty,title],function(error, results, fields)
 	{	
 		if(error){
@@ -102,8 +102,103 @@ app.post('/map/clear' , function(req,res)
 				
 	});
 })
+app.post('/map/play' , function(req,res)
+{
+	var title = req.body.title;
+	var sql = 'update map set popularity = popularity + 1 where title = ?';
+	connection.query(sql,[title],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
 
+			res.status(200).send('play custom map title : ' + title);
+		}
+				
+	});
 
+	
+})
+app.post('/map/push' , function(req,res)
+{
+	var title = req.body.title;
+
+	var sql = 'update map set push = push + 1 where title = ?';
+	connection.query(sql,[title],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send('push custom map title : ' + title);
+		}
+				
+	});
+
+	
+})
+
+app.post('/editorPlay/add' , function(req,res)
+{
+	var postData = req.body;
+
+	var sql = 'insert into editorPlay SET ?';
+
+	connection.query(sql,postData,function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send('clear editor stage');
+		}
+				
+	});
+
+	
+})
+app.post('/editorPlay/push' , function(req,res)
+{
+	var title = req.body.title;
+
+	var sql = 'update editorPlay set push = push + 1 where title = ?';
+	connection.query(sql,[title],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send('push editorPlayerMap : ' + title);
+		}
+				
+	});
+
+	
+})
+app.get('/editorPlay/all' , function(req,res){
+	
+	var player_id = req.query.player_id;
+	var sql = 'select * from editorPlay where player_id != ?';
+	console.log("player : " + player_id);
+	connection.query(sql,[player_id],function(error, results, fields)
+	{	
+		if(error){console.log(error);}
+		console.log(results);
+		res.end(JSON.stringify(results));		
+	});
+});
 app.get('/test' , function(req,res){
 	console.log(req);
 	connection.query('select * from map',function(error, results, fields)
@@ -121,6 +216,8 @@ app.post('/editor/generate',function(req,res){
 		res.end(JSON.stringify(results));
 	});
 });
+
+
 //Account Setting
 app.get('/account/checkid' , function(req,res){
 	var id = req.query.id;
