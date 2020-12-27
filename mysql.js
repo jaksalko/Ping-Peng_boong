@@ -158,7 +158,7 @@ app.post('/editorPlay/add' , function(req,res)
 	{	
 		if(error){
 			console.log(error);
-			res.status(400).s(error);
+			res.status(400).send(error);
 		}
 		else{
 			console.log(results);
@@ -196,7 +196,7 @@ app.get('/editorPlay/all' , function(req,res){
 
 	var player_id = req.query.player_id;
 	var sql = 'select * from editorPlay where player_id = ?';
-	console.log(req.query);
+	console.log(req.qu);
 	console.log("player : " + player_id);
 	connection.query(sql,[player_id],function(error, results, fields)
 	{	
