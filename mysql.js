@@ -193,8 +193,10 @@ app.post('/editorPlay/push' , function(req,res)
 })
 app.get('/editorPlay/all' , function(req,res){
 	
+
 	var player_id = req.query.player_id;
 	var sql = 'select * from editorPlay where player_id = ?';
+	console.log(req);
 	console.log("player : " + player_id);
 	connection.query(sql,[player_id],function(error, results, fields)
 	{	
