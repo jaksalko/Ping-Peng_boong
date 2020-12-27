@@ -41,7 +41,7 @@ connection.connect(function(err){
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
-	extended : true
+	exted : true
 }));
 
 var server = app.listen(3000, "0.0.0.0" , function(){
@@ -55,7 +55,11 @@ app.get('/count',function(req,res){
 	connection.query('select count(*) from map',function(error,result,field)
 	{
 		if(error){console.log(error);}
-		res.end(JSON.stringify(result));
+		else
+		{
+			res.status(200).s(JSON.stringify(result));
+		}
+		
 	});
 });
 app.get('/map/difficulty' , function(req,res){
@@ -67,7 +71,7 @@ app.get('/map/difficulty' , function(req,res){
 	{	
 		if(error){console.log(error);}
 		console.log(results);
-		res.end(JSON.stringify(results));		
+		res.status(200).s(JSON.stringify(results));		
 	});
 });
 app.get('/map/all' , function(req,res){
@@ -79,7 +83,7 @@ app.get('/map/all' , function(req,res){
 	{	
 		if(error){console.log(error);}
 		console.log(results);
-		res.end(JSON.stringify(results));		
+		res.status(200).s(JSON.stringify(results));		
 	});
 });
 app.post('/map/clear' , function(req,res)
@@ -92,12 +96,12 @@ app.post('/map/clear' , function(req,res)
 	{	
 		if(error){
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else{
 			console.log(results);
 
-			res.status(200).send(JSON.stringify(results));
+			res.status(200).s(JSON.stringify(results));
 		}
 				
 	});
@@ -110,12 +114,12 @@ app.post('/map/play' , function(req,res)
 	{	
 		if(error){
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else{
 			console.log(results);
 
-			res.status(200).send(JSON.stringify(results));
+			res.status(200).s(JSON.stringify(results));
 		}
 				
 	});
@@ -131,12 +135,12 @@ app.post('/map/push' , function(req,res)
 	{	
 		if(error){
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else{
 			console.log(results);
 
-			res.status(200).send(JSON.stringify(results));
+			res.status(200).s(JSON.stringify(results));
 		}
 				
 	});
@@ -154,12 +158,12 @@ app.post('/editorPlay/add' , function(req,res)
 	{	
 		if(error){
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else{
 			console.log(results);
 
-			res.status(200).send(JSON.stringify(results));
+			res.status(200).s(JSON.stringify(results));
 		}
 				
 	});
@@ -175,12 +179,12 @@ app.post('/editorPlay/push' , function(req,res)
 	{	
 		if(error){
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else{
 			console.log(results);
 
-			res.status(200).send(JSON.stringify(results));
+			res.status(200).s(JSON.stringify(results));
 		}
 				
 	});
@@ -195,8 +199,12 @@ app.get('/editorPlay/all' , function(req,res){
 	connection.query(sql,[player_id],function(error, results, fields)
 	{	
 		if(error){console.log(error);}
-		console.log(results);
-		res.end(JSON.stringify(results));		
+		else
+		{
+			console.log(results);
+			res.status(200).s(JSON.stringify(results));		
+		}
+		
 	});
 });
 app.get('/test' , function(req,res){
@@ -204,7 +212,11 @@ app.get('/test' , function(req,res){
 	connection.query('select * from map',function(error, results, fields)
 	{	
 		if(error){console.log(error);}
-		res.end(JSON.stringify(results));		
+		else
+		{
+			res.status(200).s(JSON.stringify(results));		
+		}
+		
 	});
 });
 app.post('/editor/generate',function(req,res){
@@ -213,7 +225,13 @@ app.post('/editor/generate',function(req,res){
 	 function(error,results,fields)
 	{
 		if(error){console.log(error);}
-		res.end(JSON.stringify(results));
+		else
+		{
+			console.log(results);
+			res.status(200).s(JSON.stringify(results));		
+		}
+		
+		
 	});
 });
 
@@ -227,7 +245,7 @@ app.get('/account/checkid' , function(req,res){
 	connection.query(sql,[id],function(error,results,fields){
 		if(error){
 			console.error(error);
-			res.end('error');
+			res.('error');
 		}
 		else{
 			
@@ -237,17 +255,17 @@ app.get('/account/checkid' , function(req,res){
 
 			if(count == 0)
 			{
-				res.status(200).send(JSON.stringify(results));
+				res.status(200).s(JSON.stringify(results));
 			}
 			else
 			{
-				res.status(204).send('alreay exist');
+				res.status(204).s('alreay exist');
 			}
 		
-			//res.send(JSON.stringify(results));
+			//res.s(JSON.stringify(results));
 			
 
-			//res.end(JSON.stringify(results));
+			//res.(JSON.stringify(results));
 		}
 	})
 
@@ -268,7 +286,7 @@ app.post('/account/add',function(req,res){
 	,function(error , results , fields){
 		if(error){
 			console.error(error);
-			res.end('error');
+			res.('error');
 		}
 		else{
 			
@@ -282,26 +300,26 @@ app.post('/account/add',function(req,res){
 				function(err,result,fields){
 					if(err){
 						console.error(err);
-						res.end('error');
+						res.('error');
 						
 					}
 					else
 					{
 						
 						console.log(result);
-						res.status(200).send(JSON.stringify(result));
+						res.status(200).s(JSON.stringify(result));
 					}
 				
 				});
 			}
 			else
 			{
-				res.status(204).send('alreay exist');
+				res.status(204).s('alreay exist');
 			}
 			
 			
 
-			//res.end(JSON.stringify(results));
+			//res.(JSON.stringify(results));
 		}
 	})
 
@@ -320,12 +338,12 @@ app.post('/account/update' , function(req,res)
 	{	
 		if(error){
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else{
 			console.log(results);
 
-			res.status(200).send(JSON.stringify(results));
+			res.status(200).s(JSON.stringify(results));
 		}
 				
 	});
@@ -341,12 +359,12 @@ app.get('/account/info' , function(req,res)
 		if(error)
 		{
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else
 		{
 			console.log(result);
-			res.status(200).send(JSON.stringify(result));
+			res.status(200).s(JSON.stringify(result));
 		}
 	})
 })
@@ -361,12 +379,12 @@ app.post('/account/stage' , function(req,res)
 		if(error)
 		{
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else
 		{
 			console.log(result);
-			res.status(200).send(JSON.stringify(result));
+			res.status(200).s(JSON.stringify(result));
 		}
 	})
 })
@@ -384,12 +402,12 @@ app.post('/stage/update',function(req,res)
 		if(error)
 		{
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else
 		{
 			console.log(result);
-			res.status(200).send(JSON.stringify(result));
+			res.status(200).s(JSON.stringify(result));
 		}
 	})
 
@@ -405,12 +423,12 @@ app.post('/stage/insert' , function(req,res){
 		if(error)
 		{
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else
 		{
 			console.log(result);
-			res.status(200).send(JSON.stringify(result));
+			res.status(200).s(JSON.stringify(result));
 		}
 	})
 
@@ -423,102 +441,102 @@ app.get('/stage/info',function(req,res){
 		if(error)
 		{
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else
 		{
 			console.log(results);
-			res.status(200).send(JSON.stringify(results));
+			res.status(200).s(JSON.stringify(results));
 		}
 	})
 })
 
-//Friend Manage
-app.post('/friend/send', function(req,res){
+//Fri Manage
+app.post('/fri/s', function(req,res){
 	var postData = req.body;
 
-	sql = 'insert into friendrequest set ?';
+	sql = 'insert into frirequest set ?';
 	connection.query(sql,postData,function(error,results,fields){
 		if(error)
 		{
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else
 		{
 			console.log(results);
-			res.status(200).send(results);
+			res.status(200).s(results);
 		}
 	})
 })
 
-app.get('/friend/request', function(req,res){
-	var friend_id = req.query.id;
+app.get('/fri/request', function(req,res){
+	var fri_id = req.query.id;
 
-	sql = 'select * from friendrequest where friend_id = ?';
-	connection.query(sql,friend_id,function(error,results,fields){
+	sql = 'select * from frirequest where fri_id = ?';
+	connection.query(sql,fri_id,function(error,results,fields){
 		if(error)
 		{
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else
 		{
 			console.log(results);
-			res.status(200).send(JSON.stringify(results));
+			res.status(200).s(JSON.stringify(results));
 		}
 	})
 })
 
-app.get('/friend/list', function(req,res){
+app.get('/fri/list', function(req,res){
 	var id = req.query.id;
 
-	sql = 'select * from friend where friend_id = ? or id = ?';
+	sql = 'select * from fri where fri_id = ? or id = ?';
 	connection.query(sql,[id,id],function(error,results,fields){
 		if(error)
 		{
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else
 		{
 			console.log(results);
-			res.status(200).send(JSON.stringify(results));
+			res.status(200).s(JSON.stringify(results));
 		}
 	})
 })
 
-app.post('/friend/accept',function(req,res){
+app.post('/fri/accept',function(req,res){
 	var postData = req.body;
 	var id = req.body.id;
-	var friend_id = req.body.friend_id;
+	var fri_id = req.body.fri_id;
 
 	//insert
-	var insert_sql = 'insert into friend set ?';
+	var insert_sql = 'insert into fri set ?';
 	//delete
-	var delete_sql = 'delete from friendrequest where id = ? and friend_id =?';
+	var delete_sql = 'delete from frirequest where id = ? and fri_id =?';
 
 	connection.query(insert_sql,postData,function(error,results,fields){
 		if(error)
 		{
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else
 		{
 			console.log(results);
-			//res.status(200).send(results).end();
+			//res.status(200).s(results).();
 
-			connection.query(delete_sql,[id,friend_id],function(error,results,fields){
+			connection.query(delete_sql,[id,fri_id],function(error,results,fields){
 				if(error)
 				{
 					console.log(error);
-					res.status(400).send(error);
+					res.status(400).s(error);
 				}
 				else
 				{
 					console.log(results);
-					res.status(200).send(results);
+					res.status(200).s(results);
 				}
 			})
 
@@ -527,8 +545,8 @@ app.post('/friend/accept',function(req,res){
 
 	
 })
-//app.post('/friend/decline')
-//app.post('/friend/delete')
+//app.post('/fri/decline')
+//app.post('/fri/delete')
 
 //chat
 app.post('/chat/post',function(req,res){
@@ -541,7 +559,7 @@ app.post('/chat/post',function(req,res){
 		if(error)
 		{
 			console.log(error);
-			res.status(400).send(error);
+			res.status(400).s(error);
 		}
 		else
 		{
@@ -550,17 +568,17 @@ app.post('/chat/post',function(req,res){
 				if(error)
 				{
 					console.log(error);
-					res.status(400).send(error);
+					res.status(400).s(error);
 				}
 				else
 				{
 					console.log(results);
-					res.status(200).send(JSON.stringify(results));
+					res.status(200).s(JSON.stringify(results));
 				}
 			})
 			*/
 			console.log(error);
-			res.status(200).send('success');
+			res.status(200).s('success');
 		}
 	})
 })
@@ -574,12 +592,12 @@ app.get('/chat/get',function(req,res){
 				if(error)
 				{
 					console.log(error);
-					res.status(400).send(error);
+					res.status(400).s(error);
 				}
 				else
 				{
 					console.log(results);
-					res.status(200).send(JSON.stringify(results));
+					res.status(200).s(JSON.stringify(results));
 				}
 			})
 })
@@ -592,7 +610,7 @@ app.get('/igloo/playerskin', function(req,res){
         connection.query(sql, userid, function(error, results, fields)
         {
                 if(error){console.log(error);}
-                res.end(JSON.stringify(results));
+                res.(JSON.stringify(results));
         });
 });
 app.post('/igloo/playerskin',function(req,res){
@@ -607,7 +625,7 @@ app.post('/igloo/playerskin',function(req,res){
 			console.log(rows[i]);
 			if(userid == rows[i].userid) {existuser = true;}
 		}
-		if(!existuser) {res.end("wrong user id");}
+		if(!existuser) {res.("wrong user id");}
 	});
 
 	var existskin = false;
@@ -626,7 +644,7 @@ app.post('/igloo/playerskin',function(req,res){
 				rows[j].skinid_4 == skinid ||
 				rows[j].skinid_5 == skinid)
 			{
-				res.end("already have");
+				res.("already have");
 				existskin = true;
 				break;
 			}
@@ -689,7 +707,7 @@ app.post('/igloo/playerskin',function(req,res){
 		{
 			console.log("select");
 			if(error) {console.log(error);}
-			res.end(JSON.stringify(results));
+			res.(JSON.stringify(results));
 		});
 	});
 });
