@@ -97,7 +97,7 @@ app.post('/map/clear' , function(req,res)
 		else{
 			console.log(results);
 
-			res.status(200).send('clear custom map title : ' + title);
+			res.status(200).send(JSON.stringify(results));
 		}
 				
 	});
@@ -115,7 +115,7 @@ app.post('/map/play' , function(req,res)
 		else{
 			console.log(results);
 
-			res.status(200).send('play custom map title : ' + title);
+			res.status(200).send(JSON.stringify(results));
 		}
 				
 	});
@@ -136,7 +136,7 @@ app.post('/map/push' , function(req,res)
 		else{
 			console.log(results);
 
-			res.status(200).send('push custom map title : ' + title);
+			res.status(200).send(JSON.stringify(results));
 		}
 				
 	});
@@ -159,7 +159,7 @@ app.post('/editorPlay/add' , function(req,res)
 		else{
 			console.log(results);
 
-			res.status(200).send('clear editor stage');
+			res.status(200).send(JSON.stringify(results));
 		}
 				
 	});
@@ -180,7 +180,7 @@ app.post('/editorPlay/push' , function(req,res)
 		else{
 			console.log(results);
 
-			res.status(200).send('push editorPlayerMap : ' + title);
+			res.status(200).send(JSON.stringify(results));
 		}
 				
 	});
@@ -237,7 +237,7 @@ app.get('/account/checkid' , function(req,res){
 
 			if(count == 0)
 			{
-				res.status(200).send('success');
+				res.status(200).send(JSON.stringify(results));
 			}
 			else
 			{
@@ -289,7 +289,7 @@ app.post('/account/add',function(req,res){
 					{
 						
 						console.log(result);
-						res.status(200).send('success');
+						res.status(200).send(JSON.stringify(result));
 					}
 				
 				});
@@ -312,10 +312,11 @@ app.post('/account/add',function(req,res){
 app.post('/account/update' , function(req,res)
 {
 	var id = req.body.id;
-	var change = req.body.cash;
+	var change_cash = req.body.cash;
 	var stage = req.body.stage;
-	var sql = 'update user set cash = cash + ?, stage = ? where id = ?';
-	connection.query(sql,[change,stage,id],function(error, results, fields)
+	var change_heart = req.body.heart;
+	var sql = 'update user set cash = cash + ?, heart = heart + ?, stage = ? where id = ?';
+	connection.query(sql,[change_cash,change_heart,stage,id],function(error, results, fields)
 	{	
 		if(error){
 			console.log(error);
@@ -324,7 +325,7 @@ app.post('/account/update' , function(req,res)
 		else{
 			console.log(results);
 
-			res.status(200).send('success change cash data');
+			res.status(200).send(JSON.stringify(results));
 		}
 				
 	});
@@ -365,7 +366,7 @@ app.post('/account/stage' , function(req,res)
 		else
 		{
 			console.log(result);
-			res.status(200).send(result);
+			res.status(200).send(JSON.stringify(result));
 		}
 	})
 })
@@ -388,7 +389,7 @@ app.post('/stage/update',function(req,res)
 		else
 		{
 			console.log(result);
-			res.status(200).send("update step");
+			res.status(200).send(JSON.stringify(result));
 		}
 	})
 
@@ -409,7 +410,7 @@ app.post('/stage/insert' , function(req,res){
 		else
 		{
 			console.log(result);
-			res.status(200).send(result);
+			res.status(200).send(JSON.stringify(result));
 		}
 	})
 
