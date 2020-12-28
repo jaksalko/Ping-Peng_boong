@@ -8,6 +8,7 @@ public class ButtonManager_Level : UIScript
 {
 	public GameObject islandList;
 	public GameObject islandListContents;
+	public List<string> isLandNameList;
 	public GameObject[] levelList;
 	public Sprite clearBtn;
 	public Sprite nonclearBtn;
@@ -33,51 +34,41 @@ public class ButtonManager_Level : UIScript
 			levelStep[l] = levelList[l].transform.GetChild(2).GetComponent<Text>();
         }
 
+		/* need to fix
         for(int j = 0; j < highLevel; j++)
         {
 			int step = GoogleInstance.instance.stages[j].stage_step;
 			if (step > 99) step = 99;
 			levelStep[j].text = string.Format("{0:D2}", step);
         }
+		*/
 
-
-
-		if (Island_Name(highLevel) == "Tutorial")
+		// show the highest level
+		string highest = Island_Name(highLevel);
+		int index = isLandNameList.IndexOf(highest);
+		if(index == -1)
 		{
-			Debug.Log("tutorial");
-			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 0;
+			// last level cleared
+			Debug.Log(isLandNameList.Count);
+			index = isLandNameList.Count - 1;
 		}
-		else if (Island_Name(highLevel) == "Icecream")
-		{
-			Debug.Log("icecream");
-			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 0.5f ;
-		}
-		else if (Island_Name(highLevel) == "Beach")
-		{
-			Debug.Log("beach");
-			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 1f;
-		}
-		else if (Island_Name(highLevel) == "Cracker")
-		{
-			Debug.Log("Cracker");
-			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 1.5f;
-		}
-		else if (Island_Name(highLevel) == "Cottoncandy")
-		{
-			Debug.Log("cottoncandy");
-			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 2f;
-		}
-		else
-		{
-			Debug.Log("default : last island");
-			islandList.GetComponent<ScrollRect>().horizontalNormalizedPosition = 2f;
-		}
+		islandList.GetComponent<ScrollSnapRect>().Set(index);
 
 		Color clearcolor;
 		ColorUtility.TryParseHtmlString("#0056A2FF", out clearcolor);
 		Color nonclearcolor;
 		ColorUtility.TryParseHtmlString("#93CEE2FF", out nonclearcolor);
 
+		// erase after test
+		for (int i = 0; i < levelList.Length; i++)
+		{
+			levelList[i].transform.GetChild(0).GetComponent<Image>().sprite = clearBtn;
+			levelList[i].transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().sprite = clearSelect;
+			levelList[i].transform.GetChild(1).GetComponent<Text>().color = clearcolor;
+			levelList[i].GetComponent<Toggle>().interactable = true;
+		}
+
+		/* need to fix
 		int i;
 		for(i = 0; i < highLevel; i++)
 		{
@@ -99,10 +90,10 @@ public class ButtonManager_Level : UIScript
 		{
 			levelList[i - 1].GetComponent<Toggle>().isOn = true;
 		}
+		*/
 
 	}
 
-	
 	public void PressBackBtn()
 	{
 		SceneManager.LoadScene("MainScene");

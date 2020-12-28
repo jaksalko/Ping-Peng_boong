@@ -170,6 +170,11 @@ public class ScrollSnapRect : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
         _currentPage = aPageIndex;
     }
 
+	public void Set(int index)
+	{
+		SetPage(index);
+	}
+
     //------------------------------------------------------------------------
     private void LerpToPage(int aPageIndex) {
         aPageIndex = Mathf.Clamp(aPageIndex, 0, _pageCount - 1);

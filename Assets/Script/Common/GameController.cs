@@ -69,8 +69,9 @@ public class GameController : MonoBehaviour
 
     InputHandler handler;
     public MoveCommand moveCommand;
+	public MoveCommand undoCommand;
 
-    private void Awake()
+	private void Awake()
     {
         //PlayerPrefs.DeleteAll();
         
@@ -143,6 +144,17 @@ public class GameController : MonoBehaviour
         }
             
     }
+
+	public void MakeUndoCommand()	// press undo btn -> make undo command
+	{
+		if (!nowPlayer.Moving() && isPlaying)
+		{
+			Debug.Log("undo command made");
+			handler.UndoCommand();
+			moveCount--;
+		}
+	}
+
     int NormalizeSwipe()
     {
         if (Vector2.Distance(up, down) <= 30)//민감도

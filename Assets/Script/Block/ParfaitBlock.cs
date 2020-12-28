@@ -74,31 +74,33 @@ public class ParfaitBlock : Block
     }
     public void ActiveNextParfait()
     {
-        
-        state = State.clear;
+		Debug.Log("...active next parfait");
+		state = State.clear;
 
         if(sequence < 3)
         {
             ParfaitBlock nextParfaitBlock = GameController.instance.mapLoader.parfaitBlock[sequence + 1];
             nextParfaitBlock.Activate();           
         }
-        Destroy(gameObject);
-    }
+		gameObject.transform.GetChild(0).gameObject.SetActive(false);
+		// Destroy(gameObject);
+	}
 
-    public bool GetParfait(MapLoader map)
+	public bool GetParfait(MapLoader map)
     {
         state = State.clear;
 
 		if (sequence < 3)
         {
             map.parfaitBlock[sequence + 1].Activate();
-            Destroy(gameObject);
+			gameObject.transform.GetChild(0).gameObject.SetActive(false);
+			// Destroy(gameObject);
             return false;//active next parfait
         }
         else
         {
-
-            Destroy(this.gameObject);
+			gameObject.transform.GetChild(0).gameObject.SetActive(false);
+            // Destroy(this.gameObject);
             return true;//clear game
         }
             
@@ -108,4 +110,19 @@ public class ParfaitBlock : Block
 
         
     }
+
+	public void Deactivate()
+	{
+		Debug.Log(gameObject.name + "deactivate");
+
+		iceBox.gameObject.SetActive(true);
+		iceBox.SetBool("melt", false);
+
+		state = State.inactive;
+
+		for (int i = 0; i < activeParticle.Length; i++)
+		{
+			activeParticle[i].Stop();
+		}
+	}
 }
