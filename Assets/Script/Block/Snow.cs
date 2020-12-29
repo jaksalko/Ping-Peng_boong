@@ -12,7 +12,8 @@ public class Snow : MonoBehaviour
         {
             if(particle != null)
                 particle.Play();
-            Destroy(gameObject);
+			gameObject.SetActive(false);
+			// Destroy(gameObject);
         }
     }
 	

@@ -127,7 +127,7 @@ public class UiController : UIScript
 
     public void ReturnButton()
     {
-
+		GameController.instance.moveCommand.Undo();
     }
 
 

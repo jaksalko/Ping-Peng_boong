@@ -207,7 +207,6 @@ public class Player : MonoBehaviour , IMoveable
                 Debug.Log("Arrive... target position : " + targetPositions[0].Item1 + "  distance : " + distance);
 
 
-
                 if (targetPositions.Count != 1)
                 {
                     direction = targetPositions[0].Item2;
@@ -283,9 +282,11 @@ public class Player : MonoBehaviour , IMoveable
                     }
                 }
 
-                
-            
-            }
+
+				
+
+
+			}
         }
         
 
@@ -403,10 +404,10 @@ public class Player : MonoBehaviour , IMoveable
             {
                 if (!simulating)
                 {
-                    GameController.instance.ui.ParfaitDone();
+                    // GameController.instance.ui.ParfaitDone();
                 }
-                parfait.ActiveNextParfait();
-
+				Debug.Log("get parfait...");
+				parfait.ActiveNextParfait();
             }
             else
             {

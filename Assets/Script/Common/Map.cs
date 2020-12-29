@@ -221,8 +221,8 @@ public class Map : MonoBehaviour, IMap
                 {
                     //change block data parfait to normal
                     blocks[posZ + step[direction, 0], posX + step[direction, 1]].Data = BlockNumber.normal; //pos 위치가 아닌 한칸 이동한 위치ㄹ
-                    //parfaitorder++;
-                    GameController.ParfaitOrder++;
+					//parfaitorder++;
+					GameController.ParfaitOrder++;
 
 
                     return true;
@@ -279,7 +279,7 @@ public class Map : MonoBehaviour, IMap
                 if (next >= BlockNumber.upperParfaitA && next <= BlockNumber.upperParfaitD)
                 {
                     blocks[posZ + step[direction, 0], posX + step[direction, 1]].Data = BlockNumber.upperNormal;
-                    GameController.ParfaitOrder++;
+					GameController.ParfaitOrder++;
 
                     return true;
                 }
@@ -422,7 +422,7 @@ public class Map : MonoBehaviour, IMap
                     {
                         player.actionnum = 3;//crash : 3
                         blocks[posZ, posX].Data = BlockNumber.normal;
-                        GameController.ParfaitOrder++;
+						GameController.ParfaitOrder++;
                     }
                     else
                     {
@@ -448,13 +448,13 @@ public class Map : MonoBehaviour, IMap
                         pos.y -= 1;
                         player.actionnum = 5;//drop : 5
                         blocks[posZ, posX].Data = BlockNumber.normal;
-                        GameController.ParfaitOrder++;
+						GameController.ParfaitOrder++;
                     }
                     else if (next >= BlockNumber.upperParfaitA && next <= BlockNumber.upperParfaitD)//onCloud(2층)에서 2층 파레페 먹고 멈
                     {
                         player.actionnum = 3;// crash : 3
                         blocks[posZ, posX].Data = BlockNumber.upperNormal;
-                        GameController.ParfaitOrder++;
+						GameController.ParfaitOrder++;
                     }
                     else
                     {
@@ -473,7 +473,7 @@ public class Map : MonoBehaviour, IMap
                         player.actionnum = 5;//drop : 5
                         pos.y -= 2;
                         blocks[posZ, posX].Data = BlockNumber.normal;
-                        GameController.ParfaitOrder++;
+						GameController.ParfaitOrder++;
                     }
                     else if(next >= BlockNumber.upperNormal && next <= BlockNumber.upperCracked)
                     {
@@ -485,7 +485,7 @@ public class Map : MonoBehaviour, IMap
                         player.actionnum = 5;//drop : 5
                         pos.y -= 1;
                         blocks[posZ, posX].Data = BlockNumber.upperNormal;
-                        GameController.ParfaitOrder++;
+						GameController.ParfaitOrder++;
                     }
                     else
                     {
@@ -569,10 +569,7 @@ public class Map : MonoBehaviour, IMap
 
     public void UpdateCheckArray(int width, int height, bool isCheck)
     {
-//        Debug.Log(height + "," + width + "  is checked " + isCheck);
-
-        
-
+        // Debug.Log(height + "," + width + "  is checked " + isCheck);
         check[height, width] = isCheck;
     }
 
@@ -593,6 +590,36 @@ public class Map : MonoBehaviour, IMap
     {
         blocks[z, x] = block;
     }
+
+	public Vector2[] FindParfaitBlocks()
+	{
+		Vector2[] parfaitPos = new Vector2[4];
+
+		for (int i = 0; i < mapsizeH; i++)
+		{
+			for (int j = 0; j < mapsizeW; j++)
+			{
+				if (blocks[i, j].Data == BlockNumber.parfaitA)
+				{
+					parfaitPos[0] = new Vector2(i, j);
+				}
+				else if (blocks[i, j].Data == BlockNumber.parfaitB)
+				{
+					parfaitPos[1] = new Vector2(i, j);
+				}
+				else if (blocks[i, j].Data == BlockNumber.parfaitC)
+				{
+					parfaitPos[2] = new Vector2(i, j);
+				}
+				else if (blocks[i, j].Data == BlockNumber.parfaitD)
+				{
+					parfaitPos[3] = new Vector2(i, j);
+				}
+			}
+		}
+
+		return parfaitPos;
+	}
 }
 
 
