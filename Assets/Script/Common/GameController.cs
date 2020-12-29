@@ -54,7 +54,7 @@ public class GameController : MonoBehaviour
     [SerializeField]
     GameObject backgroundSound;
     SoundManager soundManagerScript;
-    GameManager gameManager;
+    GameManager gameManager = GameManager.instance;
 
 
     JsonAdapter jsonAdapter = new JsonAdapter();
@@ -86,11 +86,12 @@ public class GameController : MonoBehaviour
         StartCoroutine(GameSetting());
 
 
-        gameManager = GameManager.instance;
+        
 
 
 
     }
+    
     void SwipeStream()
     {
 
@@ -198,19 +199,9 @@ public class GameController : MonoBehaviour
     {
 
         BackgroundSoundSetting();
-
+       
         // map 생성
         if (customMode)
-        /*yield return StartCoroutine(mapLoader.InfiniteMAP(GameManager.instance.infiniteLevel , callback =>
-        {
-            if(callback !=null)
-                map = callback;
-            else
-            {
-                //do something...
-            }
-
-        }));//return을 받아오지못함*/
         {
             map = mapLoader.CustomPlayMap();
         }
