@@ -154,24 +154,25 @@ public class UserData
 {
     public string id;
     public int cash;
-    public int candy;
+    public int heart;
     public string nickname;
     public int stage;
     //public int change;
 
-    public UserData(string userid , string nick)
+    public UserData(string userid , string nick)//Initialize user data
     {
         id = userid;
         nickname = nick;
         cash = 0;
-        candy = 5;
+        heart = 5;
         stage = 0;
     }
 
-    public UserData(string userid, int cash , int stage)
+    public UserData(string userid, int change_cash ,int change_heart, int stage)//update user data
     {
         id = userid;
-        this.cash = cash;
+        cash = change_cash;
+        heart = change_heart;
         this.stage = stage;
     }
 }

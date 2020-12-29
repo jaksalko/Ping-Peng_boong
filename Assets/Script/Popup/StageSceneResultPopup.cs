@@ -21,6 +21,6 @@ public class StageSceneResultPopup : UIScript
 
     public void NextStageButtonClicked()
     {
-        Load_Island(GoogleInstance.instance.nowLevel);
+        Load_Island(GameManager.instance.nowLevel);
     }
 }

@@ -23,7 +23,8 @@ public class BaseCanvas : MonoBehaviour
 	public Text star;
 
 	public GameObject friendManage;
-	DateTime d;
+
+	GameManager gameManager;
 	void Awake()
     {
 		if (Instance != null)
@@ -31,21 +32,44 @@ public class BaseCanvas : MonoBehaviour
 			Destroy(gameObject);
 			return;
 		}
-		d = DateTime.Now;
-		Debug.Log(d);
+		
 		Instance = this;
 		DontDestroyOnLoad(gameObject);
 
 
-		StartCoroutine(UpdateInfo());
+		//StartCoroutine(UpdateInfo());
 
 	}
 
-    IEnumerator UpdateInfo()
+	private void Start()
+	{
+		bgmSlider.value = PlayerPrefs.GetFloat("bgmVolumn", 1);
+		sfxSlider.value = PlayerPrefs.GetFloat("sfxVolumn", 1);
+
+		gameManager = GameManager.instance;
+	}
+
+	private void Update()
+	{
+		if (SceneManager.GetActiveScene().buildIndex >= 4)
+		{
+			changePlayerBtn = GameObject.FindGameObjectWithTag("ChangePlayer");
+			userState.SetActive(false);
+		}
+		else
+		{
+			userState.SetActive(true);
+		}
+
+		cash.text = gameManager.user.cash.ToString();
+		star.text = gameManager.user.heart + "/5";
+	}
+
+	IEnumerator UpdateInfo()
     {
         while(true)
         {
-			UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2 + "account/info?id=" + GoogleInstance.instance.id);
+			UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2 + "account/info?id=" + GameManager.instance.id);
 			yield return www.SendWebRequest();
 
 			if (www.isNetworkError || www.isHttpError)
@@ -67,14 +91,14 @@ public class BaseCanvas : MonoBehaviour
 
 				UserData selectedData = datas[0];
 
-				GoogleInstance.instance.user = selectedData;
+				GameManager.instance.user = selectedData;
 
 				cash.text = selectedData.cash.ToString();
-				star.text = selectedData.candy + "/5";
+				star.text = selectedData.heart + "/5";
 			}
 
             ///stage
-			www = UnityWebRequest.Get(PrivateData.ec2 + "stage/info?id=" + GoogleInstance.instance.user.id);
+			www = UnityWebRequest.Get(PrivateData.ec2 + "stage/info?id=" + GameManager.instance.user.id);
 			yield return www.SendWebRequest();
 
 			if (www.isNetworkError || www.isHttpError)
@@ -95,7 +119,7 @@ public class BaseCanvas : MonoBehaviour
 
 				for(int i = 0; i < datas.Length; i++)
                 {
-					GoogleInstance.instance.stages[datas[i].stage_num].stage_step = datas[i].stage_step;
+					GameManager.instance.stages[datas[i].stage_num].stage_step = datas[i].stage_step;
                 }
 
 			}
@@ -105,24 +129,7 @@ public class BaseCanvas : MonoBehaviour
 		
 	}
 
-	private void Start()
-	{
-		bgmSlider.value = PlayerPrefs.GetFloat("bgmVolumn", 1);
-		sfxSlider.value = PlayerPrefs.GetFloat("sfxVolumn", 1);
-	}
-
-	private void Update()
-	{
-		if (SceneManager.GetActiveScene().buildIndex >= 4)
-		{
-			changePlayerBtn = GameObject.FindGameObjectWithTag("ChangePlayer");
-			userState.SetActive(false);
-		}
-		else
-		{
-			userState.SetActive(true);
-		}
-	}
+	
 
 	public void InitLocBtnClick()
 	{

@@ -10,9 +10,9 @@ public class FriendList : MonoBehaviour
 
     public void DeleteFriend()
     {
-        //delete from friend where id =?(friend_name) and friend_id = ?(GoogleInstance.instance.id)
+        //delete from friend where id =?(friend_name) and friend_id = ?(GameManager.instance.id)
         //or
-        //delete from friend where id =?(GoogleInstance.instance.id) and friend_id = ?(friend_name)
+        //delete from friend where id =?(GameManager.instance.id) and friend_id = ?(friend_name)
 
 
     }

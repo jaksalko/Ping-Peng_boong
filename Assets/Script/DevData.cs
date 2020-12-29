@@ -15,7 +15,7 @@ public class DevData : MonoBehaviour
     float fps;
     private void Awake()
     {
-        if (GoogleInstance.instance.id == "TestPlayerID" || GoogleInstance.instance.id == "U:9b4f1778f9068ddc8e5f9648a916e74b")
+        if (GameManager.instance.id == "TestPlayerID" || GameManager.instance.id == "U:9b4f1778f9068ddc8e5f9648a916e74b")
             gameObject.SetActive(true);
         else
             gameObject.SetActive(false);

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 // 구글 플레이 연동
 using CloudOnce;
 using UnityEngine.Networking;
+using System.Text.RegularExpressions;
 
 public class LoadingScene : MonoBehaviour
 {
@@ -26,16 +27,85 @@ public class LoadingScene : MonoBehaviour
     private void Awake()
     {
 
-        JsonAdapter.GET += IsNew;
-        JsonAdapter.POST += IsUnique;
+       
         StartCoroutine(Interpolation());//Animation Effect
 
 
         Cloud.OnInitializeComplete += CloudInitializeCompleted;
 
-        Cloud.Initialize(false, true);
+        Cloud.Initialize(false, true);//call initializeComplete
         //Cloud.Initialize();
         
+    }
+    void CloudInitializeCompleted()
+    {
+        Cloud.OnInitializeComplete -= CloudInitializeCompleted;
+
+      
+
+        Debug.LogWarning("initialize completed");
+
+        JsonAdapter jsonAdapter = new JsonAdapter();
+        StartCoroutine(jsonAdapter.API_GET("account/checkid?id=" + Cloud.PlayerID, callback => { IsNewUser(callback); }));
+
+    }
+    public void IsNewUser(string callback)// call by loading
+    {
+        
+        if (callback != null)
+        {
+            make_account_button.gameObject.SetActive(true);
+            // create new account
+            
+        }
+        else
+        {
+            GameManager.instance.UpdateUserData(Cloud.PlayerID);
+            play_button.gameObject.SetActive(true);
+        }
+        
+        
+    }
+    public void IsUniqueNickname(string callback)//call by add AddAccount button
+    {
+        if(callback != null)
+        {
+            //addAccountText.text = "created successfully";
+            GameManager.instance.UpdateUserData(Cloud.PlayerID);
+
+
+            addAccountPanel.SetActive(false);
+            make_account_button.gameObject.SetActive(false);
+            play_button.gameObject.SetActive(true);
+            
+        }
+        else
+        {
+            addAccountText.text = "이미 존재하는 닉네임입니다.";
+        }
+    }
+    public void AddAccount()
+    {
+
+        string nickname_regex = "^[a-zA-Z가-힣0-9]{1}[a-zA-Z가-힣0-9]{1,7}$";
+        Regex regex = new Regex(nickname_regex);
+
+        if(regex.IsMatch(nickname.text))
+        {
+            JsonAdapter jsonAdapter = new JsonAdapter();
+            UserData newAccount = new UserData(userid: Cloud.PlayerID, nick: nickname.text);
+            var json = JsonUtility.ToJson(newAccount);
+
+
+            StartCoroutine(jsonAdapter.API_POST("account/add", json , callback => { IsUniqueNickname(callback); }));
+        }
+        {
+            addAccountText.text = "한글,영어,숫자 포함 최소 2자, 최대 8자입니다";
+        }
+
+      
+
+
     }
 
     public void GameStart()
@@ -47,71 +117,7 @@ public class LoadingScene : MonoBehaviour
         addAccountPanel.SetActive(true);
 
     }
-    public void IsNew(bool add)// call by loading
-    {
-        JsonAdapter.GET -= IsNew;
-        if (add)
-        {
-            make_account_button.gameObject.SetActive(true);
-            // create new account
-            
-        }
-        else
-        {
 
-            Debug.Log("already exist");
-            GoogleInstance.instance.id = Cloud.PlayerID;
-            
-            JsonAdapter.POST -= IsUnique;
-
-            play_button.gameObject.SetActive(true);
-        }
-        
-        
-    }
-    public void IsUnique(bool unique)//call by add AddAccount button
-    {
-        if(unique)
-        {
-            //addAccountText.text = "created successfully";
-            GoogleInstance.instance.id = Cloud.PlayerID;
-            JsonAdapter.POST -= IsUnique;
-
-            addAccountPanel.SetActive(false);
-            play_button.gameObject.SetActive(true);
-            
-        }
-        else
-        {
-            addAccountText.text = "이미 존재하는 닉네임입니다.";
-        }
-    }
-    public void AddAccount()
-    {
-        JsonAdapter jsonAdapter = new JsonAdapter();
-        UserData newAccount = new UserData(userid : Cloud.PlayerID , nick : nickname.text);       
-        var json = JsonUtility.ToJson(newAccount);
-
-        
-        StartCoroutine(jsonAdapter.API_POST("account/add",json));
-
-
-    }
-    public void CloudInitializeCompleted()
-    {
-        Cloud.OnInitializeComplete -= CloudInitializeCompleted;
-        GoogleInstance.instance.SetText("initialized completed ! " + Cloud.PlayerID);
-
-        Debug.LogWarning("initialize completed");
-
-        string userId = Cloud.PlayerID;
-
-        JsonAdapter jsonAdapter = new JsonAdapter();
-        StartCoroutine(jsonAdapter.API_GET("account/checkid?id="+userId,callback => { }));
-
-    }
-   
-   
     IEnumerator Interpolation()
     {
         float t = 0;

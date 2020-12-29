@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System;
 using UnityEngine.Networking;
+using System.Text.RegularExpressions;
 
 public class EditorSceneResultPopup : MonoBehaviour
 {
@@ -40,6 +41,12 @@ public class EditorSceneResultPopup : MonoBehaviour
 
     public void MakeCustomStageClicked()
     {
+        string title_regex = "^[a-zA-Z가-힣0-9]{1}[a-zA-Z가-힣0-9]{1,7}$";
+        Regex regex = new Regex(title_regex);
+
+
+
+
         //Web Request
         StartCoroutine(InsertCustomStage());
     }
@@ -49,11 +56,11 @@ public class EditorSceneResultPopup : MonoBehaviour
         JsonAdapter jsonAdapter = new JsonAdapter();
         
         JsonData customStage =
-            new JsonData(GoogleInstance.instance.user.nickname, stageTitle.text, newMap, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), move, dif);
+            new JsonData(GameManager.instance.user.nickname, stageTitle.text, newMap, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), move, dif);
 
         var json = JsonUtility.ToJson(customStage);
 
-        yield return StartCoroutine(jsonAdapter.API_POST("editor/generate" , json));
+        yield return StartCoroutine(jsonAdapter.API_POST("editor/generate" , json , callback => { }));
         SceneManager.LoadScene("MainScene");
     }
 }

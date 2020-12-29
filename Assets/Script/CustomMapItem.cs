@@ -24,7 +24,7 @@ public class CustomMapItem : MonoBehaviour
         maker.text = itemdata.nickname;
         moveCount.text = itemdata.moveCount.ToString();
 
-        List<CustomStagePlayerData> myPlayData = GoogleInstance.instance.customStagePlayerDatas;
+        List<CustomStagePlayerData> myPlayData = GameManager.instance.customStagePlayerDatas;
         isPlayed = false;
         for (int i = 0; i < myPlayData.Count; i++)
         {
@@ -39,13 +39,29 @@ public class CustomMapItem : MonoBehaviour
 
     public void PlayButton()
     {
-        GoogleInstance.instance.playCustomData = this;
+        GameManager gameManager = GameManager.instance;
+        gameManager.playCustomData = this;
+
+        
+
+        UserData user = new UserData(gameManager.user.id, change_cash : 0, change_heart: -1, gameManager.user.stage);
+        var json = JsonUtility.ToJson(user);
+        StartCoroutine(jsonAdapter.API_POST("account/update", json, callback => {
+
+            gameManager.user.heart -= 1;
+
+        }));
+
+
+
+
+
         //popularity++
-        if(!isPlayed)
+        if (!isPlayed)
         {
             
-            var json = JsonUtility.ToJson(itemdata);
-            StartCoroutine(jsonAdapter.API_POST("map/play", json));//popularity++
+            json = JsonUtility.ToJson(itemdata);
+            StartCoroutine(jsonAdapter.API_POST("map/play", json , callback => { }));//popularity++
 
         }
         SceneManager.LoadScene("CustomMapPlayScene");//customMode Scene

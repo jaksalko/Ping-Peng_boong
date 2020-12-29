@@ -34,11 +34,11 @@ public class CustomsSceneResultPopup : MonoBehaviour
 
     public void PushButtonClicked()
     {
-        JsonData jsonData = GoogleInstance.instance.playCustomData.itemdata;
+        JsonData jsonData = GameManager.instance.playCustomData.itemdata;
 
         var json = JsonUtility.ToJson(jsonData);
-        StartCoroutine(jsonAdapter.API_POST("map/push", json));
-        StartCoroutine(jsonAdapter.API_POST("editorPlay/push", json));
+        StartCoroutine(jsonAdapter.API_POST("map/push", json , callback => { }));
+        StartCoroutine(jsonAdapter.API_POST("editorPlay/push", json , callback => { }));
 
         //map push++
         //candy++

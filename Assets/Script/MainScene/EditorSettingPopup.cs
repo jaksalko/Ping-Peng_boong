@@ -26,8 +26,8 @@ public class EditorSettingPopup : MonoBehaviour
             StartCoroutine(Warning());
             return;
         }
-        GoogleInstance.instance.maxSize.x = w;
-        GoogleInstance.instance.maxSize.y = h;
+        GameManager.instance.maxSize.x = w;
+        GameManager.instance.maxSize.y = h;
         SceneManager.LoadScene("MapEditor");
     }
     public void Exit()

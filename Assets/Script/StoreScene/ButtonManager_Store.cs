@@ -223,7 +223,7 @@ public class ButtonManager_Store : MonoBehaviour
 
 	public IEnumerator SkinList()
 	{
-		// UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/igloo/playerskin?userid=" + GoogleInstance.instance.id);
+		// UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/igloo/playerskin?userid=" + GameManager.instance.id);
 		UnityWebRequest www = UnityWebRequest.Get("http://ec2-15-164-219-253.ap-northeast-2.compute.amazonaws.com:3000/igloo/playerskin?userid=test1");
 		yield return www.SendWebRequest();
 
