@@ -37,9 +37,9 @@ public class GameController : MonoBehaviour
 
     public bool customMode;
     public bool editorMode;
-	public int maxLevel;
+    public int maxLevel;
 
-	
+
 
     private bool isPlaying;
     public static bool Playing
@@ -51,10 +51,10 @@ public class GameController : MonoBehaviour
 
 
     [Header("Sound Field")]
-	[SerializeField]
-	GameObject backgroundSound;
-	SoundManager soundManagerScript;
-
+    [SerializeField]
+    GameObject backgroundSound;
+    SoundManager soundManagerScript;
+    GameManager gameManager;
 
 
     JsonAdapter jsonAdapter = new JsonAdapter();
@@ -69,12 +69,11 @@ public class GameController : MonoBehaviour
 
     InputHandler handler;
     public MoveCommand moveCommand;
-	public MoveCommand undoCommand;
 
-	private void Awake()
+    private void Awake()
     {
         //PlayerPrefs.DeleteAll();
-        
+
 
         if (instance == null)
             instance = this;
@@ -85,9 +84,9 @@ public class GameController : MonoBehaviour
         handler = new InputHandler();
         SwipeStream();
         StartCoroutine(GameSetting());
-        
 
-        
+
+        gameManager = GameManager.instance;
 
 
 
@@ -99,14 +98,14 @@ public class GameController : MonoBehaviour
         var mouseDownStream = this.UpdateAsObservable()
                 .Where(_ => !EventSystem.current.IsPointerOverGameObject()
                     && !click
-                    && Input.GetMouseButtonDown(0) )
-                
+                    && Input.GetMouseButtonDown(0))
+
                 .Select(_ => Input.mousePosition)
                 .Subscribe(_ => { down = _; click = true; });
 
         var mouseUpStream = this.UpdateAsObservable()
             .Where(_ => click && Input.GetMouseButtonUp(0))
-            
+
             .Select(_ => Input.mousePosition)
             .Subscribe(_ => { up = _; MakeMoveCommand(); click = false; });
 
@@ -135,25 +134,28 @@ public class GameController : MonoBehaviour
         int dir = NormalizeSwipe();
 
         //make command;
-        if(!nowPlayer.Moving() && isPlaying && dir != -1)
+        if (!nowPlayer.Moving() && isPlaying && dir != -1)
         {
             moveCommand = new MoveCommand(nowPlayer, map, dir);
 
             handler.ExecuteCommand(moveCommand);
             moveCount++;
         }
-            
+
     }
 
-	public void MakeUndoCommand()	// press undo btn -> make undo command
-	{
-		if (!nowPlayer.Moving() && isPlaying)
-		{
-			Debug.Log("undo command made");
-			handler.UndoCommand();
-			moveCount--;
-		}
-	}
+
+    public void MakeUndoCommand()   // press undo btn -> make undo command
+    {
+        if (!nowPlayer.Moving() && isPlaying)
+        {
+            Debug.Log("undo command made");
+            handler.UndoCommand();
+            moveCount--;
+        }
+    }
+
+
 
     int NormalizeSwipe()
     {
@@ -190,7 +192,7 @@ public class GameController : MonoBehaviour
 
         }
 
-       
+
     }
     IEnumerator GameSetting()
     {
@@ -199,7 +201,7 @@ public class GameController : MonoBehaviour
 
         // map 생성
         if (customMode)
-        /*yield return StartCoroutine(mapLoader.InfiniteMAP(GoogleInstance.instance.infiniteLevel , callback =>
+        /*yield return StartCoroutine(mapLoader.InfiniteMAP(GameManager.instance.infiniteLevel , callback =>
         {
             if(callback !=null)
                 map = callback;
@@ -212,22 +214,22 @@ public class GameController : MonoBehaviour
         {
             map = mapLoader.CustomPlayMap();
         }
-        else if(editorMode)
+        else if (editorMode)
         {
             map = mapLoader.EditorMap();
         }
         else
-            map = mapLoader.GenerateMap(GoogleInstance.instance.nowLevel);//map 생성
+            map = mapLoader.GenerateMap(gameManager.nowLevel);//map 생성
 
 
-       
+
         //데이터 초기화 (Remain / Total / MoveCount)
         snow_remain = snow_total = RemainCheck();
         moveCount = 0;
         // player.FindPlayer 가 실행되면 자동으로 2개가 사라짐 이 전까지는 remain == total
         // 실행위치는 GameStart CameraController에 의해서 실행됨.
 
-        
+
         //character 위치에 맵 데이터가 노멀블럭으로 되어있는데 캐릭터 데이터로 전환 ? **데이터가 캐릭터면 바꿀필요 없음
         //체크 true로 변경
         //snow_remain 변경?
@@ -244,7 +246,7 @@ public class GameController : MonoBehaviour
 
         //캐릭터 배치 (active)
         player1.SetPosition(
-           startpos :  map.startPositionA); 
+           startpos: map.startPositionA);
 
         player2.SetPosition(
             startpos: map.startPositionB);
@@ -261,7 +263,7 @@ public class GameController : MonoBehaviour
         yield break;
     }
 
-    
+
     public int RemainCheck()//남은 눈 체크 --> 이동
     {
         int remain = 0;
@@ -290,26 +292,26 @@ public class GameController : MonoBehaviour
 
 
 
-    
-	public void SetPlaying(bool play)
+
+    public void SetPlaying(bool play)
     {
         isPlaying = play;
     }
 
     public void GameStart()//called by cameracontroller.cs after mapscanning...
     {
-        
+
         //if(!simulating)
         ui.SetRemainText(remain: snow_remain, total: snow_total);
 
         nowPlayer = player1;
         nowPlayer.isActive = true;
-        
-       
+
+
         isPlaying = true;
         startTime = Time.time;
 
-        if(map.parfait)
+        if (map.parfait)
         {
             ui.mission_parfait.SetActive(true);
         }
@@ -318,31 +320,37 @@ public class GameController : MonoBehaviour
             ui.mission_default.SetActive(true);
         }
         ui.inGame.SetActive(true);
-        
+
     }
 
     #region JSON
-    public void UserUpdate(int cash , int stage)//cash : +cash , stage : nowStage
+    public void UserUpdate(int cash, int stage)//cash : +cash , stage : nowStage
     {
-        UserData user = new UserData(GoogleInstance.instance.user.id, cash, stage);       
+        UserData user = new UserData(gameManager.user.id, cash, change_heart: 0, stage);
         var json = JsonUtility.ToJson(user);
-        StartCoroutine(jsonAdapter.API_POST("account/update", json));
+        StartCoroutine(jsonAdapter.API_POST("account/update", json, callback => {
+
+            gameManager.user.cash += cash;
+            gameManager.user.stage = stage;
+
+        }));
+
     }
 
-    public void StageClear(int stage_num , int step)//max update
+    public void StageClear(int stage_num, int step)//max update
     {
-        StageData stage = new StageData(GoogleInstance.instance.user.id, stage_num , step);
-       
+        StageData stage = new StageData(gameManager.user.id, stage_num, step);
+
         var json = JsonUtility.ToJson(stage);
-        StartCoroutine(jsonAdapter.API_POST("stage/insert", json));
+        StartCoroutine(jsonAdapter.API_POST("stage/insert", json, callback => { }));
     }
 
     public void StageClear(int step)//update step
     {
-        StageData stage = new StageData(GoogleInstance.instance.user.id, GoogleInstance.instance.nowLevel , step);
- 
+        StageData stage = new StageData(gameManager.user.id, gameManager.nowLevel, step);
+
         var json = JsonUtility.ToJson(stage);
-        StartCoroutine(jsonAdapter.API_POST("stage/update", json));
+        StartCoroutine(jsonAdapter.API_POST("stage/update", json, callback => { }));
     }
     #endregion
 
@@ -354,59 +362,64 @@ public class GameController : MonoBehaviour
         endTime = Time.time;
         Debug.Log("Game End... PlayTime : " + (endTime - startTime));
 
-        ui.GameEnd(moveCount , customMode , editorMode);
-       
+        ui.GameEnd(moveCount, customMode, editorMode);
+
         if (customMode)
         {
             //클리어 에디터 모드 맵 데이터 추가하기 (클리어 한 맵 데이터를 처리하기 위해서)
-            CustomMapItem nowPlayData = GoogleInstance.instance.playCustomData;
+            CustomMapItem nowPlayData = GameManager.instance.playCustomData;
 
-            if(!nowPlayData.isPlayed)
+            if (!nowPlayData.isPlayed)
             {
-                CustomStagePlayerData newPlayerData = new CustomStagePlayerData(GoogleInstance.instance.user.id, nowPlayData.itemdata.title, false);
-                GoogleInstance.instance.customStagePlayerDatas.Add(newPlayerData);
+                CustomStagePlayerData newPlayerData = new CustomStagePlayerData(gameManager.user.id, nowPlayData.itemdata.title, false);
+                gameManager.customStagePlayerDatas.Add(newPlayerData);
                 var json = JsonUtility.ToJson(newPlayerData);
 
-                StartCoroutine(jsonAdapter.API_POST("editorPlay/add", json));//add tuple
+                StartCoroutine(jsonAdapter.API_POST("editorPlay/add", json, callback => {
+
+
+
+                }));//add tuple
             }
 
-            if(moveCount < nowPlayData.itemdata.moveCount)
+            if (moveCount < nowPlayData.itemdata.moveCount)
             {
                 nowPlayData.itemdata.moveCount = moveCount;
                 var json = JsonUtility.ToJson(nowPlayData.itemdata);
 
-                StartCoroutine(jsonAdapter.API_POST("map/clear", json));//change moveCount
+                StartCoroutine(jsonAdapter.API_POST("map/clear", json, callback => { }));//change moveCount
             }
             //if !is
             //Add Tuple Customclear DB
             //
-           
+
 
             //clear custom map user update(cash+? map clear 여부)
 
         }
-        else if(editorMode)//mapLoader.editorMap 생성하기
+        else if (editorMode)//mapLoader.editorMap 생성하기
         {
             //??
         }
-        else
+        else//stage mode
         {
-            int level = GoogleInstance.instance.user.stage;
-            int nowLevel = GoogleInstance.instance.nowLevel;//input level (select stage or play btn)
+            int level = gameManager.user.stage;
+            int nowLevel = gameManager.nowLevel;//input level (select stage or play btn)
 
             if (nowLevel == level)//지금 스테이지 레벨 == 유저의 도전해야할 레벨
             {
-                StageClear(GoogleInstance.instance.nowLevel, moveCount);//stage clear data insert (stage , step)
-                GoogleInstance.instance.nowLevel++;
-                Leaderboards.LeaderBoard.SubmitScore(GoogleInstance.instance.nowLevel);
-                UserUpdate(30, GoogleInstance.instance.nowLevel);//cash +30 & clear stage +1
+                StageClear(gameManager.nowLevel, moveCount);//stage clear data insert (stage , step)
+                gameManager.nowLevel++;
+                UserUpdate(30, gameManager.nowLevel);//cash +30 & clear stage +1
 
-               
+                Leaderboards.LeaderBoard.SubmitScore(gameManager.nowLevel);
+
+
             }
             else
             {
                 StageClear(moveCount);//stage clear data Update (step)
-                GoogleInstance.instance.nowLevel++;
+                gameManager.nowLevel++;
             }
 
             if (nowLevel == maxLevel)//???
@@ -414,17 +427,17 @@ public class GameController : MonoBehaviour
                 ui.nextLevelBtn.interactable = false;
             }
         }
- 
+
 
         if (backgroundSound != null)
-		{
-			soundManagerScript.GameResultPopup();
-		}
+        {
+            soundManagerScript.GameResultPopup();
+        }
 
-        
-        
 
-        
+
+
+
 
     }
 
@@ -444,7 +457,7 @@ public class GameController : MonoBehaviour
     {
         Achievements.FirstPlay.Unlock();
         Debug.Log("first play");
-        GoogleInstance.instance.SetText("first Play Achievement");
+        gameManager.SetText("first Play Achievement");
     }
 
 }
