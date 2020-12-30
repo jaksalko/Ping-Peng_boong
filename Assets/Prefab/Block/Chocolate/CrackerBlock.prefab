@@ -199,7 +199,7 @@ GameObject:
   - component: {fileID: 2881532536951875940}
   m_Layer: 0
   m_Name: CrackerBlock
-  m_TagString: Untagged
+  m_TagString: Cracker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -240,6 +240,7 @@ MonoBehaviour:
   x: 0
   z: 0
   transparentMaterial: {fileID: 2100000, guid: d9b8c1192f758446aa368caee5caea5b, type: 2}
+  crackerMaterial: {fileID: 2100000, guid: 174fe4a58e48e40369497d3a24b54fa4, type: 2}
   crackerRenderer:
   - {fileID: 1630608427778968859}
   - {fileID: 6606991464887937408}
@@ -254,6 +255,8 @@ MonoBehaviour:
   - {fileID: 3115976696275787222}
   - {fileID: 7078679073522539260}
   - {fileID: 7334523197801894272}
+  cracker1: {fileID: 4918263454333603301, guid: d2dbcb0396bc945379809daa2919d38e,
+    type: 3}
   cracker2: {fileID: 4617522978030894838, guid: f671890bef9474ade870a96215a80cb6,
     type: 3}
   cracker3: {fileID: 512318854056509807, guid: 1284ae960f7934048ac8f7eb80ec9314, type: 3}

@@ -19,8 +19,7 @@ public class Block : MonoBehaviour , IBlock
         Outline
     };
 
-
-    public int Data { get; set; }
+	public int Data { get; set; }
     public bool Snow { get; set; }
     public virtual void Init(int block_num)
     {

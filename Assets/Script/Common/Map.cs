@@ -620,6 +620,32 @@ public class Map : MonoBehaviour, IMap
 
 		return parfaitPos;
 	}
+
+	public List<KeyValuePair<Vector2, Vector2>> FindCrackerBlocks()
+	{
+		List<KeyValuePair<Vector2, Vector2>> crackerBlocks = new List<KeyValuePair<Vector2, Vector2>>();
+		int index = 0;
+		for (int i = 0; i < mapsizeH; i++)
+		{
+			for (int j = 0; j < mapsizeW; j++)
+			{
+				if ((blocks[i, j].Data == BlockNumber.cracked) || (blocks[i, j].Data == BlockNumber.upperCracked))
+				{
+					Vector2 blockPos = new Vector2(i, j);
+					Vector2 blockData = new Vector2(blocks[i, j].GetComponent<CrackedBlock>().count, blocks[i, j].Data);
+					crackerBlocks.Insert(index, new KeyValuePair<Vector2, Vector2>(blockPos, blockData));
+					index++;
+				}
+			}
+		}
+		return crackerBlocks;
+	}
+
+	public void SetCrackerCount(int x, int z, int count)
+	{
+		blocks[z, x].GetComponent<CrackedBlock>().count = count;
+		blocks[z, x].GetComponent<CrackedBlock>().SetMaterial(count);
+	}
 }
 
 

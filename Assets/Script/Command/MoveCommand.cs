@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class MoveCommand : ICommand
@@ -12,7 +13,6 @@ public class MoveCommand : ICommand
 	#region Change Object(Snow , cracker , parfait) List
 
 	List<Vector2> erasedSnowList;
-	List<KeyValuePair<Vector2, int>> changeCrackerList;
 	int beforeParfaitOrder;
 	Vector2[] parfaitPos;
 
@@ -37,7 +37,7 @@ Vector3 beforePositionA;
 
 	List<KeyValuePair<Vector2, int>> beforeParfaitPos;
 	List<Vector2> beforeSnow; // 후 입력
-	List<KeyValuePair<Vector2, int>> beforeCracker; // 후 입력
+	List<KeyValuePair<Vector2, Vector2>> beforeCracker; // 후 입력
 													//남은 눈의 갯수는 복구된 체크 배열로 다시 계산가능
 													//사라진 눈의 재생성도 마찬가지
 													//파르페 얼음은 오더로 계산가능
@@ -79,13 +79,13 @@ Vector3 beforePositionA;
 		parfaitPos = map.FindParfaitBlocks();
 
 		beforeSnow = new List<Vector2>();
-		beforeCracker = new List<KeyValuePair<Vector2, int>>();
+
+		beforeCracker = map.FindCrackerBlocks();
 	}
 
 	public void SetLaterData(List<Vector2> snowList, List<KeyValuePair<Vector2, int>> crackerList)  //call by player
 	{
 		beforeSnow.AddRange(snowList);
-		beforeCracker.AddRange(crackerList);
 		//Map -> ErasedSnowList
 	}
 	public void Execute()
@@ -163,7 +163,7 @@ Vector3 beforePositionA;
 		{
 			Vector2 groundpos = new Vector2(ground.transform.position.z, ground.transform.position.x);
 			int blockType = map.GetBlockData((int)groundpos.y, (int)groundpos.x);
-			if(blockType == BlockNumber.normal || blockType == BlockNumber.upperNormal)
+			if (blockType == BlockNumber.normal || blockType == BlockNumber.upperNormal)
 			{
 				int index = beforeSnow.IndexOf(groundpos);
 				if (index > -1)
@@ -181,12 +181,28 @@ Vector3 beforePositionA;
 		}
 
 		// cracker
-		Debug.Log("-----------before cracker---------");
-		foreach(KeyValuePair<Vector2, int> craker in beforeCracker)
+		List<KeyValuePair<Vector2, Vector2>> afterCracker = map.FindCrackerBlocks();
+
+		var changeList = beforeCracker.Except(afterCracker);
+
+		foreach (KeyValuePair<Vector2, Vector2> cracker in changeList)
 		{
-			Debug.Log(craker);
+			Vector2 crackerpos = new Vector2(cracker.Key.y, cracker.Key.x);
+
+			int blockType = map.GetBlockData((int)crackerpos.x, (int)crackerpos.y);
+			if (blockType == BlockNumber.broken || cracker.Value.y == BlockNumber.cracked)
+			{
+				map.SetBlockData((int)crackerpos.x, (int)crackerpos.y, BlockNumber.cracked);
+			}
+			else if (blockType == BlockNumber.broken || cracker.Value.y == BlockNumber.upperCracked)
+			{
+				map.SetBlockData((int)crackerpos.x, (int)crackerpos.y, BlockNumber.upperCracked);
+			}
+
+			map.SetCrackerCount((int)crackerpos.x, (int)crackerpos.y, (int)cracker.Value.x);
+
 		}
-		
+
 	}
 
 

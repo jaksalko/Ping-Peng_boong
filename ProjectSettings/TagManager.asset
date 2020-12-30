@@ -17,6 +17,7 @@ TagManager:
   - ChangePlayer
   - SFXSlider
   - Map
+  - Cracker
   layers:
   - Default
   - TransparentFX
