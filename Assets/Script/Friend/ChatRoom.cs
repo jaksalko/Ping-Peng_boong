@@ -108,7 +108,7 @@ public class ChatRoom : UIScript
 		Chat chat = new Chat(id_1, id_2, txt.text.ToString());
 		var json = JsonUtility.ToJson(chat);
 		
-		yield return StartCoroutine(jsonAdapter.API_POST("chat/post", json));
+		yield return StartCoroutine(jsonAdapter.API_POST("chat/post", json , callback => { }));
 		txt.text = "";
         
         //yield return StartCoroutine(ChatList(id_1, id_2));

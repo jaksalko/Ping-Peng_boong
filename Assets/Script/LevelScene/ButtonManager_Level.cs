@@ -14,7 +14,7 @@ public class ButtonManager_Level : UIScript
 	public Sprite nonclearBtn;
 	public Sprite clearSelect;
 	public Sprite nonclearSelect;
-	private GoogleInstance googleInstance;
+	private GameManager googleInstance;
 	private int highLevel;
 	private int selectLevel;
     
@@ -26,8 +26,8 @@ public class ButtonManager_Level : UIScript
     void Start()
     {
 		//xMLManager = XMLManager.ins;
-		googleInstance = GameObject.FindGameObjectWithTag("GoogleInstance").GetComponent<GoogleInstance>();
-		highLevel = GoogleInstance.instance.user.stage;
+		googleInstance = GameObject.FindGameObjectWithTag("GoogleInstance").GetComponent<GameManager>();
+		highLevel = GameManager.instance.user.stage;
 
 		for (int l = 0; l < levelList.Length; l++)
         {

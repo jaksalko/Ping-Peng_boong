@@ -113,7 +113,7 @@ public class XMLManager : MonoBehaviour
         }
         catch(System.Exception e)
         {
-            GoogleInstance.instance.SetText(e.ToString());
+            GameManager.instance.SetText(e.ToString());
             itemDB.Initialize();
             SaveItems();
         }

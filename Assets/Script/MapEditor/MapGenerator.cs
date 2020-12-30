@@ -49,7 +49,7 @@ public class MapGenerator : MonoBehaviour
 
     private void Awake()
     {
-        maxSize = GoogleInstance.instance.maxSize;
+        maxSize = GameManager.instance.maxSize;
         BlockPositionEditor();
         cam = Camera.main;
         center = new Vector3(maxSize.x / 2 -0.5f , 0f, maxSize.y / 2 - 0.5f);

@@ -21,7 +21,7 @@ public class ButtonManager_Main : UIScript
 			xMLManager = XMLManager.ins;
         }*/
 
-		int highLevel = GoogleInstance.instance.user.stage;
+		int highLevel = GameManager.instance.user.stage;
 
 		if (Island_Name(highLevel) == "Tutorial")
 		{
@@ -62,19 +62,19 @@ public class ButtonManager_Main : UIScript
 			xMLManager = XMLManager.ins;
 		}*/
 
-		int high_level = GoogleInstance.instance.user.stage;
+		int high_level = GameManager.instance.user.stage;
 
 		if(maxLevel < high_level)
 		{
-			GoogleInstance.instance.nowLevel = high_level - 1;
+			GameManager.instance.nowLevel = high_level - 1;
 
-			Load_Island(GoogleInstance.instance.nowLevel);
+			Load_Island(GameManager.instance.nowLevel);
 		}
 		else
 		{
-			GoogleInstance.instance.nowLevel = high_level;
+			GameManager.instance.nowLevel = high_level;
 
-			Load_Island(GoogleInstance.instance.nowLevel);
+			Load_Island(GameManager.instance.nowLevel);
 		}
 	}
 
@@ -92,7 +92,7 @@ public class ButtonManager_Main : UIScript
     {
 		//추후에 난이도 설정
 		//EditorPlayPopup.SetActive(true);
-		StartCoroutine(GoogleInstance.instance.LoadCustomMapList(success =>
+		StartCoroutine(GameManager.instance.LoadCustomMapList(success =>
 		{
 			if (success)
 			{

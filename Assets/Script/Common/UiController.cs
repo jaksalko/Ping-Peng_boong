@@ -198,7 +198,7 @@ public class UiController : UIScript
         if(GameController.instance.customMode)
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         else
-            Load_Island(GoogleInstance.instance.nowLevel);
+            Load_Island(GameManager.instance.nowLevel);
         
     }
 

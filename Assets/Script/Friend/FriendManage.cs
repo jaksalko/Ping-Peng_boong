@@ -29,18 +29,11 @@ public class FriendManage : UIScript
     public void SendButtonClicked()
     {
         //send request to friend;
-        FriendRequest friendRequest = new FriendRequest(GoogleInstance.instance.id, friend_nickname.text);
+        FriendRequest friendRequest = new FriendRequest(GameManager.instance.id, friend_nickname.text);
         var json = JsonUtility.ToJson(friendRequest);
-		StartCoroutine(Sennd_and_Update(json));
+		StartCoroutine(jsonAdapter.API_POST("friend/send", json , callback => { if (callback != null) UpdateList(); }));
     }
-    IEnumerator Sennd_and_Update(string json)
-    {
-        yield return StartCoroutine(jsonAdapter.API_POST("friend/send", json));
-
-		UpdateList();
-
-		yield break;
-	}
+   
     void UpdateList()
     {
 		StartCoroutine(GetFriendList());
@@ -51,7 +44,7 @@ public class FriendManage : UIScript
 
 		while (true)
 		{
-			UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2+ "friend/request?id=" + GoogleInstance.instance.id);
+			UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2+ "friend/request?id=" + GameManager.instance.id);
 			yield return www.SendWebRequest();
 
 			if (www.isNetworkError || www.isHttpError)
@@ -100,7 +93,7 @@ public class FriendManage : UIScript
 	{
 		
 
-			UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2 + "friend/list?id=" + GoogleInstance.instance.id);
+			UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2 + "friend/list?id=" + GameManager.instance.id);
 		    yield return www.SendWebRequest();
 
 		    if (www.isNetworkError || www.isHttpError)
@@ -137,7 +130,7 @@ public class FriendManage : UIScript
 				for (int i = 0; i < datas.Length; i++)
 				{
 					var item = Instantiate(friendItem, default, Quaternion.identity);
-					if (datas[i].id == GoogleInstance.instance.id)
+					if (datas[i].id == GameManager.instance.id)
 					{
 						item.friend_name.text = datas[i].friend_id;
 					}
@@ -161,6 +154,6 @@ public class FriendManage : UIScript
         
 		
 		chatroom.gameObject.SetActive(true);
-		chatroom.OpenChatRoom(GoogleInstance.instance.id, list.friend_name.text.ToString());
+		chatroom.OpenChatRoom(GameManager.instance.id, list.friend_name.text.ToString());
 	}
 }

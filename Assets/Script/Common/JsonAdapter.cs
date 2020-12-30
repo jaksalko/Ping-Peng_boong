@@ -7,12 +7,11 @@ using UnityEngine.Networking;
 public class JsonAdapter : MonoBehaviour
 {
     
-    public static event Action<bool> GET;
-    public static event Action<bool> POST;
-
-    public IEnumerator API_GET(string url , System.Action<string> callback)
+   
+    public IEnumerator API_GET(string url , Action<string> callback)
     {
         UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2+url);
+//        Debug.Log(url);
         yield return www.SendWebRequest();
 
         if(www.isNetworkError || www.isHttpError)
@@ -22,19 +21,19 @@ public class JsonAdapter : MonoBehaviour
         }
         else
         {
-            Debug.Log(www.downloadHandler.text);
+           
 
             if(www.responseCode != 200)
             {
-                Debug.Log("already exist");
+                Debug.Log("response code : " + www.responseCode);
                 callback(null);
-                GET?.Invoke(false);
+               
             }
             else
             {
-                Debug.Log("add account");
+                Debug.Log("GET WebRequset : " + www.downloadHandler.text);
                 callback(www.downloadHandler.text);
-                GET?.Invoke(true);
+               
             }
             //GET.Invoke(JsonHelper.fixJson(www.downloadHandler.text));
 
@@ -54,7 +53,7 @@ public class JsonAdapter : MonoBehaviour
         }
     }
     
-    public IEnumerator API_POST(string url , string bodyJsonString)
+    public IEnumerator API_POST(string url , string bodyJsonString , Action<string> callback)
     {
         Debug.Log(bodyJsonString);
         var req = new UnityWebRequest(PrivateData.ec2 + url, "POST");
@@ -63,21 +62,23 @@ public class JsonAdapter : MonoBehaviour
         req.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         req.SetRequestHeader("Content-Type", "application/json");
 
-        yield return req.Send();
+        yield return req.SendWebRequest();
 
         if(req.isHttpError || req.isNetworkError )
         {
             Debug.Log(req.error);
-            POST?.Invoke(false);
+            callback(null);
         }
         else if(req.responseCode != 200)
         {
-           
-            POST?.Invoke(false);
+            Debug.Log("response code : " + req.responseCode);
+            callback(null);
+            
         }
         else
         {
-            POST?.Invoke(true);
+            Debug.Log("GET WebRequset : " + req.downloadHandler.text);
+            callback(req.downloadHandler.text);
         }
        
         Debug.Log("Status Code: " + req.responseCode);

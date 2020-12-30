@@ -42,7 +42,7 @@ public class EditorPlayPopup : MonoBehaviour
     void MakeCustomeMapItem()
     {
         Debug.Log("make map");
-        List<JsonData> datas = GoogleInstance.instance.customMapdatas;
+        List<JsonData> datas = GameManager.instance.customMapdatas;
 
         for (int i = 0; i < datas.Count ; i++)
         {
