@@ -14,14 +14,13 @@ public class MoveCommand : ICommand
 
 	List<Vector2> erasedSnowList;
 	int beforeParfaitOrder;
-	Vector2[] parfaitPos;
 
 #endregion
 
 
 #region Character Data   1. state(State)     2. onCloud(bool)      3. temp(int)     4. transform(Transform)
 
-Vector3 beforePositionA;
+	Vector3 beforePositionA;
 	Vector3 beforePositionB;
 
 	Player.State beforeStateA;// idle , master , slave
@@ -35,7 +34,7 @@ Vector3 beforePositionA;
 
 	#endregion
 
-	List<KeyValuePair<Vector2, int>> beforeParfaitPos;
+	KeyValuePair<Vector2, int>[] beforeParfaitPos;
 	List<Vector2> beforeSnow; // 후 입력
 	List<KeyValuePair<Vector2, Vector2>> beforeCracker; // 후 입력
 													//남은 눈의 갯수는 복구된 체크 배열로 다시 계산가능
@@ -46,37 +45,29 @@ Vector3 beforePositionA;
 	public MoveCommand(Player p, Map m, int direction)
 	{
 		player = p;
-
 		map = m;
 		dir = direction;
 
-		beforePositionA = player.transform.position;
+		// playerNum = map.GetBlockData((int)player.transform.position.x, (int)player.transform.position.z);
 
-		beforeStateA = player.state;
+		Player player1 = player;
+		Player player2 = player.other;
 
-		beforeTempA = player.temp;
+		beforePositionA = player1.transform.position;
+		beforePositionB = player2.transform.position;
 
-		beforeOnCloudA = player.onCloud;
+		beforeStateA = player1.state;
+		beforeStateB = player2.state;
 
-		/*
-        Player player1 = GameController.instance.player1;
-        Player player2 = GameController.instance.player2;
+		beforeTempA = player1.temp;
+		beforeTempB = player2.temp;
+		Debug.Log("before temp a is : " + beforeTempA);
 
-        beforePositionA = player1.transform.position;
-        beforePositionB = player2.transform.position;
-
-        beforeStateA = player1.state;
-        beforeStateB = player2.state;
-
-        beforeTempA = player1.temp;
-        beforeTempB = player2.temp;
-
-        beforeOnCloudA = player1.onCloud;
-        beforeOnCloudB = player2.onCloud;
-		*/
+		beforeOnCloudA = player1.onCloud;
+		beforeOnCloudB = player2.onCloud;
 
 		beforeParfaitOrder = GameController.ParfaitOrder;
-		parfaitPos = map.FindParfaitBlocks();
+		beforeParfaitPos = map.FindParfaitBlocks();
 
 		beforeSnow = new List<Vector2>();
 
@@ -102,15 +93,131 @@ Vector3 beforePositionA;
 
 		// throw new System.NotImplementedException();
 
-		int posX = (int)player.transform.position.x;
-		int posZ = (int)player.transform.position.z;
-		map.SetBlockData(posX, posZ, beforeTempA);
+		Player player1 = player;
+		Player player2 = player.other;
 
-		player.transform.position = beforePositionA;
+		Debug.Log("player 1 current : " + player1.state);
+		Debug.Log("player 1 before : " + beforeStateA);
 
-		player.state = beforeStateA;
+		if (player1.state == beforeStateA)
+		{
+			if(beforeStateA == Player.State.Idle)
+			{
+				map.SetBlockData((int)player1.transform.position.x, (int)player1.transform.position.z, player1.temp);
 
-		player.onCloud = beforeOnCloudA;
+				player1.transform.position = beforePositionA;
+				if(beforePositionA.y > 0.5f)
+				{
+					map.SetBlockData((int)beforePositionA.x, (int)beforePositionA.z, BlockNumber.upperCharacter);
+				}
+				else
+				{
+					map.SetBlockData((int)beforePositionA.x, (int)beforePositionA.z, BlockNumber.character);
+				}
+
+				player1.temp = beforeTempA;
+				// player1.state = beforeStateA;	// Idle
+				player1.onCloud = beforeOnCloudA;
+			}
+			else if(beforeStateA == Player.State.Master)
+			{
+				map.SetBlockData((int)player1.transform.position.x, (int)player1.transform.position.z, player1.temp);
+
+				player1.transform.position = beforePositionA;
+				player2.transform.position = beforePositionB;
+				map.SetBlockData((int)beforePositionA.x, (int)beforePositionA.z, BlockNumber.upperCharacter);
+
+				player1.temp = beforeTempA;
+				player2.temp = beforeTempB;
+				// player1.state = beforeStateA;	// Master
+				// player2.state = beforeStateB;	// Slave
+				player1.onCloud = beforeOnCloudA;
+				player2.onCloud = beforeOnCloudB;
+			}
+		}
+		else
+		{
+			if(beforeStateA == Player.State.Idle)
+			{
+				Debug.Log("Idle -> Slave Undo");
+				// Slave -> Idle (Can't be Master)
+				// current) player1, player2 same position
+				map.SetBlockData((int)player1.transform.position.x, (int)player1.transform.position.z, player1.temp);
+
+				player1.transform.position = beforePositionA;
+				if (beforePositionA.y > 0.5f)
+				{
+					map.SetBlockData((int)beforePositionA.x, (int)beforePositionA.z, BlockNumber.upperCharacter);
+				}
+				else
+				{
+					map.SetBlockData((int)beforePositionA.x, (int)beforePositionA.z, BlockNumber.character);
+				}
+				player2.transform.position = beforePositionB;
+				if (beforePositionB.y > 0.5f)
+				{
+					map.SetBlockData((int)beforePositionB.x, (int)beforePositionB.z, BlockNumber.upperCharacter);
+				}
+				else
+				{
+					map.SetBlockData((int)beforePositionB.x, (int)beforePositionB.z, BlockNumber.character);
+				}
+
+				player1.temp = beforeTempA;
+				player2.temp = beforeTempB;
+
+				player1.state = beforeStateA;	// Slave -> Idle
+				player2.state = beforeStateB;   // Master -> Idle
+				player1.transform.SetParent(null);
+
+				player1.onCloud = beforeOnCloudA;
+				player2.onCloud = beforeOnCloudB;
+			}
+			else if(beforeStateA == Player.State.Master)
+			{
+				Debug.Log("Master -> Idle Undo");
+				// Idle -> Master (Can't be Master -> Slave, Slave -> Master)
+				map.SetBlockData((int)player1.transform.position.x, (int)player1.transform.position.z, player1.temp);
+				map.SetBlockData((int)player2.transform.position.x, (int)player2.transform.position.z, player2.temp);
+
+				player1.transform.position = beforePositionA;
+				player2.transform.position = beforePositionB;
+				// before) player1, player2 same position
+				map.SetBlockData((int)beforePositionA.x, (int)beforePositionA.z, BlockNumber.upperCharacter);
+
+				player1.temp = beforeTempA;
+				player2.temp = beforeTempB;
+
+				player1.state = beforeStateA;	// Idle -> Maste
+				player2.state = beforeStateB;   // Idle -> Slave
+				player2.transform.SetParent(player1.transform);
+
+				player1.onCloud = beforeOnCloudA;
+				player2.onCloud = beforeOnCloudB;
+			}
+			else if (beforeStateA == Player.State.Slave)
+			{
+				Debug.Log("Slave -> Idle Undo");
+				// Idle -> Slave (Can't be Master -> Slave, Slave -> Master)
+				map.SetBlockData((int)player1.transform.position.x, (int)player1.transform.position.z, player1.temp);
+				map.SetBlockData((int)player2.transform.position.x, (int)player2.transform.position.z, player2.temp);
+
+				player1.transform.position = beforePositionA;
+				player2.transform.position = beforePositionB;
+				// before) player1, player2 same position
+				map.SetBlockData((int)beforePositionA.x, (int)beforePositionA.z, BlockNumber.upperCharacter);
+
+				player1.temp = beforeTempA;
+				player2.temp = beforeTempB;
+
+				player1.state = beforeStateA;   // Idle -> Slave
+				player2.state = beforeStateB;   // Idle -> Master
+				player1.transform.SetParent(player2.transform);
+
+				player1.onCloud = beforeOnCloudA;
+				player2.onCloud = beforeOnCloudB;
+			}
+		}
 
 		// parfait
 		if (GameController.ParfaitOrder != beforeParfaitOrder)
@@ -131,29 +238,9 @@ Vector3 beforePositionA;
 			nowObj.GetComponent<ParfaitBlock>().Deactivate();
 
 			GameController.ParfaitOrder = beforeParfaitOrder;
-			Vector2 bp_pos = parfaitPos[beforeParfaitOrder];
+			KeyValuePair<Vector2, int> bp_pos = beforeParfaitPos[beforeParfaitOrder];
 
-			int blockType;
-			if (beforeParfaitOrder == 0)
-			{
-				blockType = BlockNumber.parfaitA;
-				map.SetBlockData((int)bp_pos.y, (int)bp_pos.x, blockType);
-			}
-			else if (beforeParfaitOrder == 1)
-			{
-				blockType = BlockNumber.parfaitB;
-				map.SetBlockData((int)bp_pos.y, (int)bp_pos.x, blockType);
-			}
-			else if (beforeParfaitOrder == 2)
-			{
-				blockType = BlockNumber.parfaitC;
-				map.SetBlockData((int)bp_pos.y, (int)bp_pos.x, blockType);
-			}
-			else if (beforeParfaitOrder == 3)
-			{
-				blockType = BlockNumber.parfaitD;
-				map.SetBlockData((int)bp_pos.y, (int)bp_pos.x, blockType);
-			}
+			map.SetBlockData((int)bp_pos.Key.y, (int)bp_pos.Key.x, bp_pos.Value);
 		}
 
 		// snow

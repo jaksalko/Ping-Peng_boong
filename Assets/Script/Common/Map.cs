@@ -533,7 +533,8 @@ public class Map : MonoBehaviour, IMap
         targetPositions.Add(new Tuple<Vector3, int>(pos, player.getDirection));
         //temp
         player.temp = blocks[posZ, posX].Data;
-        switch((int)pos.y)
+		Debug.Log("player temp is : " + player.temp);
+		switch ((int)pos.y)
         {
             case 0:
                 blocks[posZ, posX].Data = BlockNumber.character;
@@ -591,29 +592,29 @@ public class Map : MonoBehaviour, IMap
         blocks[z, x] = block;
     }
 
-	public Vector2[] FindParfaitBlocks()
+	public KeyValuePair<Vector2, int>[] FindParfaitBlocks()
 	{
-		Vector2[] parfaitPos = new Vector2[4];
+		KeyValuePair<Vector2, int>[] parfaitPos = new KeyValuePair<Vector2, int>[4];
 
 		for (int i = 0; i < mapsizeH; i++)
 		{
 			for (int j = 0; j < mapsizeW; j++)
 			{
-				if (blocks[i, j].Data == BlockNumber.parfaitA)
+				if (blocks[i, j].Data == BlockNumber.parfaitA || blocks[i, j].Data == BlockNumber.upperParfaitA)
 				{
-					parfaitPos[0] = new Vector2(i, j);
+					parfaitPos[0] = new KeyValuePair<Vector2, int>(new Vector2(i, j), blocks[i, j].Data);
 				}
-				else if (blocks[i, j].Data == BlockNumber.parfaitB)
+				else if (blocks[i, j].Data == BlockNumber.parfaitB || blocks[i, j].Data == BlockNumber.upperParfaitB)
 				{
-					parfaitPos[1] = new Vector2(i, j);
+					parfaitPos[1] = new KeyValuePair<Vector2, int>(new Vector2(i, j), blocks[i, j].Data);
 				}
-				else if (blocks[i, j].Data == BlockNumber.parfaitC)
+				else if (blocks[i, j].Data == BlockNumber.parfaitC || blocks[i, j].Data == BlockNumber.upperParfaitC)
 				{
-					parfaitPos[2] = new Vector2(i, j);
+					parfaitPos[2] = new KeyValuePair<Vector2, int>(new Vector2(i, j), blocks[i, j].Data);
 				}
-				else if (blocks[i, j].Data == BlockNumber.parfaitD)
+				else if (blocks[i, j].Data == BlockNumber.parfaitD || blocks[i, j].Data == BlockNumber.upperParfaitD)
 				{
-					parfaitPos[3] = new Vector2(i, j);
+					parfaitPos[3] = new KeyValuePair<Vector2, int>(new Vector2(i, j), blocks[i, j].Data);
 				}
 			}
 		}

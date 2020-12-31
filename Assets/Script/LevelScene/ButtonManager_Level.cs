@@ -28,6 +28,7 @@ public class ButtonManager_Level : UIScript
 		//xMLManager = XMLManager.ins;
 		googleInstance = GameObject.FindGameObjectWithTag("GoogleInstance").GetComponent<GameManager>();
 		highLevel = GameManager.instance.user.stage;
+		Debug.Log("high level : " + highLevel);
 
 		for (int l = 0; l < levelList.Length; l++)
         {
@@ -45,6 +46,7 @@ public class ButtonManager_Level : UIScript
 
 		// show the highest level
 		string highest = Island_Name(highLevel);
+		Debug.Log("highest island : " + highest);
 		int index = isLandNameList.IndexOf(highest);
 		if(index == -1)
 		{
@@ -59,7 +61,7 @@ public class ButtonManager_Level : UIScript
 		Color nonclearcolor;
 		ColorUtility.TryParseHtmlString("#93CEE2FF", out nonclearcolor);
 
-		// erase after test
+		/* for test
 		for (int i = 0; i < levelList.Length; i++)
 		{
 			levelList[i].transform.GetChild(0).GetComponent<Image>().sprite = clearBtn;
@@ -67,8 +69,8 @@ public class ButtonManager_Level : UIScript
 			levelList[i].transform.GetChild(1).GetComponent<Text>().color = clearcolor;
 			levelList[i].GetComponent<Toggle>().interactable = true;
 		}
+		*/
 
-		/* need to fix
 		int i;
 		for(i = 0; i < highLevel; i++)
 		{
@@ -77,7 +79,6 @@ public class ButtonManager_Level : UIScript
 			levelList[i].transform.GetChild(1).GetComponent<Text>().color = clearcolor;
 			levelList[i].GetComponent<Toggle>().interactable = true;
 		}
-
 		if (i < levelList.Length)
 		{
 			levelList[i].transform.GetChild(0).GetComponent<Image>().sprite = nonclearBtn;
@@ -90,7 +91,6 @@ public class ButtonManager_Level : UIScript
 		{
 			levelList[i - 1].GetComponent<Toggle>().isOn = true;
 		}
-		*/
 
 	}
 

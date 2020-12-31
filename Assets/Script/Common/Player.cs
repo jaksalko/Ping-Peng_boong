@@ -5,8 +5,8 @@ using UnityEngine.UI;
 using System;
 public class Player : MonoBehaviour , IMoveable
 {
-
-    public enum State
+	[SerializeField]
+	public enum State
     {
         Idle,//no interaction
         Master,//in interaction and state is master
@@ -63,7 +63,7 @@ public class Player : MonoBehaviour , IMoveable
 	
     
     [SerializeField]
-    Player other;
+    public Player other;
     
     [SerializeField]
     bool simulating;

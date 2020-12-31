@@ -46,7 +46,8 @@ public class ButtonManager_Main : UIScript
 		else
 		{
 			// default : last island
-			islandList[4].SetActive(true);
+			int index = islandList.Length - 1;
+			islandList[index].SetActive(true);
 		}
 	}
 
