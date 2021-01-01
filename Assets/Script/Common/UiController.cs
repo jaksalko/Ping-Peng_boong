@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-using CloudOnce;
 
 
 
@@ -204,11 +203,6 @@ public class UiController : UIScript
 
    
 
-    public void CloudInitializeCompleted()
-    {
-        Cloud.OnInitializeComplete -= CloudInitializeCompleted;
-        Debug.Log("initialize completed");
-    }
 
     
 }

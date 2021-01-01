@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 // 구글 플레이 연동
-using CloudOnce;
+
 using UnityEngine.Networking;
 using System.Text.RegularExpressions;
 
@@ -31,13 +31,10 @@ public class LoadingScene : MonoBehaviour
         StartCoroutine(Interpolation());//Animation Effect
 
 
-        Cloud.OnInitializeComplete += CloudInitializeCompleted;
-
-        Cloud.Initialize(false, true);//call initializeComplete
-        //Cloud.Initialize();
+      
         
     }
-    void CloudInitializeCompleted()
+    /*void CloudInitializeCompleted()
     {
         Cloud.OnInitializeComplete -= CloudInitializeCompleted;
 
@@ -107,6 +104,7 @@ public class LoadingScene : MonoBehaviour
 
 
     }
+    */
 
     public void GameStart()
     {

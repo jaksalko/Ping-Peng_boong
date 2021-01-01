@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using CloudOnce;
+
 using UniRx;
 using UniRx.Triggers;
 using System;
@@ -403,8 +403,7 @@ public class GameController : MonoBehaviour
                 gameManager.nowLevel++;
                 UserUpdate(30, gameManager.nowLevel);//cash +30 & clear stage +1
 
-                Leaderboards.LeaderBoard.SubmitScore(gameManager.nowLevel);
-
+                
 
             }
             else
@@ -444,11 +443,5 @@ public class GameController : MonoBehaviour
 
 
 
-    public void FirstClear()
-    {
-        Achievements.FirstPlay.Unlock();
-        Debug.Log("first play");
-        gameManager.SetText("first Play Achievement");
-    }
-
+ 
 }
