@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+
+
 public class GameManager : MonoBehaviour
 {
     public Text debugTxt;
@@ -24,9 +27,12 @@ public class GameManager : MonoBehaviour
     public List<JsonData> customMapdatas = new List<JsonData>();
     public CustomMapItem playCustomData;
 
+
+
     private void Awake()
     {
-        
+       
+
         Debug.Log("Single Class Awake...");//Set instance
         if (instance == null)
         {

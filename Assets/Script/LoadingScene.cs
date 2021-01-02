@@ -3,10 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-// 구글 플레이 연동
-
 using UnityEngine.Networking;
 using System.Text.RegularExpressions;
+
+
+
+using Amazon;
+using Amazon.CognitoIdentity;
+using Amazon.IdentityManagement;
+
+using Facebook.Unity;
+
+
 
 public class LoadingScene : MonoBehaviour
 {
@@ -23,6 +31,8 @@ public class LoadingScene : MonoBehaviour
     public Button make_account_button;
     public Button play_button;
 
+    CognitoAWSCredentials credentials;
+
 
     private void Awake()
     {
@@ -30,9 +40,51 @@ public class LoadingScene : MonoBehaviour
        
         StartCoroutine(Interpolation());//Animation Effect
 
-
+        UnityInitializer.AttachToGameObject(this.gameObject);
+        credentials = new CognitoAWSCredentials (
+            "ap-northeast-2:1f71a893-368d-4067-8122-11b8dd2db2b4", // Identity Pool ID
+            RegionEndpoint.APNortheast2 // Region : Seoul
+        );
       
         
+    }
+
+    public void SignUpWithApple()
+    {
+
+    }
+    public void SignUpWithFacebook()
+    {
+        var perms = new List<string>(){"email"};
+        
+
+        FB.Init(delegate() {
+        if (FB.IsLoggedIn) { //User already logged in from a previous session
+        Debug.Log("is Logged Get Access Token : " + AccessToken.CurrentAccessToken.TokenString);
+            AddFacebookTokenToCognito();
+        } else {
+            Debug.Log("not Logged Get Access Token : null");
+            FB.LogInWithReadPermissions (perms, FacebookLoginCallback);
+        }
+        });
+
+    }
+    void FacebookLoginCallback(ILoginResult result)
+    {
+        if (FB.IsLoggedIn)
+        {
+            Debug.Log("You get Access Token : " + AccessToken.CurrentAccessToken.TokenString);
+            AddFacebookTokenToCognito();
+        }
+        else
+        {
+            Debug.Log("FB Login error");
+        }
+    }
+
+    void AddFacebookTokenToCognito()
+    {
+        credentials.AddLogin ("graph.facebook.com", AccessToken.CurrentAccessToken.TokenString);
     }
     /*void CloudInitializeCompleted()
     {
