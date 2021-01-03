@@ -283,6 +283,7 @@ GameObject:
   - component: {fileID: 55020640}
   - component: {fileID: 55020639}
   - component: {fileID: 55020643}
+  - component: {fileID: 55020644}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -395,6 +396,27 @@ MonoBehaviour:
   addAccountPanel: {fileID: 8391580}
   make_account_button: {fileID: 905254883}
   play_button: {fileID: 450704429}
+--- !u!114 &55020644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 55020638}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d14f2a2eb002b4069ae29bda900b8d08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onLogin:
+    m_PersistentCalls:
+      m_Calls: []
+  onCredentialState:
+    m_PersistentCalls:
+      m_Calls: []
+  onError:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &83837688
 GameObject:
   m_ObjectHideFlags: 0
