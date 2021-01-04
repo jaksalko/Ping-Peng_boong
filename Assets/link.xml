@@ -16,4 +16,6 @@
 <assembly fullname="AWSSDK.Core" preserve="all"/>
 <assembly fullname="AWSSDK.CognitoIdentity" preserve="all"/>
 <assembly fullname="AWSSDK.SecurityToken" preserve="all"/>
+<assembly fullname="AWSSDK.DynamoDBv2" preserve="all"/>
+<assembly fullname="AWSSDK.SimpleNotificationService" preserve="all"/>
 </linker>

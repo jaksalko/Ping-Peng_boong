@@ -13,7 +13,14 @@ using Amazon.CognitoIdentity;
 using Amazon.IdentityManagement;
 
 using Facebook.Unity;
-using UnityEngine.SignInWithApple;
+
+using AppleAuth;
+using AppleAuth.Native;
+using AppleAuth.Enums;
+using AppleAuth.Extensions;
+using System.Text;
+using System.Security.Cryptography;
+using AppleAuth.Interfaces;
 
 
 
@@ -31,104 +38,178 @@ public class LoadingScene : MonoBehaviour
 
     public Button make_account_button;
     public Button play_button;
-
     CognitoAWSCredentials credentials;
-    private string userId;
+    public Button facebook_login_button;
+    private IAppleAuthManager appleAuthManager;
 
+    AWSManager awsManager = AWSManager.instance;
+    GameManager gameManager = GameManager.instance;
 
     private void Awake()
     {
-
-       
+        
         StartCoroutine(Interpolation());//Animation Effect
-
-        UnityInitializer.AttachToGameObject(this.gameObject);
-        AWSConfigs.HttpClient = AWSConfigs.HttpClientOption.UnityWebRequest; 
-
-        credentials = new CognitoAWSCredentials (
-            "ap-northeast-2:1f71a893-368d-4067-8122-11b8dd2db2b4", // Identity Pool ID
-            RegionEndpoint.APNortheast2 // Region : Seoul
-        );
-      
-        
-    }
-
-    public void SignUpWithApple()
-    {
-        var siwa = gameObject.GetComponent<SignInWithApple>();
-        siwa.Login(OnLogin);
-        
-    }
-    public void SignUpWithFacebook()
-    {
-        var perms = new List<string>(){"email"};
-        
-
-        FB.Init(delegate() {
-        if (FB.IsLoggedIn) { //User already logged in from a previous session
-        Debug.Log("is Logged Get Access Token : " + AccessToken.CurrentAccessToken.TokenString);
-            AddFacebookTokenToCognito();
-        } else {
-            Debug.Log("not Logged Get Access Token : null");
-            FB.LogInWithReadPermissions (perms, FacebookLoginCallback);
-        }
-        });
-
-    }
-    void FacebookLoginCallback(ILoginResult result)
-    {
-        if (FB.IsLoggedIn)
+#if UNITY_IOS
+/*
+        if (AppleAuthManager.IsCurrentPlatformSupported)
         {
-            Debug.Log("You get Access Token : " + AccessToken.CurrentAccessToken.TokenString);
-            AddFacebookTokenToCognito();
+            // Creates a default JSON deserializer, to transform JSON Native responses to C# instances
+            var deserializer = new PayloadDeserializer();
+            // Creates an Apple Authentication manager with the deserializer
+            this.appleAuthManager = new AppleAuthManager(deserializer);    
+        }
+
+        if(PlayerPrefs.GetString("AppleUserIdKey") != null)
+        {
+            Debug.Log("Can quick login with apple");
+            QuickAppleLogin();
         }
         else
         {
-            Debug.Log("FB Login error");
+            Debug.Log("first access");
         }
-    }
+*/
+#endif
+    
 
-    void AddFacebookTokenToCognito()
-    {
-        credentials.AddLogin ("graph.facebook.com", AccessToken.CurrentAccessToken.TokenString);
-        credentials.GetIdentityIdAsync(delegate(AmazonCognitoIdentityResult<string> result) {
-            if (result.Exception != null) {
-                //Exception!
-                Debug.Log("no identity id!");
-            }
-            string identityId = result.Response;
-            Debug.Log(identityId);
-        });
-    }
 
-    private void OnLogin(SignInWithApple.CallbackArgs args)
-    {
-        if (args.error != null)
-        {
-            Debug.Log("Errors occurred: " + args.error);
-            return;
-        }
-
-        UserInfo userInfo = args.userInfo;
-        credentials.AddLogin("appleid.apple.com", userInfo.idToken);
-
-        // Save the userId so we can use it later for other operations.
-        userId = userInfo.userId;
-        var siwa = gameObject.GetComponent<SignInWithApple>();
-        siwa.GetCredentialState(userId, OnCredentialState);
         
-        // Print out information about the user who logged in.
-        Debug.Log(
-            string.Format("Display Name: {0}\nEmail: {1}\nUser ID: {2}\nID Token: {3}", 
-            userInfo.displayName ?? "", userInfo.email ?? "", userInfo.userId ?? "", userInfo.idToken ?? ""));
     }
-    private void OnCredentialState(SignInWithApple.CallbackArgs args)
-    {
-        Debug.Log(string.Format("User credential state is: {0}", args.credentialState));
 
-        if (args.error != null)
-            Debug.Log(string.Format("Errors occurred: {0}", args.error));
+    void Start()
+    {
+        Debug.Log(PlayerPrefs.GetString("nickname",null));
+        if(PlayerPrefs.GetString("nickname","") == "")//no account
+        {
+            facebook_login_button.gameObject.SetActive(true);
+        }
+        else
+        {
+            play_button.gameObject.SetActive(true);
+        }
     }
+    /*
+    private void Update()
+    {
+        this.appleAuthManager?.Update();
+    }
+    */
+    private void QuickAppleLogin()
+    {
+        var quickLoginArgs = new AppleAuthQuickLoginArgs();
+
+        this.appleAuthManager.QuickLogin(
+            quickLoginArgs,
+            credential =>
+            {
+                // Received a valid credential!
+                // Try casting to IAppleIDCredential or IPasswordCredential
+
+                // Previous Apple sign in credential
+                var appleIdCredential = credential as IAppleIDCredential; 
+                if (appleIdCredential != null)
+                {
+                    // Apple User ID
+                    // You should save the user ID somewhere in the device
+                    var userId = appleIdCredential.User;
+                    PlayerPrefs.SetString("AppleUserIdKey", userId);
+
+                    // Email (Received ONLY in the first login)
+                    var email = appleIdCredential.Email;
+
+                    // Full name (Received ONLY in the first login)
+                    var fullName = appleIdCredential.FullName;
+
+                    // Identity token
+                    var identityToken = Encoding.UTF8.GetString(
+                        appleIdCredential.IdentityToken,
+                        0,
+                        appleIdCredential.IdentityToken.Length);
+
+                    // Authorization code
+                    var authorizationCode = Encoding.UTF8.GetString(
+                        appleIdCredential.AuthorizationCode,
+                        0,
+                        appleIdCredential.AuthorizationCode.Length);
+
+                    // And now you have all the information to create/login a user in your system
+                    credentials.AddLogin("appleid.apple.com", identityToken);
+                    credentials.GetIdentityIdAsync(delegate(AmazonCognitoIdentityResult<string> result) {
+                        if (result.Exception != null) {
+                            //Exception!
+                            Debug.Log("no identity id!");
+                        }
+                        string identityId = result.Response;
+                        Debug.Log("identity ID :" + identityId);
+                        Debug.Log("Success Quick Login");
+                    });
+                }
+
+                // Saved Keychain credential (read about Keychain Items)
+                //var passwordCredential = credential as IPasswordCredential;
+            },
+            error =>
+            {
+                // Quick login failed. The user has never used Sign in With Apple on your app. Go to login screen
+            });
+    }
+    public void SignUpWithApple()
+    {
+        var loginArgs = new AppleAuthLoginArgs(LoginOptions.IncludeEmail | LoginOptions.IncludeFullName);
+
+        this.appleAuthManager.LoginWithAppleId(
+            loginArgs,
+            credential =>
+            {
+                // Obtained credential, cast it to IAppleIDCredential
+                var appleIdCredential = credential as IAppleIDCredential;
+                if (appleIdCredential != null)
+                {
+                    // Apple User ID
+                    // You should save the user ID somewhere in the device
+                    var userId = appleIdCredential.User;
+                    PlayerPrefs.SetString("AppleUserIdKey", userId);
+
+                    // Email (Received ONLY in the first login)
+                    var email = appleIdCredential.Email;
+
+                    // Full name (Received ONLY in the first login)
+                    var fullName = appleIdCredential.FullName;
+
+                    // Identity token
+                    var identityToken = Encoding.UTF8.GetString(
+                        appleIdCredential.IdentityToken,
+                        0,
+                        appleIdCredential.IdentityToken.Length);
+
+                    // Authorization code
+                    var authorizationCode = Encoding.UTF8.GetString(
+                        appleIdCredential.AuthorizationCode,
+                        0,
+                        appleIdCredential.AuthorizationCode.Length);
+
+                    // And now you have all the information to create/login a user in your system
+                    credentials.AddLogin("appleid.apple.com", identityToken);
+                    credentials.GetIdentityIdAsync(delegate(AmazonCognitoIdentityResult<string> result) {
+                        if (result.Exception != null) {
+                            //Exception!
+                            Debug.Log("no identity id!");
+                        }
+                        string identityId = result.Response;
+                        Debug.Log(identityId);
+                    });
+                            }
+            },
+            error =>
+            {
+                // Something went wrong
+                var authorizationErrorCode = error.GetAuthorizationErrorCode();
+            });
+        
+    }
+    
+
+
 
     /*void CloudInitializeCompleted()
     {
@@ -177,6 +258,8 @@ public class LoadingScene : MonoBehaviour
             addAccountText.text = "이미 존재하는 닉네임입니다.";
         }
     }
+
+    */
     public void AddAccount()
     {
 
@@ -185,12 +268,8 @@ public class LoadingScene : MonoBehaviour
 
         if(regex.IsMatch(nickname.text))
         {
-            JsonAdapter jsonAdapter = new JsonAdapter();
-            UserData newAccount = new UserData(userid: Cloud.PlayerID, nick: nickname.text);
-            var json = JsonUtility.ToJson(newAccount);
-
-
-            StartCoroutine(jsonAdapter.API_POST("account/add", json , callback => { IsUniqueNickname(callback); }));
+            //중복 체크
+            awsManager.Create_UserInfo(nickname.text);            
         }
         {
             addAccountText.text = "한글,영어,숫자 포함 최소 2자, 최대 8자입니다";
@@ -200,7 +279,6 @@ public class LoadingScene : MonoBehaviour
 
 
     }
-    */
 
     public void GameStart()
     {
