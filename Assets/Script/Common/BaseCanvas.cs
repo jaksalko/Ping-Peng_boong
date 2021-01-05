@@ -19,12 +19,14 @@ public class BaseCanvas : MonoBehaviour
 	private GameObject changePlayerBtn;
 
 	[Header("INFO")]
-	public Text cash;
-	public Text star;
+	public Text boong_text;
+	public Text heart_text;
+	public Text heartTime_text;
 
 	public GameObject friendManage;
 
-	GameManager gameManager;
+	AWSManager awsManager = AWSManager.instance;
+    GameManager gameManager = GameManager.instance;
 	void Awake()
     {
 		if (Instance != null)
@@ -46,7 +48,12 @@ public class BaseCanvas : MonoBehaviour
 		bgmSlider.value = PlayerPrefs.GetFloat("bgmVolumn", 1);
 		sfxSlider.value = PlayerPrefs.GetFloat("sfxVolumn", 1);
 
-		gameManager = GameManager.instance;
+		if(awsManager == null)
+            awsManager = AWSManager.instance;
+        if(gameManager == null)
+            gameManager = GameManager.instance;
+
+		Debug.Log(awsManager.user.nickname + " :  " + awsManager.user.boong +","+ awsManager.user.heart);
 	}
 
 	private void Update()
@@ -61,75 +68,33 @@ public class BaseCanvas : MonoBehaviour
 			userState.SetActive(true);
 		}
 
-		cash.text = gameManager.user.cash.ToString();
-		star.text = gameManager.user.heart + "/5";
+		boong_text.text = awsManager.user.boong.ToString();
+		heart_text.text = awsManager.user.heart + "/5";
+		heartTime_text.text = IntToTimerString();
 	}
 
-	IEnumerator UpdateInfo()
-    {
-        while(true)
-        {
-			UnityWebRequest www = UnityWebRequest.Get(PrivateData.ec2 + "account/info?id=" + GameManager.instance.id);
-			yield return www.SendWebRequest();
-
-			if (www.isNetworkError || www.isHttpError)
+	string IntToTimerString()
+	{
+		string time_string = "";
+		int heart_time = awsManager.user.heart_time;
+		int min = 0;
+		int sec = 0;
+		while(heart_time != 0)
+		{
+			if(heart_time >= 60)
 			{
-				Debug.Log(www.error);
+				heart_time -= 60;
+				min++;
 			}
 			else
 			{
-				// Show results as text
-//				Debug.Log(www.downloadHandler.text);
-
-
-
-				string fixdata = JsonHelper.fixJson(www.downloadHandler.text);
-				//Debug.Log(fixdata);
-
-				UserData[] datas = JsonHelper.FromJson<UserData>(fixdata);
-				//Debug.Log(datas.Length);
-
-				UserData selectedData = datas[0];
-
-				GameManager.instance.user = selectedData;
-
-				cash.text = selectedData.cash.ToString();
-				star.text = selectedData.heart + "/5";
+				sec = heart_time;
+				heart_time = 0;
 			}
-
-            ///stage
-			www = UnityWebRequest.Get(PrivateData.ec2 + "stage/info?id=" + GameManager.instance.user.id);
-			yield return www.SendWebRequest();
-
-			if (www.isNetworkError || www.isHttpError)
-			{
-				Debug.Log(www.error);
-			}
-			else
-			{
-				// Show results as text
-//				Debug.Log(www.downloadHandler.text);
-
-
-				string fixdata = JsonHelper.fixJson(www.downloadHandler.text);
-//				Debug.Log(fixdata);
-
-				StageData[] datas = JsonHelper.FromJson<StageData>(fixdata);
-				Debug.Log("stage clear : " +datas.Length);
-
-				for(int i = 0; i < datas.Length; i++)
-                {
-					GameManager.instance.stages[datas[i].stage_num].stage_step = datas[i].stage_step;
-                }
-
-			}
-
-			yield return new WaitForSeconds(1f);
 		}
-		
+		time_string = min + ":" + sec;
+		return time_string;
 	}
-
-	
 
 	public void InitLocBtnClick()
 	{

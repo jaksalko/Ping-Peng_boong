@@ -18,6 +18,8 @@ public class CrackedBlock : Block
     public Mesh cracker2;
     public Mesh cracker3;
 
+    public ParticleSystem cracker_particle;
+
 
     public override void Init(int block_num)
     {
@@ -37,6 +39,10 @@ public class CrackedBlock : Block
             }
         }
     }
+    private void OnTriggerEnter(Collider other)
+    {
+        cracker_particle.Play();
+    }
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -46,7 +52,7 @@ public class CrackedBlock : Block
     {
         if (other.gameObject.CompareTag("Player"))
         {
-           
+            
             count++;
 			// Cracked = count;
 			Debug.Log("through the cracked block :" + count);

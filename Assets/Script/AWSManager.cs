@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 
 using Amazon;
 using Amazon.CognitoIdentity;
@@ -19,7 +19,9 @@ using Amazon.Runtime.Internal;
         [DynamoDBProperty]public string nickname { get; set; } // 유저의 닉네임 (UNIQUE)
         [DynamoDBProperty]public int boong { get; set; } // 유저의 붕 갯수
         [DynamoDBProperty]public int heart {get; set;} // 유저의 하트 갯수
+         [DynamoDBProperty]public int heart_time {get; set;} // 하트 충전 타이머
         [DynamoDBProperty]public int current_stage {get; set;} // 유저가 깨야하는 스테이지
+        [DynamoDBProperty]public string log_out {get; set;} //로그 아웃 시간 yyyy/MM/dd HH:mm
     }
 
 public class AWSManager : MonoBehaviour
@@ -33,10 +35,12 @@ public class AWSManager : MonoBehaviour
     public delegate void CreateUserCallback(bool success);
     string id;
     public User user;
-    
+
+    bool isPaused = false;
+    bool isQuit = false;
     void Awake()
     {
-        Debug.Log("Single Class Awake...");//Set instance
+        Debug.Log("Single Class Awake..." + DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"));//Set instance
         if (instance == null)
         {
             Debug.Log("Single instance is null");
@@ -93,12 +97,17 @@ public class AWSManager : MonoBehaviour
                     nickname = nickname,
                     boong = 0,
                     heart = 5,
-                    current_stage = 0
+                    current_stage = 0,
+                    log_out = DateTime.Now.ToString("yyyy/MM/dddd HH:mm:ss"),
+                    heart_time = 600 // 10분 
+                    
         };
         // Save the book.
         dbContext.SaveAsync(user,(result)=>{
             if(result.Exception == null)
             {
+                this.user = user;
+                StartCoroutine(StartTimer());
                 Debug.Log("Success saved db");
                 callback(true);
             }                
@@ -130,10 +139,78 @@ public class AWSManager : MonoBehaviour
             else
             {
                 user = result.Result;
+                StartCoroutine(StartTimer());
                 Debug.Log("user data :" + user.nickname); //찾은 캐릭터 정보 중 아이템 정보 출력
                 callback(1);
             }
             
         }, null);
     }
+
+    public void Update_UserInfo()
+    {
+        user.log_out = DateTime.Now.ToString("yyyy/MM/dddd HH:mm:ss");
+        dbContext.SaveAsync<User>(user,(res)=>
+            {
+                if(res.Exception == null)
+                {
+                    Debug.Log("success update");
+                    isQuit = true;
+                }
+                else
+                {
+                    Debug.Log(res.Exception);
+                }
+                     
+        });
+    }
+    float wait_second = 1f;
+    public IEnumerator StartTimer()
+    {
+        while(true)
+        {
+            if(user.heart < 5)
+            {
+                user.heart_time -= 1;
+                if(user.heart_time == 0)
+                {
+                    user.heart++;
+                    user.heart_time = 600;
+                }
+            }
+            else
+            {
+                user.heart_time = 600;
+            }
+            Debug.Log("heart time " + user.heart_time);
+            
+
+            yield return new WaitForSeconds(wait_second);
+        }
+    }
+
+    void OnApplicationQuit()
+    {
+        Update_UserInfo();
+        Debug.Log("application quit");
+
+        if(!isQuit)
+            Application.CancelQuit();
+        
+    }
+    void OnApplicationPause(bool pause)
+    {
+        if(pause)
+        {
+            Update_UserInfo();
+            Debug.Log("application pause");
+            isPaused = true;
+        }
+        else
+        {
+            isPaused = false;
+            Debug.Log("application resume");
+        }
+    }
+
 }

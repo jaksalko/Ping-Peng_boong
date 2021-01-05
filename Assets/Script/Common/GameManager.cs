@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
        
+        Application.runInBackground = true;
 
         Debug.Log("Single Class Awake...");//Set instance
         if (instance == null)
@@ -53,6 +54,18 @@ public class GameManager : MonoBehaviour
 
 
         //StartCoroutine(LoadCustomPlayList());
+    }
+
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            #if UNITY_EDITOR
+                    UnityEditor.EditorApplication.isPlaying = false;
+            #elif UNITY_ANDROID
+                Application.Quit();
+            #endif
+        }
     }
     public void UpdateUserData(string cloud_id)
     {
