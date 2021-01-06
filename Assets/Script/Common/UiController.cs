@@ -78,7 +78,7 @@ public class UiController : UIScript
     #region 인게임 UI
     public void SetRemainText(int remain, int total)//inGame UI
     {
-        remainText.text = "<size=60>" + remain + "</size>/<size=40>" + total + "</size>";
+        remainText.text = remain + "/" + total;
     }
     public void ParfaitDone()
     {

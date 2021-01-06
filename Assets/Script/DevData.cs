@@ -20,7 +20,7 @@ public class DevData : MonoBehaviour
         else
             gameObject.SetActive(false);
 
-        Application.targetFrameRate = 60;
+        //Application.targetFrameRate = 60;
 
 
 

@@ -32,8 +32,8 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
        
-        Application.runInBackground = true;
-
+        //Application.runInBackground = true;
+        Application.targetFrameRate = 60;
         Debug.Log("Single Class Awake...");//Set instance
         if (instance == null)
         {
