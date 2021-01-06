@@ -14,6 +14,7 @@ public class OutlineController : MonoBehaviour
     // Update is called once per frame
     void Update()
 	{
+		/*
 		Player now = GameController.instance.nowPlayer;
 
 		if (now == GameController.instance.player1)
@@ -29,5 +30,7 @@ public class OutlineController : MonoBehaviour
 
 
 		
+	}
+	*/
 	}
 }

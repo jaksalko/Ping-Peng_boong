@@ -11,7 +11,13 @@ using Amazon.DynamoDBv2.DataModel;
 using Amazon.Runtime;
 using Amazon.Runtime.Internal;
 
-
+[DynamoDBTable("UserStage")]
+    public class UserStage
+    {
+        [DynamoDBHashKey]public string user_id { get; set; } //hash key
+        [DynamoDBProperty]public List<int> stage_list { get; set; } // 유저의 닉네임 (UNIQUE)
+        
+    }
 [DynamoDBTable("UserInfo")]
     public class User
     {
@@ -35,6 +41,7 @@ public class AWSManager : MonoBehaviour
     public delegate void CreateUserCallback(bool success);
     string id;
     public User user;
+    public UserStage UserStage;
 
     bool isPaused = false;
     bool isQuit = false;
@@ -68,6 +75,7 @@ public class AWSManager : MonoBehaviour
 
     public void AddLogin_To_Credentials(string token)
     {
+        
         credentials.AddLogin ("graph.facebook.com", token);
     }
 
@@ -91,6 +99,7 @@ public class AWSManager : MonoBehaviour
 
     public void Create_UserInfo(string nickname,CreateUserCallback callback)//call by LoadingScene(AddAccount)
     {
+
         User user = new User
         {
             user_id = id,
@@ -108,7 +117,7 @@ public class AWSManager : MonoBehaviour
             {
                 this.user = user;
                 StartCoroutine(StartTimer());
-                Debug.Log("Success saved db");
+                Debug.Log("Success saved user");
                 callback(true);
             }                
             else
@@ -118,7 +127,27 @@ public class AWSManager : MonoBehaviour
             }
                 
 
-    }); 
+        }); 
+        UserStage userStage = new UserStage
+        {
+            user_id = id,
+            stage_list = new List<int>{0}
+        };
+        dbContext.SaveAsync(userStage,(result)=>{
+            if(result.Exception == null)
+            {
+                this.UserStage = userStage;
+                Debug.Log("Success saved user stage");
+                
+            }                
+            else
+            {
+                Debug.Log("DB Save Exception : " + result.Exception);
+                
+            }
+                
+
+        }); 
     }
     public void Find_UserInfo(IsNewUser callback) //DB에서 캐릭터 정보 받기
     {
@@ -145,6 +174,19 @@ public class AWSManager : MonoBehaviour
             }
             
         }, null);
+        dbContext.LoadAsync<UserStage>(id, (AmazonDynamoDBResult<UserStage> result) =>
+        {
+            if (result.Exception != null)
+            {
+                Debug.LogException(result.Exception);
+            }
+            else
+            {
+                UserStage = result.Result;
+            }
+
+        },null);
+
     }
 
     public void Update_UserInfo()

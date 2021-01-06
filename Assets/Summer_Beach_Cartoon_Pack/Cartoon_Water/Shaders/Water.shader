@@ -21,7 +21,7 @@ Shader "Water"
 
 	SubShader
 	{
-		Tags{ "RenderType" = "Opaque"  "Queue" = "Geometry+0" "IsEmissive" = "true"  }
+		Tags{ "RenderType" = "Opaque"  "Queue" = "Geometry+0" "IsEmissive" = "true"  "RenderPipeline" = "UniversalRenderPipeline" }
 		Cull Back
 		CGINCLUDE
 		#include "UnityShaderVariables.cginc"
@@ -71,7 +71,8 @@ Shader "Water"
 		Pass
 		{
 			Name "ShadowCaster"
-			Tags{ "LightMode" = "ShadowCaster" }
+			//Tags{ "LightMode" = "ShadowCaster" }
+			Tags{"LightMode" = "UniversalForward"}
 			ZWrite On
 			CGPROGRAM
 			#pragma vertex vert

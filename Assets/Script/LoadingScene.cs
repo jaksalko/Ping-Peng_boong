@@ -326,6 +326,7 @@ public class LoadingScene : MonoBehaviour
             //중복 체크
             awsManager.Create_UserInfo(nickname.text , IsSuccess);            
         }
+        else
         {
             addAccountText.text = "한글,영어,숫자 포함 최소 2자, 최대 8자입니다";
         }

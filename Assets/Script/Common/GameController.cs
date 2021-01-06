@@ -85,7 +85,7 @@ public class GameController : MonoBehaviour
         SwipeStream();
         StartCoroutine(GameSetting());
 
-
+        
         
 
 
