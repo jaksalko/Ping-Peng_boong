@@ -70,7 +70,7 @@ public class UiController : UIScript
         }
         else
         {
-            stageSceneResultPopup.ShowResultPopup(moveCount);
+            stageSceneResultPopup.ShowResultPopup(moveCount , star_count : 3);
         }
        
     }

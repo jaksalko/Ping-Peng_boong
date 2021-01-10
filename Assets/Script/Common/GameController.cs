@@ -400,16 +400,11 @@ public class GameController : MonoBehaviour
             if (nowLevel == level)//지금 스테이지 레벨 == 유저의 도전해야할 레벨
             {
                 StageClear(gameManager.nowLevel, moveCount);//stage clear data insert (stage , step)
-                gameManager.nowLevel++;
-                UserUpdate(30, gameManager.nowLevel);//cash +30 & clear stage +1
-
-                
-
+                UserUpdate(30, gameManager.nowLevel + 1);//cash +30 & clear stage +1
             }
             else
             {
                 StageClear(moveCount);//stage clear data Update (step)
-                gameManager.nowLevel++;
             }
 
             if (nowLevel == maxLevel)//???

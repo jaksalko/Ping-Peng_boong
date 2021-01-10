@@ -9,6 +9,13 @@ using UnityEngine.UI;
 
 public class UIScript : MonoBehaviour
 {
+    protected GameManager gameManager;
+    protected AWSManager awsManager;
+    void Start()
+    {
+        gameManager = GameManager.instance;
+        awsManager = AWSManager.instance;
+    }
     public void Load_Island(int stage)
     {
         if(stage <= IslandData.tutorial)

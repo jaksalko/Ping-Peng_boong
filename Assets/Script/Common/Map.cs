@@ -12,10 +12,9 @@ public class Map : MonoBehaviour, IMap
     int[,] step;
     public int mapsizeH;
     public int mapsizeW;
+    public List<int> star_limit;
 
     public bool parfait = false;
-
-
     public Vector3 startPositionA;//    y축 -9 : 1 층 , -8 : 2층 
     public Vector3 startPositionB;
 
