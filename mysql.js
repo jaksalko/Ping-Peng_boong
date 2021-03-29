@@ -28,10 +28,12 @@ var bodyParser = require('body-parser');
 
 var connection = mysql.createConnection(
 {
-        host : process.env.DB_HOST,
-        user : process.env.DB_USER,
-        password : process.env.DB_PASSWORD,
-        database : 'maplist'
+	host     : process.env.RDS_HOSTNAME,
+	user     : process.env.RDS_USERNAME,
+	password : process.env.RDS_PASSWORD,
+	port     : process.env.RDS_PORT,
+	database : process.enc.RDS_DB_NAME
+
 });
 
 connection.connect(function(err){
