@@ -97,16 +97,13 @@ app.post('/userInfo/update/profile' , function(req,res)
 	});
 })
 
-app.post('/userInfo/update/info' , function(req,res)
+app.post('/userInfo/update' , function(req,res)
 {
-	var nickname = req.body.nickname;
-	var boong = req.body.boong;
-	var heart = req.body.heart;
-    var heart_time = req.body.heart_time;
-    var current_stage = req.body.current_stage;
-    var log_out = new Date();
-	var sql = 'update UserInfo set boong = ?,heart = ?,heart_time = ?,current_stage = ?,log_out = ? where nickname = ?';
-	connection.query(sql,[boong,heart,heart_time,current_stage,log_out,nickname],function(error, results, fields)
+    var userInfo = req.body;
+	var nickname = userInfo.nickname;
+	
+	var sql = 'update UserInfo SET ? where nickname = ?';
+	connection.query(sql,[userInfo,nickname],function(error, results, fields)
 	{	
 		if(error){
 			console.log(error);
