@@ -55,47 +55,8 @@ var server = app.listen(3000, "0.0.0.0" , function(){
 });
 
 
-app.get('/userInfo/get' , function(req,res){
-	
-	var nickname = req.query.nickname;
-	var sql = 'select * from UserInfo where nickname = ?';
-	console.log("nick : " + nickname);
-	connection.query(sql,[nickname],function(error, results, fields)
-	{	
-		if(error)
-        {
-            console.log(error);
-            res.status(400).send(error);
-        }
-        else
-        {
-            console.log(results);
-		    res.status(200).send(JSON.stringify(results));		
-        }
-		
-	});
-})
-app.post('/userInfo/update/profile' , function(req,res)
-{
-	var nickname = req.body.nickname;
-	var profile_skin = req.body.profile_skin;
-	var profile_style = req.body.profile_style;
 
-	var sql = 'update UserInfo set profile_skin = ?,profile_style = ? where nickname = ?';
-	connection.query(sql,[profile_skin,profile_style,nickname],function(error, results, fields)
-	{	
-		if(error){
-			console.log(error);
-			res.status(400).send(error);
-		}
-		else{
-			console.log(results);
-
-			res.status(200).send(JSON.stringify(results));
-		}
-				
-	});
-})
+//#region Update
 
 app.post('/userInfo/update' , function(req,res)
 {
@@ -118,6 +79,97 @@ app.post('/userInfo/update' , function(req,res)
 	});
 })
 
+app.post('/userHistory/update' , function(req,res)
+{
+    var userHistory = req.body;
+	var nickname = userHistory.nickname;
+	
+	var sql = 'update UserHistory SET ? where nickname = ?';
+	connection.query(sql,[userHistory,nickname],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+
+app.post('/userStage/update' , function(req,res)
+{
+    var userStage = req.body;
+	var nickname = userStage.nickname;
+	var stage_num = userStage.stage_num;
+
+	var sql = 'update UserStage SET ? where nickname = ? and stage_num = ?';
+	connection.query(sql,[userStage,nickname,stage_num],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+
+app.post('/userInventory/update' , function(req,res)
+{
+    var userInventory = req.body;
+	var nickname = userStage.nickname;
+	var item_name = userStage.item_name;
+
+	var sql = 'update UserInventory SET ? where nickname = ? and item_name = ?';
+	connection.query(sql,[userInventory,nickname,item_name],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+
+app.post('/userFriend/update' , function(req,res)
+{
+    var userFriend = req.body;
+	var nickname_mine = userFriend.nickname_mine;
+	var nickname_friend = userFriend.nickname_friend;
+
+	var sql = 'update UserFriend SET ? where nickname_mine = ? and nickname_friend = ?';
+	connection.query(sql,[userFriend,nickname_mine,nickname_friend],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+
+//#endregion
+
+//#region INSERT
+
 app.post('/userInfo/insert' , function(req,res)
 {
 	var newUser = req.body;
@@ -139,3 +191,311 @@ app.post('/userInfo/insert' , function(req,res)
 
 	
 })
+
+app.post('/userHistory/insert' , function(req,res)
+{
+	var newHistory = req.body;
+
+	var sql = 'insert into UserHistory SET ?';
+
+	connection.query(sql,newHistory,function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+
+app.post('/userFriend/insert' , function(req,res)
+{
+	var newFriend = req.body;
+
+	var sql = 'insert into UserFriend SET ?';
+
+	connection.query(sql,newFriend,function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+
+	
+})
+
+app.post('/userReward/insert' , function(req,res)
+{
+	var newReward = req.body;
+
+	var sql = 'insert into UserReward SET ?';
+
+	connection.query(sql,newReward,function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+
+	
+})
+
+app.post('/userStage/insert' , function(req,res)
+{
+	var newStage = req.body;
+
+	var sql = 'insert into UserStage SET ?';
+
+	connection.query(sql,newStage,function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+
+	
+})
+
+app.post('/userInventory/insert' , function(req,res)
+{
+	var newItem = req.body;
+
+	var sql = 'insert into UserInventory SET ?';
+
+	connection.query(sql,newItem,function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+
+	
+})
+
+app.post('/editorMap/insert' , function(req,res)
+{
+	var editorMap = req.body;
+
+	var sql = 'insert into EditorMap SET ?';
+
+	connection.query(sql,editorMap,function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+
+	
+})
+
+
+//#endregion
+
+//#region GET
+
+app.get('/userInfo/get' , function(req,res){
+	
+	var nickname = req.query.nickname;
+	var sql = 'select * from UserInfo where nickname = ?';
+	console.log("nick : " + nickname);
+	connection.query(sql,[nickname],function(error, results, fields)
+	{	
+		if(error)
+        {
+            console.log(error);
+            res.status(400).send(error);
+        }
+        else
+        {
+            console.log(results);
+		    res.status(200).send(JSON.stringify(results));		
+        }
+		
+	});
+})
+
+app.get('/userHistory/get' , function(req,res){
+	
+	var nickname = req.query.nickname;
+	var sql = 'select * from UserHistory where nickname = ?';
+	console.log("nick : " + nickname);
+	connection.query(sql,[nickname],function(error, results, fields)
+	{	
+		if(error)
+        {
+            console.log(error);
+            res.status(400).send(error);
+        }
+        else
+        {
+            console.log(results);
+		    res.status(200).send(JSON.stringify(results));		
+        }
+		
+	});
+})
+
+app.get('/userReward/get' , function(req,res){
+	
+	var nickname = req.query.nickname;
+	var sql = 'select * from UserReward where nickname = ?';
+	console.log("nick : " + nickname);
+	connection.query(sql,[nickname],function(error, results, fields)
+	{	
+		if(error)
+        {
+            console.log(error);
+            res.status(400).send(error);
+        }
+        else
+        {
+            console.log(results);
+		    res.status(200).send(JSON.stringify(results));		
+        }
+		
+	});
+})
+
+app.get('/userStage/get' , function(req,res){
+	
+	var nickname = req.query.nickname;
+	var sql = 'select * from UserStage where nickname = ?';
+	console.log("nick : " + nickname);
+	connection.query(sql,[nickname],function(error, results, fields)
+	{	
+		if(error)
+        {
+            console.log(error);
+            res.status(400).send(error);
+        }
+        else
+        {
+            console.log(results);
+		    res.status(200).send(JSON.stringify(results));		
+        }
+		
+	});
+})
+
+app.get('/userInventory/get' , function(req,res){
+	
+	var nickname = req.query.nickname;
+	var sql = 'select * from UserInventory where nickname = ?';
+	console.log("nick : " + nickname);
+	connection.query(sql,[nickname],function(error, results, fields)
+	{	
+		if(error)
+        {
+            console.log(error);
+            res.status(400).send(error);
+        }
+        else
+        {
+            console.log(results);
+		    res.status(200).send(JSON.stringify(results));		
+        }
+		
+	});
+})
+
+app.get('/userFriend/get' , function(req,res){
+	
+	var nickname_mine = req.query.nickname_mine;
+	var sql = 'select * from UserFriend where nickname_mine = ?';
+	console.log("nick : " + nickname);
+	connection.query(sql,[nickname_mine],function(error, results, fields)
+	{	
+		if(error)
+        {
+            console.log(error);
+            res.status(400).send(error);
+        }
+        else
+        {
+            console.log(results);
+		    res.status(200).send(JSON.stringify(results));		
+        }
+		
+	});
+})
+
+app.get('/allUser/get' , function(req,res){
+
+	var sql = 'select * from UserInfo';
+	
+	connection.query(sql,function(error, results, fields)
+	{	
+		if(error)
+        {
+            console.log(error);
+            res.status(400).send(error);
+        }
+        else
+        {
+            console.log(results);
+		    res.status(200).send(JSON.stringify(results));		
+        }
+		
+	});
+})
+
+app.get('/editorMap/get' , function(req,res){
+
+	var sql = 'select * from EditorMap';
+	
+	connection.query(sql,function(error, results, fields)
+	{	
+		if(error)
+        {
+            console.log(error);
+            res.status(400).send(error);
+        }
+        else
+        {
+            console.log(results);
+		    res.status(200).send(JSON.stringify(results));		
+        }
+		
+	});
+})
+
+//#endregion
+
+//#region DELETE
+
+
+//#endregion DELETE
