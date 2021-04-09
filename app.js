@@ -331,7 +331,7 @@ app.get('/userInfo/get' , function(req,res){
 	
 	var nickname = req.query.nickname;
 	var sql = 'select * from UserInfo where nickname = ?';
-	console.log("nick : " + nickname);
+
 	connection.query(sql,[nickname],function(error, results, fields)
 	{	
 		if(error)
@@ -352,7 +352,7 @@ app.get('/userHistory/get' , function(req,res){
 	
 	var nickname = req.query.nickname;
 	var sql = 'select * from UserHistory where nickname = ?';
-	console.log("nick : " + nickname);
+
 	connection.query(sql,[nickname],function(error, results, fields)
 	{	
 		if(error)
@@ -373,7 +373,7 @@ app.get('/userReward/get' , function(req,res){
 	
 	var nickname = req.query.nickname;
 	var sql = 'select * from UserReward where nickname = ?';
-	console.log("nick : " + nickname);
+
 	connection.query(sql,[nickname],function(error, results, fields)
 	{	
 		if(error)
@@ -394,7 +394,7 @@ app.get('/userStage/get' , function(req,res){
 	
 	var nickname = req.query.nickname;
 	var sql = 'select * from UserStage where nickname = ?';
-	console.log("nick : " + nickname);
+
 	connection.query(sql,[nickname],function(error, results, fields)
 	{	
 		if(error)
@@ -415,7 +415,7 @@ app.get('/userInventory/get' , function(req,res){
 	
 	var nickname = req.query.nickname;
 	var sql = 'select * from UserInventory where nickname = ?';
-	console.log("nick : " + nickname);
+	
 	connection.query(sql,[nickname],function(error, results, fields)
 	{	
 		if(error)
@@ -436,7 +436,7 @@ app.get('/userFriend/get' , function(req,res){
 	
 	var nickname_mine = req.query.nickname_mine;
 	var sql = 'select * from UserFriend where nickname_mine = ?';
-	console.log("nick : " + nickname);
+
 	connection.query(sql,[nickname_mine],function(error, results, fields)
 	{	
 		if(error)
