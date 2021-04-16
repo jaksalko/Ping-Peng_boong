@@ -341,7 +341,7 @@ app.get('/userInfo/get' , function(req,res){
         }
         else
         {
-            console.log(results);
+            console.log("Info data : " + results);
 		    res.status(200).send(JSON.stringify(results));		
         }
 		
@@ -362,7 +362,7 @@ app.get('/userHistory/get' , function(req,res){
         }
         else
         {
-            console.log(results);
+            console.log("History data : " + results);
 		    res.status(200).send(JSON.stringify(results));		
         }
 		
@@ -404,7 +404,7 @@ app.get('/userStage/get' , function(req,res){
         }
         else
         {
-            console.log(results);
+            console.log("stage data : " + results);
 		    res.status(200).send(JSON.stringify(results));		
         }
 		
@@ -446,7 +446,7 @@ app.get('/userFriend/get' , function(req,res){
         }
         else
         {
-            console.log(results);
+            console.log("friend data : " + results);
 		    res.status(200).send(JSON.stringify(results));		
         }
 		
@@ -497,5 +497,44 @@ app.get('/editorMap/get' , function(req,res){
 
 //#region DELETE
 
+app.post('/friend/delete',function(req,res){
+	var postData = req.body;
+	var id = req.body.nickname_mine;
+	var friend_id = req.body.nickname_friend;
+
+	//insert
+	var insert_sql = 'insert into friend set ?';
+	//delete
+	var delete_sql = 'delete from UserFriend where id = ? and friend_id =?';
+
+	connection.query(insert_sql,postData,function(error,results,fields){
+		if(error)
+		{
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else
+		{
+			console.log(results);
+			//res.status(200).send(results).end();
+
+			connection.query(delete_sql,[id,friend_id],function(error,results,fields){
+				if(error)
+				{
+					console.log(error);
+					res.status(400).send(error);
+				}
+				else
+				{
+					console.log(results);
+					res.status(200).send(results);
+				}
+			})
+
+		}
+	})
+
+	
+})
 
 //#endregion DELETE
