@@ -33,7 +33,8 @@ var connection = mysql.createConnection(
 	password : process.env.RDS_PASSWORD,
 	port     : process.env.RDS_PORT,
 	database : process.env.RDS_DB_NAME,
-    dateStrings: 'date'
+    dateStrings: 'date',
+    multipleStatements: true
 
 });
 
@@ -166,6 +167,50 @@ app.post('/userFriend/update' , function(req,res)
 	});
 })
 
+app.post('/sendmailbox/update' , function(req,res)
+{
+    var mailbox = req.body;
+	var nickname_mine = mailbox.sender;
+	var nickname_friend = mailbox.receiver;
+
+	var sql = 'insert into Mailbox set ?; update UserFriend set friendship = friendship + 1 , send = true where nickname_mine = ? and nickname_friend = ?';
+	connection.query(sql,[mailbox,nickname_friend,nickname_mine,nickname_friend],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+
+app.post('/getmailbox/update' , function(req,res)
+{
+    var mailbox = req.body;
+	var sender = mailbox.sender;
+	var receiver = mailbox.receiver;
+    var time = mailbox.time;
+
+	var sql = 'delete from Mailbox where receiver = ? and sender = ? and time = ?; update UserFriend set friendship = friendship + 1 where nickname_mine = ? and nickname_friend = ?';
+	connection.query(sql,[mailbox,receiver,sender,time,receiver,sender],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
 //#endregion
 
 //#region INSERT
@@ -493,32 +538,70 @@ app.get('/editorMap/get' , function(req,res){
 	});
 })
 
+app.get('/mailbox/get' , function(req,res){
+	
+	var receiver = req.query.nickname;
+	var sql = 'select * from Mailbox where receiver = ?';
+
+	connection.query(sql,[receiver],function(error, results, fields)
+	{	
+		if(error)
+        {
+            console.log(error);
+            res.status(400).send(error);
+        }
+        else
+        {
+            console.log("friend data : " + results);
+		    res.status(200).send(JSON.stringify(results));		
+        }
+		
+	});
+})
+
+app.get('/getall/get' , function(req,res){
+	
+	var nickname = req.query.nickname;
+	var sql 
+    ='select * from UserInfo where nickname = ?;'
+    +'select * from UserHistory where nickname = ?;'
+    +'select * from UserStage where nickname = ?;'
+    +'select * from UserInventory where nickname = ?;'
+    +'select * from UserFriend where nickname_mine = ?;'
+    +'select * from UserReward where nickname = ?;'
+    +'select * from Mailbox where receiver = ?;';
+
+	connection.query(sql,[nickname,nickname,nickname,nickname,nickname,nickname,nickname],function(error, results, fields)
+	{	
+		if(error)
+        {
+            console.log(error);
+            res.status(400).send(error);
+        }
+        else
+        {
+            console.log("friend data : " + results);
+		    res.status(200).send(JSON.stringify(results));		
+        }
+		
+	});
+})
+
 //#endregion
 
 //#region DELETE
 
 app.post('/friend/delete',function(req,res){
-	var postData = req.body;
+
 	var id = req.body.nickname_mine;
 	var friend_id = req.body.nickname_friend;
 
-	//insert
-	var insert_sql = 'insert into friend set ?';
+	
 	//delete
-	var delete_sql = 'delete from UserFriend where id = ? and friend_id =?';
+	var delete_sql = 'delete from UserFriend where id = ? and friend_id =?; delete from UserFriend where id = ? and friend_id =?';
 
-	connection.query(insert_sql,postData,function(error,results,fields){
-		if(error)
-		{
-			console.log(error);
-			res.status(400).send(error);
-		}
-		else
-		{
-			console.log(results);
-			//res.status(200).send(results).end();
-
-			connection.query(delete_sql,[id,friend_id],function(error,results,fields){
+	connection.query(delete_sql,[id,friend_id,friend_id,id],function(error,results,fields){
+		
 				if(error)
 				{
 					console.log(error);
@@ -529,9 +612,7 @@ app.post('/friend/delete',function(req,res){
 					console.log(results);
 					res.status(200).send(results);
 				}
-			})
-
-		}
+			
 	})
 
 	
