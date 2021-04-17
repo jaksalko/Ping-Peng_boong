@@ -587,7 +587,7 @@ app.get('/getall/get' , function(req,res){
 	});
 })
 
-app.get('/newUser/create' , function(req,res){
+app.post('/newUser/create' , function(req,res){
 	
 	var userInfo = req.body.userInfo;
     var userHistory = req.body.userHistory;
