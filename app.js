@@ -569,9 +569,33 @@ app.get('/getall/get' , function(req,res){
     +'select * from UserInventory where nickname = ?;'
     +'select * from UserFriend where nickname_mine = ?;'
     +'select * from UserReward where nickname = ?;'
-    +'select * from Mailbox where receiver = ?;';
+    +'select * from Mailbox where receiver = ?';
 
 	connection.query(sql,[nickname,nickname,nickname,nickname,nickname,nickname,nickname],function(error, results, fields)
+	{	
+		if(error)
+        {
+            console.log(error);
+            res.status(400).send(error);
+        }
+        else
+        {
+            console.log("friend data : " + results);
+		    res.status(200).send(JSON.stringify(results));		
+        }
+		
+	});
+})
+
+app.get('/newUser/create' , function(req,res){
+	
+	var userInfo = req.body.userInfo;
+    var userHistory = req.body.userHistory;
+	var sql 
+    ='insert into UserInfo set ?;'
+    +'insert into UserHistory set ?';
+
+	connection.query(sql,[userInfo,userHistory],function(error, results, fields)
 	{	
 		if(error)
         {
