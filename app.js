@@ -580,8 +580,13 @@ app.get('/getall/get' , function(req,res){
         }
         else
         {
-            console.log("friend data : " + results);
-		    res.status(200).send(JSON.stringify(results));		
+		    res.status(200).send(JSON.stringify(results[0]));
+            res.status(200).send(JSON.stringify(results[1]));		
+            res.status(200).send(JSON.stringify(results[2]));		
+            res.status(200).send(JSON.stringify(results[3]));		
+            res.status(200).send(JSON.stringify(results[4]));		
+            res.status(200).send(JSON.stringify(results[5]));		
+            res.status(200).send(JSON.stringify(results[6]));				
         }
 		
 	});
