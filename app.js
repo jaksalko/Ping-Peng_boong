@@ -147,12 +147,15 @@ app.post('/userInventory/update' , function(req,res)
 
 app.post('/userFriend/update' , function(req,res)
 {
-    var userFriend = req.body;
-	var nickname_mine = userFriend.nickname_mine;
-	var nickname_friend = userFriend.nickname_friend;
+    var myRequest = req.body.myRequest;
+	var friendRequest = req.body.friendRequest;
 
-	var sql = 'update UserFriend SET ? where nickname_mine = ? and nickname_friend = ?';
-	connection.query(sql,[userFriend,nickname_mine,nickname_friend],function(error, results, fields)
+	var nickname_mine = myRequest.nickname_mine;
+	var nickname_friend = friendRequest.nickname_friend;
+
+	var sql = 'update UserFriend SET ? where nickname_mine = ? and nickname_friend = ?;'
+	+'update UserFriend SET ? where nickname_mine = ? and nickname_friend = ?';
+	connection.query(sql,[myRequest,nickname_mine,nickname_friend,friendRequest,nickname_friend,nickname_mine],function(error, results, fields)
 	{	
 		if(error){
 			console.log(error);
@@ -259,11 +262,12 @@ app.post('/userHistory/insert' , function(req,res)
 
 app.post('/userFriend/insert' , function(req,res)
 {
-	var newFriend = req.body;
-
-	var sql = 'insert into UserFriend SET ?';
-
-	connection.query(sql,newFriend,function(error, results, fields)
+	var myRequest = req.body.myRequest;
+	var friendRequest = req.body.friendRequest;
+	var sql = 'insert into UserFriend SET ?;'
+	+'insert into UserFriend SET ?';
+	
+	connection.query(sql,[myRequest,friendRequest],function(error, results, fields)
 	{	
 		if(error){
 			console.log(error);
