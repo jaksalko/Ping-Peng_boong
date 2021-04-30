@@ -622,14 +622,14 @@ app.post('/newUser/create' , function(req,res){
 
 //#region DELETE
 
-app.post('/friend/delete',function(req,res){
+app.post('/userFriend/delete',function(req,res){
 
 	var id = req.body.nickname_mine;
 	var friend_id = req.body.nickname_friend;
 
 	
 	//delete
-	var delete_sql = 'delete from UserFriend where id = ? and friend_id =?; delete from UserFriend where id = ? and friend_id =?';
+	var delete_sql = 'delete from UserFriend where nickname_mine = ? and nickname_friend =?; delete from UserFriend where nickname_mine = ? and nickname_friend =?';
 
 	connection.query(delete_sql,[id,friend_id,friend_id,id],function(error,results,fields){
 		
