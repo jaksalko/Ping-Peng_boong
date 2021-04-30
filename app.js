@@ -150,12 +150,14 @@ app.post('/userFriend/update' , function(req,res)
     var myRequest = req.body.myRequest;
 	var friendRequest = req.body.friendRequest;
 
+	var myState = myRequest.state;
+	var friendState = friendRequest.state;
 	var nickname_mine = myRequest.nickname_mine;
 	var nickname_friend = friendRequest.nickname_friend;
 
-	var sql = 'update UserFriend SET ? where nickname_mine = ? and nickname_friend = ?;'
-	+'update UserFriend SET ? where nickname_mine = ? and nickname_friend = ?';
-	connection.query(sql,[myRequest,nickname_mine,nickname_friend,friendRequest,nickname_friend,nickname_mine],function(error, results, fields)
+	var sql = 'update UserFriend set state = ? where nickname_mine = ? and nickname_friend = ?;'
+	+'update UserFriend set state = ? where nickname_mine = ? and nickname_friend = ?';
+	connection.query(sql,[myState,nickname_mine,nickname_friend,friendState,nickname_friend,nickname_mine],function(error, results, fields)
 	{	
 		if(error){
 			console.log(error);
