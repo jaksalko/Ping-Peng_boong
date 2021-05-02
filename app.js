@@ -175,12 +175,17 @@ app.post('/userFriend/update' , function(req,res)//accept request
 
 app.post('/sendmailbox/update' , function(req,res)
 {
-    var mailbox = req.body;
+    var mailbox = req.body.mailbox;
+	var friend = req.body.myFriend;
+
+
 	var nickname_mine = mailbox.sender;
 	var nickname_friend = mailbox.receiver;
 
-	var sql = 'insert into Mailbox set ?; update UserFriend set friendship = friendship + 1 , send = true where nickname_mine = ? and nickname_friend = ?';
-	connection.query(sql,[mailbox,nickname_friend,nickname_mine,nickname_friend],function(error, results, fields)
+	var sql = 'insert into Mailbox set ?;'+
+	'update UserFriend set ? where nickname_mine = ? and nickname_friend = ?;'
+	+'update UserFriend set friendship = friendship + 1 where nickname_mine = ? and nickname_friend = ?';
+	connection.query(sql,[mailbox,friend,nickname_mine,nickname_friend,nickname_friend,nickname_mine],function(error, results, fields)
 	{	
 		if(error){
 			console.log(error);
@@ -202,8 +207,10 @@ app.post('/getmailbox/update' , function(req,res)
 	var receiver = mailbox.receiver;
     var time = mailbox.time;
 
-	var sql = 'delete from Mailbox where receiver = ? and sender = ? and time = ?; update UserFriend set friendship = friendship + 1 where nickname_mine = ? and nickname_friend = ?';
-	connection.query(sql,[mailbox,receiver,sender,time,receiver,sender],function(error, results, fields)
+	var sql = 'delete from Mailbox where receiver = ? and sender = ? and time = ?;'+
+	+'update UserInfo set heart = heart +1 where nickname = ?;'
+	+'update UserHistory set heart_get = heart_get + 1 where nickname = ?';
+	connection.query(sql,[mailbox,receiver,sender,time,receiver,receiver],function(error, results, fields)
 	{	
 		if(error){
 			console.log(error);
