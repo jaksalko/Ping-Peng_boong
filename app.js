@@ -210,7 +210,7 @@ app.post('/getmailbox/update' , function(req,res)
 	var sql = 'delete from Mailbox where receiver = ? and sender = ? and time = ?;'+
 	+'update UserInfo set heart = heart +1 where nickname = ?;'
 	+'update UserHistory set heart_get = heart_get + 1 where nickname = ?';
-	connection.query(sql,[mailbox,receiver,sender,time,receiver,receiver],function(error, results, fields)
+	connection.query(sql,[receiver,sender,time,receiver,receiver],function(error, results, fields)
 	{	
 		if(error){
 			console.log(error);
