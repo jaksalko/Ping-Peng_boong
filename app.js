@@ -294,8 +294,8 @@ app.post('/userReward/insert' , function(req,res)
 	var userReward = req.body.reward;
 	var nickname = userInfo.nickname;
 	var sql 
-    ='update UserInfo set ? UserInfo where nickname = ?;'
-    +'update UserHistory set ? UserHistory where nickname = ?;'
+    ='update UserInfo set ? where nickname = ?;'
+    +'update UserHistory set ? where nickname = ?;'
 	+'insert into UserReward SET ?;';
 
 	if(userInventory != null)
