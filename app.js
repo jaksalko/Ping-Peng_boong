@@ -288,6 +288,67 @@ app.post('/userFriend/insert' , function(req,res)
 
 app.post('/userReward/insert' , function(req,res)
 {
+	var userInfo = req.body.info;
+    var userHistory = req.body.history;
+	var userInventory = req.body.inventory;
+	var userReward = req.body.reward;
+	var nickname = userInfo.nickname;
+	var sql 
+    ='update UserInfo set ? UserInfo where nickname = ?;'
+    +'update UserHistory set ? UserHistory set ? where nickname = ?;'
+	+'insert into UserReward SET ?;';
+
+	if(userInventory != null)
+	{
+		sql += 'insert into UserInventory SET ?';
+		connection.query(sql,[userInfo,nickname,userHistory,nickname,userReward,userInventory],function(error, results, fields)
+		{	
+			if(error)
+			{
+				console.log(error);
+				res.status(400).send(error);
+			}
+			else
+			{
+				console.log("friend data : " + results);
+				res.status(200).send(JSON.stringify(results));		
+			}
+			
+		});
+	}
+	else
+	{
+		connection.query(sql,[userInfo,nickname,userHistory,nickname,userReward],function(error, results, fields)
+		{	
+			if(error)
+			{
+				console.log(error);
+				res.status(400).send(error);
+			}
+			else
+			{
+				console.log("friend data : " + results);
+				res.status(200).send(JSON.stringify(results));		
+			}
+			
+		});
+	}
+
+	connection.query(sql,[userInfo,userHistory],function(error, results, fields)
+	{	
+		if(error)
+        {
+            console.log(error);
+            res.status(400).send(error);
+        }
+        else
+        {
+            console.log("friend data : " + results);
+		    res.status(200).send(JSON.stringify(results));		
+        }
+		
+	});
+
 	var newReward = req.body;
 
 	var sql = 'insert into UserReward SET ?';
