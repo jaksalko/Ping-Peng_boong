@@ -298,7 +298,7 @@ app.post('/userReward/insert' , function(req,res)
     +'update UserHistory set ? where nickname = ?;'
 	+'insert into UserReward SET ?;';
 
-	if(userInventory.nickname != null)
+	if(userInventory.item != "none")
 	{
 		console.log("item update");
 		sql += 'insert into UserInventory SET ?';
