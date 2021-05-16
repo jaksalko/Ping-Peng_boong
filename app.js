@@ -320,7 +320,7 @@ app.post('/editorMap/like/update' , function(req,res)
 	
 
 	var sql = 'update EditorMap set likes = likes + 1 where map_id = ?';
-	connection.query(sql,[editorMap,map_id],function(error, results, fields)
+	connection.query(sql,[map_id],function(error, results, fields)
 	{	
 		if(error){
 			console.log(error);
