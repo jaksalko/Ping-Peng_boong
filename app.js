@@ -225,7 +225,7 @@ app.post('/userInfo/update' , function(req,res)
 	var nickname = userInfo.nickname;
 	
 
-	var sql = 'update userInfo SET ? where nickname = ?';
+	var sql = 'update UserInfo SET ? where nickname = ?';
 	connection.query(sql,[userStage,nickname,stage_num],function(error, results, fields)
 	{	
 		if(error){
@@ -247,7 +247,7 @@ app.post('/userHistory/update' , function(req,res)
 	var nickname = userHistory.nickname;
 	
 
-	var sql = 'update userHistory SET ? where nickname = ?';
+	var sql = 'update UserHistory SET ? where nickname = ?';
 	connection.query(sql,[userStage,nickname,stage_num],function(error, results, fields)
 	{	
 		if(error){
