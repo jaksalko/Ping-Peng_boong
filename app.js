@@ -219,6 +219,50 @@ app.post('/userStage/update' , function(req,res)
 	});
 })
 
+app.post('/userInfo/update' , function(req,res)
+{
+    var userInfo = req.body;
+	var nickname = userInfo.nickname;
+	
+
+	var sql = 'update userInfo SET ? where nickname = ?';
+	connection.query(sql,[userStage,nickname,stage_num],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+
+app.post('/userHistory/update' , function(req,res)
+{
+    var userHistory = req.body;
+	var nickname = userHistory.nickname;
+	
+
+	var sql = 'update userHistory SET ? where nickname = ?';
+	connection.query(sql,[userStage,nickname,stage_num],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+
 app.post('/userInventory/update' , function(req,res)
 {
     var userInventory = req.body;
