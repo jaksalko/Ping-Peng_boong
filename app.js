@@ -56,16 +56,109 @@ var server = app.listen(3000, "0.0.0.0" , function(){
 });
 
 
+app.post('/newEditorStage/update' , function(req,res)
+{
+    var userInfo = req.body.userInfo;//update
+	var userHistory = req.body.userHistory;//update
+	var userStage = req.body.userStage;//insert
+	var editorMap = req.body.editorMap;//update
+
+	var nickname = userInfo.nickname;
+	var map_id = editorMap.map_id;
+	
+
+	var sql = 'update UserInfo set ? where nickname =?;'
+	+'update UserHistory set ? where nickname =?;'
+	+'insert into UserStage set ?;'
+	+'update EditorMap set ? where map_id = ?';
+	connection.query(sql,[userInfo,nickname,userHistory,nickname,userStage,editorMap,map_id],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+app.post('/updateEditorStage/update' , function(req,res)
+{
+    var userInfo = req.body.userInfo;//update
+	var userHistory = req.body.userHistory;//update
+	var userStage = req.body.userStage;//update
+	var editorMap = req.body.editorMap;//update
+
+	var nickname = userInfo.nickname;
+	var stage_num = userStage.stage_num;
+	var map_id = editorMap.map_id;
+	
+
+	var sql = 'update UserInfo set ? where nickname =?;'
+	+'update UserHistory set ? where nickname =?;'
+	+'update UserStage set ? where nickname = ? and stage_num = ?;'
+	+'update EditorMap set ? where map_id = ?';
+	connection.query(sql,[userInfo,nickname,userHistory,nickname,userStage,nickname,stage_num,editorMap,map_id],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+app.post('/newStage/update' , function(req,res)
+{
+    var userInfo = req.body.userInfo;//update
+	var userHistory = req.body.userHistory;//update
+	var userStage = req.body.userStage;//insert
+
+	var nickname = userInfo.nickname;
+
+	
+
+	var sql = 'update UserInfo set ? where nickname =?;'
+	+'update UserHistory set ? where nickname =?;'
+	+'insert into UserStage set ?'
+	connection.query(sql,[userInfo,nickname,userHistory,nickname,userStage],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+
 
 //#region Update
 
-app.post('/userInfo/update' , function(req,res)
+app.post('/updateStage/update' , function(req,res)
 {
-    var userInfo = req.body;
+    var userInfo = req.body.userInfo;//update
+	var userHistory = req.body.userHistory;//update
+	var userStage = req.body.userStage;//update
+
 	var nickname = userInfo.nickname;
-	
-	var sql = 'update UserInfo SET ? where nickname = ?';
-	connection.query(sql,[userInfo,nickname],function(error, results, fields)
+	var stage_num = userStage.stage_num;
+
+	var sql = 'update UserInfo set ? where nickname =?;'
+	+'update UserHistory set ? where nickname = ?;'
+	+'update UserStage set ? where nickname = ? and stage_num = ?'
+	connection.query(sql,[userInfo,nickname,userHistory,nickname,userStage,nickname,stage_num],function(error, results, fields)
 	{	
 		if(error){
 			console.log(error);
