@@ -173,7 +173,7 @@ app.post('/updateStage/update' , function(req,res)
 	});
 })
 
-app.post('/playStage/update' , function(req,res)
+app.post('/infoHistory/update' , function(req,res)
 {
     var userHistory = req.body.userHistory;
 	var userInfo = req.body.userInfo;
