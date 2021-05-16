@@ -173,13 +173,16 @@ app.post('/updateStage/update' , function(req,res)
 	});
 })
 
-app.post('/userHistory/update' , function(req,res)
+app.post('/playStage/update' , function(req,res)
 {
-    var userHistory = req.body;
+    var userHistory = req.body.userHistory;
+	var userInfo = req.body.userInfo;
+
 	var nickname = userHistory.nickname;
 	
-	var sql = 'update UserHistory SET ? where nickname = ?';
-	connection.query(sql,[userHistory,nickname],function(error, results, fields)
+	var sql = 'update UserHistory SET ? where nickname = ?;'
+	+'update UserInfo SET ? where nickname = ?';
+	connection.query(sql,[userHistory,nickname,userInfo,nickname],function(error, results, fields)
 	{	
 		if(error){
 			console.log(error);
