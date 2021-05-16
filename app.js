@@ -313,6 +313,28 @@ app.post('/userFriend/update' , function(req,res)//accept request
 	});
 })
 
+app.post('/editorMap/like/update' , function(req,res)
+{
+    var editorMap = req.body;
+	var map_id = editorMap.map_id;
+	
+
+	var sql = 'update EditorMap set likes = likes + 1 where map_id = ?';
+	connection.query(sql,[editorMap,map_id],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+
 app.post('/sendmailbox/update' , function(req,res)
 {
     var mailbox = req.body.mailbox;
