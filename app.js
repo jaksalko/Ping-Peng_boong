@@ -335,6 +335,35 @@ app.post('/editorMap/like/update' , function(req,res)
 	});
 })
 
+app.post('/skinBuy/update' , function(req,res)
+{
+	var userInfo = req.body.userInfo;//update
+	var userHistory = req.body.userHistory;//update
+	var item = req.body.item;//update
+
+	var nickname = userInfo.nickname;
+	
+
+	var sql = 'update UserInfo set ? where nickname =?;'
+	+'update UserHistory set ? where nickname = ?;'
+	+'insert into UserInventory set ?'
+
+
+	connection.query(sql,[userInfo,nickname,userHistory,nickname,item],function(error, results, fields)
+	{	
+		if(error){
+			console.log(error);
+			res.status(400).send(error);
+		}
+		else{
+			console.log(results);
+
+			res.status(200).send(JSON.stringify(results));
+		}
+				
+	});
+})
+
 app.post('/sendmailbox/update' , function(req,res)
 {
     var mailbox = req.body.mailbox;
