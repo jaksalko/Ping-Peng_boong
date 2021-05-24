@@ -861,11 +861,11 @@ app.post('/newUser/create' , function(req,res){
     var userHistory = req.body.userHistory;
 	var item1 = req.body.item1;
 	var item2 = req.body.item2;
-	
+
 	var sql 
     ='insert into UserInfo set ?;'
-    +'insert into UserHistory set ?'
-	+'insert into UserInventory set ?'
+    +'insert into UserHistory set ?;'
+	+'insert into UserInventory set ?;'
 	+'insert into UserInventory set ?';
 
 	connection.query(sql,[userInfo,userHistory,item1,item2],function(error, results, fields)
