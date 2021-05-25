@@ -499,10 +499,12 @@ app.post('/userReward/insert' , function(req,res)
 	if(userInventory.item_name != "none")
 	{
 		console.log("item update");
+		console.log("before sql : " + sql);
 		sql += 'insert into UserInventory SET ?';
+		console.log("after : " + sql);
 		connection.query(sql,[userInfo,nickname,userHistory,nickname,userReward,userInventory],function(error, results, fields)
 		{	
-			console.log(sql);
+			//console.log(sql);
 			if(error)
 			{
 				console.log(error);
