@@ -502,6 +502,7 @@ app.post('/userReward/insert' , function(req,res)
 		sql += 'insert into UserInventory SET ?';
 		connection.query(sql,[userInfo,nickname,userHistory,nickname,userReward,userInventory],function(error, results, fields)
 		{	
+			console.log(sql);
 			if(error)
 			{
 				console.log(error);
@@ -520,6 +521,7 @@ app.post('/userReward/insert' , function(req,res)
 		console.log("no item update");
 		connection.query(sql,[userInfo,nickname,userHistory,nickname,userReward],function(error, results, fields)
 		{	
+			console.log(sql);
 			if(error)
 			{
 				console.log(error);
