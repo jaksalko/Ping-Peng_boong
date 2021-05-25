@@ -498,6 +498,7 @@ app.post('/userReward/insert' , function(req,res)
 
 	console.log("info :" + userInfo.nickname);
 	console.log("inven :" +userInventory.nickname);
+	console.log("inven :" +userInventory.item_name);
 	if(userInventory.item_name != "none")
 	{
 		console.log("item update");
